@@ -227,3 +227,54 @@ def test_a_crashed_check_is_recorded_rather_than_left_silent(monkeypatch, tmp_pa
     finally:
         app_module.SOURCE_REPORTS.clear()
         app_module.SOURCE_REPORTS.update(saved)
+
+
+# ------------------------------------------ which pack the buttons target ---
+#
+# The /rulesets page used to post every fetch/apply to sorted(PACKS)[0]. With
+# SOLG28 (no index_url) and SYOG26 (configured) side by side, "SOLG28" sorts
+# first, so "Check and download updates" answered {"pack": "SOLG28",
+# "staged": []} and the configured pack could not be reached from the UI at
+# all. The pack names below are chosen so the unconfigured one sorts first,
+# exactly like the real pair.
+
+def _two_packs_unconfigured_sorting_first(tmp_path, monkeypatch):
+    rules_root = tmp_path / "Rules"
+    (rules_root / "AAA_UNCONFIGURED").mkdir(parents=True)
+    (rules_root / "AAA_UNCONFIGURED" / "pack.yaml").write_text(
+        'version: ""\n', encoding="utf-8")
+    (rules_root / "ZZZ_CONFIGURED").mkdir(parents=True)
+    (rules_root / "ZZZ_CONFIGURED" / "pack.yaml").write_text(
+        'version: "test"\n'
+        'source:\n'
+        '  index_url: https://odf.olympictech.org/2026-Dakar/dakar_2026_YOG.html\n',
+        encoding="utf-8")
+    monkeypatch.setattr(app_module, "RULES_ROOT", rules_root)
+    monkeypatch.setattr(app_module, "PACKS", {})
+    app_module.discover_packs()
+
+
+def test_rulesets_page_offers_fetch_for_the_configured_pack(tmp_path, monkeypatch):
+    _two_packs_unconfigured_sorting_first(tmp_path, monkeypatch)
+
+    page = client.get("/rulesets").text
+
+    assert 'name="pack" value="ZZZ_CONFIGURED"' in page, (
+        "the only pack with a publication page must be reachable from the "
+        "fetch button, whatever its position in sort order")
+    assert 'name="pack" value="AAA_UNCONFIGURED"' not in page, (
+        "a pack with no index_url has nothing to fetch; offering a button "
+        "for it is what produced the silent staged=[]")
+
+
+def test_fetch_for_an_unconfigured_pack_says_so(tmp_path, monkeypatch):
+    _two_packs_unconfigured_sorting_first(tmp_path, monkeypatch)
+
+    response = client.post("/sources/fetch",
+                           data={"pack": "AAA_UNCONFIGURED",
+                                 "csrf_token": CSRF_TOKEN})
+
+    assert response.status_code == 409, (
+        "200 with staged=[] reads as 'checked, nothing newer' -- the same "
+        "answer a healthy, up-to-date pack gives")
+    assert "index_url" in response.json()["detail"]

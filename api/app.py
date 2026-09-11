@@ -282,12 +282,17 @@ def validate(pack: str = Form(...),
 
 @app.get("/rulesets", response_class=HTMLResponse)
 def rulesets_page(request: Request):
-    packs = sorted(PACKS)
+    # One fetch/apply pair per pack that has a publication page. This used to
+    # be a single pair bound to sorted(PACKS)[0], which is SOLG28 (no
+    # index_url) as soon as it sits beside SYOG26 -- so the button answered
+    # staged=[] and the configured pack was unreachable from the UI.
+    source_packs = [name for name in sorted(PACKS)
+                    if read_source_config(RULES_ROOT / name).get("index_url")]
     return templates.TemplateResponse(
         request=request, name="rulesets.html",
         context={"rulesets": ruleset_summary(PACKS),
                  "csrf_token": CSRF_TOKEN,
-                 "default_pack": packs[0] if packs else ""})
+                 "source_packs": source_packs})
 
 
 def _report_json(report) -> dict:
@@ -352,6 +357,14 @@ def fetch_sources(pack: str = Form(...),
         raise HTTPException(404, f"Unknown pack: {pack}")
     ruleset_dir = RULES_ROOT / pack
     report = source_check(ruleset_dir)
+    if not report.configured:
+        # Not a 200 with staged=[]: that is exactly what an up-to-date pack
+        # returns, so an unconfigured one was indistinguishable from "nothing
+        # newer upstream".
+        raise HTTPException(
+            409, f"{pack} has no publication page configured "
+                 f"(no source.index_url in its pack.yaml), so there is "
+                 f"nothing to check or download.")
     if report.error:
         SOURCE_REPORTS[pack] = report
         raise HTTPException(502, report.error)

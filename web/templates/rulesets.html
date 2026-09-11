@@ -53,18 +53,18 @@
       <li><p class="item-meta item-note">Checking&hellip;</p></li>
     </ul>
 
-    {% if default_pack %}
+    {% for pack in source_packs %}
     <form method="post" action="/sources/fetch" class="row-actions">
       <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-      <input type="hidden" name="pack" value="{{ default_pack }}">
-      <button type="submit">Check and download updates</button>
+      <input type="hidden" name="pack" value="{{ pack }}">
+      <button type="submit">Check and download updates &middot; {{ pack }}</button>
     </form>
     <form method="post" action="/sources/apply" class="row-actions">
       <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-      <input type="hidden" name="pack" value="{{ default_pack }}">
-      <button type="submit">Apply downloaded</button>
+      <input type="hidden" name="pack" value="{{ pack }}">
+      <button type="submit">Apply downloaded &middot; {{ pack }}</button>
     </form>
-    {% endif %}
+    {% endfor %}
 
     <script>
     (function () {
