@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ODF Validator</title>
+  <meta name="description" content="Check an Olympic Data Feed message against a ruleset.">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="rig">
+    <div class="rig-inner">
+      <a class="wordmark" href="/"><b>ODF</b><span>Validator</span></a>
+      <div class="rig-field">
+        <label class="field-label" for="pack">Ruleset</label>
+        <select id="pack"></select>
+      </div>
+      <nav class="rig-nav" aria-label="Sections">
+        <a href="/rulesets">Rulesets</a>
+        <a href="/drafts">Drafts</a>
+      </nav>
+    </div>
+    <p class="notice" id="pack-report" hidden></p>
+    <p class="notice notice-quiet" id="pack-info" hidden></p>
+  </header>
+
+  <main class="page">
+    <!-- Signature element: the verdict, read out as proportional signal
+         segments. Each key is a real checkbox, so it filters the findings
+         below and re-proportions the rail. -->
+    <section class="tally" aria-labelledby="tally-h">
+      <h2 class="sr-only" id="tally-h">Result</h2>
+      <div class="tally-channel">
+        <div class="tally-bar" id="tally-bar"></div>
+        <p class="tally-idle" id="tally-idle">Nothing validated yet</p>
+      </div>
+
+      <fieldset class="tally-keys">
+        <legend class="sr-only">Show these severities</legend>
+        <label class="key key-error">
+          <input type="checkbox" class="sevf" value="error" checked>
+          <span class="key-body">
+            <span class="key-count" id="count-error">&mdash;</span>
+            <span class="key-name">Errors</span>
+          </span>
+        </label>
+        <label class="key key-warning">
+          <input type="checkbox" class="sevf" value="warning" checked>
+          <span class="key-body">
+            <span class="key-count" id="count-warning">&mdash;</span>
+            <span class="key-name">Warnings</span>
+          </span>
+        </label>
+        <label class="key key-info">
+          <input type="checkbox" class="sevf" value="info" checked>
+          <span class="key-body">
+            <span class="key-count" id="count-info">&mdash;</span>
+            <span class="key-name">Info</span>
+          </span>
+        </label>
+        <p class="tally-scope" id="tally-scope"></p>
+      </fieldset>
+    </section>
+
+    <section class="surface" aria-label="Message to check">
+      <fieldset class="modes">
+        <legend class="sr-only">Where the message comes from</legend>
+        <label class="mode">
+          <input type="radio" name="mode" class="modef" value="paste" checked>
+          <span class="mode-body">Paste</span>
+        </label>
+        <label class="mode">
+          <input type="radio" name="mode" class="modef" value="file">
+          <span class="mode-body">File</span>
+        </label>
+        <label class="mode">
+          <input type="radio" name="mode" class="modef" value="batch">
+          <span class="mode-body">Batch</span>
+        </label>
+      </fieldset>
+
+      <div class="pane" id="pane-paste">
+        <div class="editor">
+          <pre class="gutter" id="gutter" aria-hidden="true">1</pre>
+          <label class="sr-only" for="xml">ODF message</label>
+          <textarea id="xml" spellcheck="false" autocomplete="off"
+                    placeholder="&lt;OdfBody CompetitionCode=&quot;…&quot; DocumentType=&quot;DT_RESULT&quot; …&gt;"></textarea>
+        </div>
+      </div>
+
+      <div class="pane" id="pane-file" hidden>
+        <div class="drop">
+          <p>Check one <code>.xml</code> message.</p>
+          <label class="sr-only" for="file">ODF message file</label>
+          <input type="file" id="file" accept=".xml">
+        </div>
+      </div>
+
+      <div class="pane" id="pane-batch" hidden>
+        <div class="drop">
+          <p>Check many messages at once. Pick several <code>.xml</code> files or one <code>.zip</code>.<br>
+             Cross-message rules run across the whole batch.</p>
+          <label class="sr-only" for="batch">ODF message files or archive</label>
+          <input type="file" id="batch" multiple accept=".xml,.zip">
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="validate" class="btn btn-run">Validate</button>
+        <button id="export" class="btn">Export JSON</button>
+        <p class="hint">Export contains only the severities shown above.</p>
+      </div>
+    </section>
+
+    <section class="ledger" aria-labelledby="findings-h">
+      <h2 class="eyebrow" id="findings-h">Findings</h2>
+      <table id="batch-summary"></table>
+      <ul id="findings"></ul>
+      <p class="empty" id="empty">Paste an ODF message and validate it. Findings land here.</p>
+    </section>
+  </main>
+
+  <script src="/static/filter.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+- id: CRD_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - CRD
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_CRD_Data_Dictionary.pdf line 308: Version number (ascending) associated
+    to the message content.'
+  status: active
+- id: CRD_STATUS_CODE
+  applies_to:
+    disciplines:
+    - CRD
+  primitive: code_membership
+  target: .//*[@Status]
+  attribute: Status
+  params:
+    codeset: PARTICIPANT_STATUS
+    exclude_tags: [Protest]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_CRD_Data_Dictionary.pdf line 433: Participant''s accreditation status this
+    attribute is Mandatory in'
+  status: active
+- id: CRD_ORGANISATION_CODE
+  applies_to:
+    disciplines:
+    - CRD
+  primitive: code_membership
+  target: .//*[@Organisation]
+  attribute: Organisation
+  params:
+    codeset: ORGANISATION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_CRD_Data_Dictionary.pdf line 463: Organisation ID'
+  status: active
+- id: CRD_COUNTRYOFBIRTH_CODE
+  applies_to:
+    disciplines:
+    - CRD
+  primitive: code_membership
+  target: .//*[@CountryofBirth]
+  attribute: CountryofBirth
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_CRD_Data_Dictionary.pdf line 471: Country ID of Birth'
+  status: active
+- id: CRD_COUNTRYOFRESIDENCE_CODE
+  applies_to:
+    disciplines:
+    - CRD
+  primitive: code_membership
+  target: .//*[@CountryofResidence]
+  attribute: CountryofResidence
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_CRD_Data_Dictionary.pdf line 480: Country ID of Residence'
+  status: active
+- id: CRD_NATIONALITY_CODE
+  applies_to:
+    disciplines:
+    - CRD
+  primitive: code_membership
+  target: .//*[@Nationality]
+  attribute: Nationality
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_CRD_Data_Dictionary.pdf line 482: Participant''s nationality.'
+  status: active
+- id: CRD_MAINFUNCTIONID_CODE
+  applies_to:
+    disciplines:
+    - CRD
+  primitive: code_membership
+  target: .//*[@MainFunctionId]
+  attribute: MainFunctionId
+  params:
+    codeset: DISCIPLINE_FUNCTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_CRD_Data_Dictionary.pdf line 486: Main function'
+  status: active
+- id: CRD_TEAMTYPE_CODE
+  applies_to:
+    disciplines:
+    - CRD
+  primitive: code_membership
+  target: .//*[@TeamType]
+  attribute: TeamType
+  params:
+    codeset: SC@TeamType@GEN
+  severity: warning
+  scope: message
+  source_ref: 'ODF_CRD_Data_Dictionary.pdf line 620 (line reference predates a converter change):
+    "TeamType | M | CC@DISCIPLINE_GENDER Gender | Send the team type. ... Use ORG" -- the
+    DD is internally inconsistent: it names the DISCIPLINE_GENDER codeset (34-char RSCs)
+    but its own instruction is "Use ORG", which is not a gender RSC. SC@TeamType@CRD does
+    not exist in the Common Codes SPORT_CODES sheet; SC@TeamType@GEN does, and contains
+    ORG (plus CPLM/CPLP/CPLW/CUSTOM), matching the DD''s own example. Rule deliberately
+    departs from the DD''s stated codeset to follow its worked example instead -- same
+    class of documented DD typo as SHEDULESTATUS. Pattern
+    matches the correct sibling ARC_TEAMTYPE_VALID (SC@TeamType@ARC) (rule-content-fixes
+    audit).'
+  status: active
+- id: CRD_VENUE_CODE
+  applies_to:
+    disciplines:
+    - CRD
+  primitive: code_membership
+  target: .//*[@Venue]
+  attribute: Venue
+  params:
+    codeset: VENUE
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_CRD_Data_Dictionary.pdf line 1196: Venue Code'
+  status: active
+- id: CRD_LOCATION_CODE
+  applies_to:
+    disciplines:
+    - CRD
+  primitive: code_membership
+  target: .//*[@Location]
+  attribute: Location
+  params:
+    codeset: LOCATION
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_CRD_Data_Dictionary.pdf line 1200: Location code'
+  status: active
+- id: CRD_UNIT_CODE
+  applies_to:
+    disciplines:
+    - CRD
+  primitive: code_membership
+  target: .//*[@Unit]
+  attribute: Unit
+  params:
+    codeset: EVENT_UNIT
+    exclude_tags: [Precipitation, Pressure, Temperature, Wind]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_CRD_Data_Dictionary.pdf line 2257: Full RSC of the Unit'
+  status: active
+- id: CRD_WIND_DIRECTION_CODE
+  applies_to:
+    disciplines:
+    - CRD
+  primitive: code_membership
+  target: .//*[@Wind_Direction]
+  attribute: Wind_Direction
+  params:
+    codeset: WIND_DIRECTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_CRD_Data_Dictionary.pdf line 2488: Wind direction [codeset corrected from
+    doc spelling ''WINDDIRECTION'']'
+  status: active

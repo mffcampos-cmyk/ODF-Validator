@@ -1,0 +1,49 @@
+- id: ARC_TBD_NO_COMPOSITION
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: conditional_presence
+  target: .//Competitor
+  attribute: null
+  params:
+    when_attr: Code
+    when_equals: TBD
+    forbid_child: Composition
+  severity: error
+  scope: message
+  source_ref: 'GEN 1325 / ARC DD 722: ''In case of the Competitor @Code=TBD the Competitor element should
+    not be sent'' refers to Composition/Athlete; Code=''TBD'' itself is legal (GEN 1281/1408, ARC DD 704).
+    Replaces ARC_TBD_COMPETITOR which flagged legal TBD entries.'
+  status: active
+- id: ARC_DOCSUBCODE_ABSENT
+  applies_to:
+    disciplines:
+    - ARC
+    doc_types:
+    - DT_SCHEDULE
+    - DT_SCHEDULE_UPDATE
+    - DT_PARTIC
+    - DT_PARTIC_UPDATE
+    - DT_ENTRIES
+    - DT_RESULT
+    - DT_BRACKETS
+    - DT_RANKING
+  primitive: conditional_presence
+  target: .
+  attribute: null
+  params:
+    when_attr: DocumentCode
+    when_equals: '*'
+    forbid: DocumentSubcode
+  severity: warning
+  scope: message
+  source_ref: 'ARC DD lines 304/565/813/986/1546/1810: DocumentSubcode N/A for DT_SCHEDULE(_UPDATE), DT_PARTIC(_UPDATE),
+    DT_ENTRIES, DT_RESULT, DT_BRACKETS and DT_RANKING -- the only ARC message types this rule covers.
+    DT_WEATHER is deliberately excluded: ARC DD line 2030/2031 mandates DocumentSubcode there (CC@LOCATION
+    Id, location code at venue level), so the original "N/A for every ARC message type" premise was false
+    and flagged conforming DT_WEATHER messages (corrected during a rule-content review). The ARC DD contradicts
+    itself: six rows mark DocumentSubcode N/A while line 2030 mandates it for DT_WEATHER, and message
+    type 2.3.3 (DT_PARTIC_TEAMS) has no header table at all, so its stance is unknown. Downgraded error
+    -> warning (owner decision): a forbid-rule at error severity is the most expensive kind
+    of false positive.'
+  status: active

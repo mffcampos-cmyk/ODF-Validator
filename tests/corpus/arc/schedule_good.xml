@@ -1,0 +1,5 @@
+<OdfBody CompetitionCode="SYOG2026" DocumentCode="ARC" DocumentType="DT_SCHEDULE"
+ Version="1" Date="d" Time="t" LogicalDate="d" FeedFlag="P" Source="S">
+ <Competition><Discipline Code="ARC-------------------------------"/>
+   <Session><Unit PhaseType="1"/></Session>
+ </Competition></OdfBody>

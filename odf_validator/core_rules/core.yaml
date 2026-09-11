@@ -1,0 +1,240 @@
+# Immutable core rules. Bundled with the engine, applied to every pack,
+# executed before pack rules. Ids are reserved: packs may not define CORE_*.
+- id: CORE_ENVELOPE_REQUIRED
+  applies_to: {}
+  primitive: required_attributes
+  target: "."
+  attribute: null
+  params:
+    attrs: [CompetitionCode, DocumentCode, DocumentType, Version,
+            FeedFlag, Date, Time, LogicalDate, Source]
+  severity: error
+  scope: message
+  source_ref: "ODF GEN header tables + odf2.xsd: required message envelope attributes (FeedFlag/Date/Time/LogicalDate/Source added after a conformance review)"
+
+- id: CORE_VERSION_POSINT
+  applies_to: {}
+  primitive: value_format
+  target: "."
+  attribute: Version
+  params:
+    regex: "^[1-9][0-9]*$"
+  severity: error
+  scope: message
+  source_ref: "ODF GEN: Version is an ascending positive integer (>= 1; 0 rejected after a conformance review)"
+
+- id: CORE_DOCSUBCODE_NOT_IN_RANKING
+  applies_to: {doc_types: [DT_RANKING]}
+  primitive: conditional_presence
+  target: "."
+  attribute: null
+  params:
+    when_attr: DocumentType
+    when_equals: DT_RANKING
+    forbid: DocumentSubcode
+  severity: error
+  scope: message
+  source_ref: "ODF GEN: DocumentSubcode not applicable for DT_RANKING"
+
+- id: CORE_COMPETITION_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: "."
+  attribute: CompetitionCode
+  params:
+    codeset: COMPETITION_CODE
+  severity: error
+  scope: message
+  source_ref: "Common Codes: COMPETITION_CODE"
+
+- id: CORE_DISCIPLINE_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: "./Competition/Discipline"
+  attribute: Code
+  params:
+    codeset: DISCIPLINE
+  severity: error
+  scope: message
+  source_ref: "Common Codes: DISCIPLINE"
+
+- id: CORE_ITEMNUM_INT
+  applies_to: {}
+  primitive: value_format
+  target: ".//*[@ItemNum]"
+  attribute: ItemNum
+  params:
+    regex: "^[0-9]+$"
+  severity: error
+  scope: message
+  source_ref: "ODF GEN: ItemNum must be a positive integer"
+
+- id: CORE_IFRANK_NODASH
+  applies_to: {}
+  primitive: value_format
+  target: ".//Result"
+  attribute: IFRANK
+  params:
+    forbid_substring: "-"
+  severity: error
+  scope: message
+  source_ref: "Observed feed defect: IFRANK should never carry a dash -- with no value the attribute should be omitted; for IFPOINTS a dash is valid (not stated in ODF GEN; attribution corrected during a later review)"
+
+# WARNING, not error: FND 3.1 *requires* the empty form for a valueless
+# mandatory attribute -- "Mandatory attributes must always be sent. If they do
+# not have any value then they must be sent empty (Attribute="")" -- and lets a
+# producer send an empty optional attribute either way, "without any
+# restriction". Only 6.7 prefers omission, and only as a SHOULD ("providers
+# should not send the attribute when the attribute is empty"). A conforming
+# producer must not fail validation over this (conformance review C4). A required
+# attribute that is present but empty is still an error -- see
+# CORE_ENVELOPE_REQUIRED, which checks the nine mandatory header attributes.
+- id: CORE_NO_EMPTY_ATTRS
+  applies_to: {}
+  primitive: no_empty_attributes
+  target: ".//*"
+  attribute: null
+  params:
+    exempt: [TeamType]
+  severity: warning
+  scope: message
+  source_ref: "Foundation Principles 6.7 (omission is a SHOULD; 3.1 permits the empty form); observed feed defect: empty attributes are not suppressed (DT_CUMULATIVE_RESULT, DT_PARTIC_UPDATE)"
+
+# ---- Rules derived from observed feed defects: ----
+# Defects reported against live feeds take precedence over the previous
+# rule set.
+
+# ExtendedResult is excluded: its siblings are one competitor's successive
+# split points (@Pos), not competing entries, so a repeated @Rank is not a
+# tie. SWM DD: "Cumulative rank of the competitor for this specific
+# ExtendedResult" / "Send Y where Rank at this specific ExtendResult is
+# equalled". A genuine tie there is two <Result> siblings sharing a rank at
+# the same @Pos -- a different axis this primitive does not model.
+# (a later review found 9,447 false positives in a single swimming run)
+- id: CORE_RANK_TIES_RANKEQUAL
+  applies_to: {}
+  primitive: sibling_duplicates
+  target: ".//*[@Rank]"
+  attribute: Rank
+  params:
+    mode: require_attr
+    require_attr: RankEqual
+    require_value: "Y"
+    exclude_tags: [ExtendedResult]
+  severity: error
+  scope: message
+  source_ref: "Observed feed defect: RankEqual=Y is missing when competitors are tied; ExtendedResult excluded per SWM DD line 726 sample"
+
+- id: CORE_RANKEQUAL_VALUE
+  applies_to: {}
+  primitive: value_format
+  target: ".//*[@RankEqual]"
+  attribute: RankEqual
+  params:
+    regex: "Y"
+  severity: error
+  scope: message
+  source_ref: "Observed feed defect: RankEqual should be Y or not be present; XSD rankEqualType"
+
+- id: CORE_SORTORDER_POSINT
+  applies_to: {}
+  primitive: value_domain
+  target: ".//*[@SortOrder]"
+  attribute: SortOrder
+  params:
+    integer: true
+    min: 1
+  severity: error
+  scope: message
+  source_ref: "Observed feed defect: Result SortOrder=0 sent at the beginning of the heat"
+
+# ExtendedResult is excluded for the same reason as CORE_RANK_TIES_RANKEQUAL:
+# SWM DD line 706 scopes ExtendedResult @SortOrder to a single split point,
+# so the same value recurring across a competitor's splits is expected. The
+# DD's own sample (line 726) carries SortOrder="1" on both Pos=3 and Pos=F.
+# (a later review found 9,656 false positives in a single swimming run)
+- id: CORE_SORTORDER_UNIQUE
+  applies_to: {}
+  primitive: sibling_duplicates
+  target: ".//*[@SortOrder]"
+  attribute: SortOrder
+  params:
+    mode: forbid
+    exclude_tags: [ExtendedResult]
+  severity: error
+  scope: message
+  source_ref: "Observed feed defect: SortOrder must be unique among sibling results; ExtendedResult excluded per SWM DD line 726 sample"
+
+# DocumentCode is an RSC for almost every message, but NOT for the import
+# messages. FND 3.3.2: "DocumentCode can have different values depending on the
+# nature of the message ... The other possible values include (depending on the
+# message) the ID of an athlete (for biographies), sequential numbers (for
+# background imports)". The exclusion list is deliberately an exclusion rather
+# than an enumeration of the ~64 RSC-bearing types, so a DocumentType added to
+# the schema later inherits this check by default (conformance review C1).
+- id: CORE_DOCCODE_RSC_FORMAT
+  applies_to:
+    exclude_doc_types: [DT_BIO_PAR_IMP, DT_BIO_TEA_IMP, DT_BIO_NOC_IMP,
+                        DT_BIO_HOR_IMP, DT_NEWS_IMP]
+  primitive: value_format
+  target: "."
+  attribute: DocumentCode
+  # The dot is legal: FND 10.3 "Allow characters are A ... Z, 0...9 and the
+  # special characters of dot and dash" (conformance review C2).
+  params:
+    regex: "[A-Z0-9.]{3}[A-Z0-9.-]{31}"
+  severity: error
+  scope: message
+  source_ref: "Observed feed defect: a 33-character RSC DocumentCode where 34 are required, rejected downstream; charset and doc-type scope per Foundation Principles 3.3.2 / 10.3 (conformance review C1+C2)"
+
+- id: CORE_DOCCODE_EXTERNAL_ID
+  applies_to:
+    doc_types: [DT_BIO_PAR_IMP, DT_BIO_TEA_IMP, DT_BIO_NOC_IMP, DT_BIO_HOR_IMP]
+  primitive: value_format
+  target: "."
+  attribute: DocumentCode
+  params:
+    regex: "[A-Z1-9][A-Z0-9]{0,19}"
+  severity: error
+  scope: message
+  source_ref: "ODF_GEN_R-OWG2026-GEN.md lines 16508/17457/17985/18248: biography import DocumentCode is 'S(20) with no leading zeros', prefixed A/C/O (participants), T (teams), N (organisations), H (horses)"
+
+- id: CORE_DOCCODE_IMPORT_ID
+  applies_to:
+    doc_types: [DT_NEWS_IMP]
+  primitive: value_format
+  target: "."
+  attribute: DocumentCode
+  params:
+    regex: "\\S{1,34}"
+  severity: error
+  scope: message
+  source_ref: "ODF_GEN_R-OWG2026-GEN.md line 19364: DT_NEWS_IMP DocumentCode is a free S(34) news identifier, not an RSC"
+
+# FND 10.3 filler integrity within each RSC component. Warning rather than
+# error: this check has never been run against a live feed, so it is promoted
+# to error only after a clean baseline over a real corpus (conformance review G4).
+- id: CORE_RSC_FILLER
+  applies_to:
+    exclude_doc_types: [DT_BIO_PAR_IMP, DT_BIO_TEA_IMP, DT_BIO_NOC_IMP,
+                        DT_BIO_HOR_IMP, DT_NEWS_IMP]
+  primitive: rsc_components
+  target: "."
+  attribute: DocumentCode
+  params:
+    widths: [3, 1, 8, 10, 4, 8]
+    filler: "-"
+  severity: warning
+  scope: message
+  source_ref: "Foundation Principles 10.3: 'The dash character \"-\" is used as a filler' and 'Apply right padding with the filler character in any part of the RSC when the respective code is less characters than the maximum length of this part'; component widths from 10.3.1.1-10.3.1.7"
+
+- id: CORE_NO_EMPTY_ELEMENTS
+  applies_to: {}
+  primitive: no_empty_elements
+  target: ".//*"
+  attribute: null
+  params:
+    exempt: []
+  severity: error
+  scope: message
+  source_ref: "Observed feed defect: DT_RESULT failing schema over an empty ExtendedResults node"

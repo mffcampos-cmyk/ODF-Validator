@@ -1,0 +1,14 @@
+- id: ARC_TEAMTYPE_VALID
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: code_membership
+  target: .//Team
+  attribute: TeamType
+  params:
+    codeset: SC@TeamType@ARC
+  severity: error
+  scope: message
+  source_ref: 'SC@TeamType (SPORT_CODES): ARC Team @TeamType must be a valid code
+    (ORG)'
+  status: active

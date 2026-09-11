@@ -1,0 +1,313 @@
+- id: JUD_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 352: Version number (ascending) associated
+    to the message content.'
+  status: active
+- id: JUD_VENUE_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@Venue]
+  attribute: Venue
+  params:
+    codeset: VENUE
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 518: Venue where the session takes place'
+  status: active
+- id: JUD_VENUENAME_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@VenueName]
+  attribute: VenueName
+  params:
+    codeset: VENUE
+    field: ENG_Description
+    code_attr: Venue
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 520: Venue ENG Description (not code) from
+    Common Codes [description attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: JUD_SESSIONSTATUS_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@SessionStatus]
+  attribute: SessionStatus
+  params:
+    codeset: SCHEDULESTATUS
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 522: Only use CANCELLED if applicable. All
+    other sessions are [codeset corrected from doc spelling ''SHEDULESTATUS'']'
+  status: active
+- id: JUD_SESSIONTYPE_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@SessionType]
+  attribute: SessionType
+  params:
+    codeset: SESSION_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 525: Session type of the Session.'
+  status: active
+- id: JUD_LANGUAGE_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@Language]
+  attribute: Language
+  params:
+    codeset: LANGUAGE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 536: Language of the Session Description'
+  status: active
+- id: JUD_PHASETYPE_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@PhaseType]
+  attribute: PhaseType
+  params:
+    codeset: PHASE_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 552: Phase type for the unit'
+  status: active
+- id: JUD_SCHEDULESTATUS_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@ScheduleStatus]
+  attribute: ScheduleStatus
+  params:
+    codeset: SCHEDULESTATUS
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 563: Unit Status'
+  status: active
+- id: JUD_LOCATION_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@Location]
+  attribute: Location
+  params:
+    codeset: LOCATION
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 626: Location where the unit takes place.'
+  status: active
+- id: JUD_LOCATIONNAME_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@LocationName]
+  attribute: LocationName
+  params:
+    codeset: LOCATION
+    field: ENG_Description
+    code_attr: Location
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 670: Location ENG Description (not code) from
+    Common Codes [description attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: JUD_UNIT_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@Unit]
+  attribute: Unit
+  params:
+    codeset: EVENT_UNIT
+    exclude_tags: [Precipitation, Pressure, Temperature, Wind]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 683: The full RSC of the unit where this competitor
+    came from. This'
+  status: active
+- id: JUD_ORGANISATION_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@Organisation]
+  attribute: Organisation
+  params:
+    codeset: ORGANISATION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 709: Should be sent when known'
+  status: active
+- id: JUD_STATUS_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@Status]
+  attribute: Status
+  params:
+    codeset: PARTICIPANT_STATUS
+    exclude_tags: [Protest]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 909: Participant''s sport entry status.'
+  status: active
+- id: JUD_COUNTRYOFBIRTH_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@CountryofBirth]
+  attribute: CountryofBirth
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 944: Country ID of Birth'
+  status: active
+- id: JUD_COUNTRYOFRESIDENCE_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@CountryofResidence]
+  attribute: CountryofResidence
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 948: Country ID of Residence'
+  status: active
+- id: JUD_NATIONALITY_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@Nationality]
+  attribute: Nationality
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 950: Participant''s nationality.'
+  status: active
+- id: JUD_MAINFUNCTIONID_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@MainFunctionId]
+  attribute: MainFunctionId
+  params:
+    codeset: DISCIPLINE_FUNCTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 955: Main function'
+  status: active
+- id: JUD_DISCIPLINENAME_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@DisciplineName]
+  attribute: DisciplineName
+  params:
+    codeset: DISCIPLINE
+    field: ENG_Description
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 1454: Discipline ENG Description (not code)
+    from Common Codes [description attribute, validated as ENG_Description, not code
+    membership]'
+  status: active
+- id: JUD_EVENTNAME_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@EventName]
+  attribute: EventName
+  params:
+    codeset: EVENT
+    field: ENG_Description
+    code_attr: Event
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 1456: Event ENG Description (not code) from
+    Common Codes. [description attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: JUD_SUBEVENTNAME_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@SubEventName]
+  attribute: SubEventName
+  params:
+    codeset: EVENT_UNIT
+    field: ENG_shortDescription
+    code_attr: Unit
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 1460: EventUnit ENG Description (not code)
+    from Common Codes [the machine-readable DD column says CC@EVENT_UNIT ENG ShortDescription while the prose beside it says ENG Description; the column governs. All 24 discipline DDs specify ShortDescription, so all 13 discipline rules were corrected together.]'
+  status: active
+- id: JUD_FUNCTION_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@Function]
+  attribute: Function
+  params:
+    codeset: DISCIPLINE_FUNCTION
+    exclude_tags: [Presenter]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 1483: Official''s function (example: referee,
+    etc.).'
+  status: active
+- id: JUD_LASTUNIT_CODE
+  applies_to:
+    disciplines:
+    - JUD
+  primitive: code_membership
+  target: .//*[@LastUnit]
+  attribute: LastUnit
+  params:
+    codeset: EVENT_UNIT
+  severity: warning
+  scope: message
+  source_ref: 'ODF_JUD_Data_Dictionary.pdf line 1860: Send the full RSC of the most recently
+    unit made official for the'
+  status: active

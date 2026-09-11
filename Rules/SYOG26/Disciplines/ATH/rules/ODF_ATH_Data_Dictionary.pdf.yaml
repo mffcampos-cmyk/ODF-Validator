@@ -1,0 +1,257 @@
+- id: ATH_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - ATH
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_ATH_Data_Dictionary.pdf line 337: Version number (ascending) associated to the message
+    content.'
+  status: active
+- id: ATH_STATUS_CODE
+  applies_to:
+    disciplines:
+    - ATH
+  primitive: code_membership
+  target: .//*[@Status]
+  attribute: Status
+  params:
+    codeset: PARTICIPANT_STATUS
+    exclude_tags:
+    - Protest
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ATH_Data_Dictionary.pdf line 444: Participant''s accreditation status this attribute
+    is Mandatory in'
+  status: active
+- id: ATH_ORGANISATION_CODE
+  applies_to:
+    disciplines:
+    - ATH
+  primitive: code_membership
+  target: .//*[@Organisation]
+  attribute: Organisation
+  params:
+    codeset: ORGANISATION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ATH_Data_Dictionary.pdf line 482: Organisation ID'
+  status: active
+- id: ATH_COUNTRYOFBIRTH_CODE
+  applies_to:
+    disciplines:
+    - ATH
+  primitive: code_membership
+  target: .//*[@CountryofBirth]
+  attribute: CountryofBirth
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ATH_Data_Dictionary.pdf line 494: Country ID of Birth'
+  status: active
+- id: ATH_COUNTRYOFRESIDENCE_CODE
+  applies_to:
+    disciplines:
+    - ATH
+  primitive: code_membership
+  target: .//*[@CountryofResidence]
+  attribute: CountryofResidence
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ATH_Data_Dictionary.pdf line 498: Country ID of Residence'
+  status: active
+- id: ATH_NATIONALITY_CODE
+  applies_to:
+    disciplines:
+    - ATH
+  primitive: code_membership
+  target: .//*[@Nationality]
+  attribute: Nationality
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ATH_Data_Dictionary.pdf line 500: Participant''s nationality.'
+  status: active
+- id: ATH_MAINFUNCTIONID_CODE
+  applies_to:
+    disciplines:
+    - ATH
+  primitive: code_membership
+  target: .//*[@MainFunctionId]
+  attribute: MainFunctionId
+  params:
+    codeset: DISCIPLINE_FUNCTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ATH_Data_Dictionary.pdf line 504: Main function'
+  status: active
+- id: ATH_VENUE_CODE
+  applies_to:
+    disciplines:
+    - ATH
+  primitive: code_membership
+  target: .//*[@Venue]
+  attribute: Venue
+  params:
+    codeset: VENUE
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ATH_Data_Dictionary.pdf line 1435: Venue Code'
+  status: active
+- id: ATH_LOCATION_CODE
+  applies_to:
+    disciplines:
+    - ATH
+  primitive: code_membership
+  target: .//*[@Location]
+  attribute: Location
+  params:
+    codeset: LOCATION
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ATH_Data_Dictionary.pdf line 1439: Location code'
+  status: active
+- id: ATH_POS_POSINT
+  applies_to:
+    disciplines:
+    - ATH
+  primitive: value_format
+  target: .//*[@Pos]
+  attribute: Pos
+  params:
+    regex: ^[0-9]+$
+    context_attr: Code
+    context_values:
+    - INTERMEDIATE
+    - ORDER_FINAL
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ATH_Data_Dictionary.pdf line 1722: If more than one record send 1, 2.. PROVISIONAL,
+    narrowed in a rules review: the evidence for how broadly @Pos is numeric is disputed and cannot
+    be settled without the real message corpus, so this error-severity rule is deliberately under-scoped
+    rather than over-scoped. Restricted via context_attr/context_values to the ExtendedResult/Extension
+    @Code values ODF_ATH_Data_Dictionary.md documents as numeric for @Pos: INTERMEDIATE ("Positive Integer",
+    line 899) and ORDER_FINAL ("#0", "Send 3 or 5 for the order after 3rd or 5th attempt", line 1002).
+    Every other @Code sharing the tag -- including FALSE_START, documented with @Pos "G, 2" at line 885
+    -- is intentionally left unchecked by this rule; do not read this list as a settled/complete enumeration.
+    Image/@Pos is covered separately by ATH_POS_POSINT_IMAGE. The basis is disputed: the ATH DD''s numeric
+    statement is scoped to particular Extension @Code values while the XSD types @Pos as xs:string in
+    25 of 27 declarations. Downgraded error -> warning (owner decision): where the documentation
+    contradicts itself, report but do not fail.'
+  status: active
+- id: ATH_POS_POSINT_IMAGE
+  applies_to:
+    disciplines:
+    - ATH
+  primitive: value_format
+  target: .//Image[@Pos]
+  attribute: Pos
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_ATH_Data_Dictionary.md line 2064: Element Competition /Image (1,N), Pos M "1" "Always
+    send 1." -- documents Image/@Pos as a positive integer (picture number), separately from the ExtendedResult/Extension
+    @Code cases ATH_POS_POSINT now covers narrowly. Split out in a rules review when ATH_POS_POSINT
+    was narrowed via context_attr to Code-named contexts, which would otherwise have silently dropped
+    Image coverage since <Image> carries no @Code sibling to match against.'
+  status: active
+- id: ATH_RECORDTYPE_CODE
+  applies_to:
+    disciplines:
+    - ATH
+  primitive: code_membership
+  target: .//*[@RecordType]
+  attribute: RecordType
+  params:
+    codeset: RECORD_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ATH_Data_Dictionary.pdf line 1935: Code which specifies the level at which the record
+    is broken.'
+  status: active
+- id: ATH_LASTUNIT_CODE
+  applies_to:
+    disciplines:
+    - ATH
+  primitive: code_membership
+  target: .//*[@LastUnit]
+  attribute: LastUnit
+  params:
+    codeset: EVENT_UNIT
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ATH_Data_Dictionary.pdf line 2857: Full RSC of the first unit (if not started) or most
+    recent unit infor-'
+  status: active
+- id: ATH_UNIT_CODE
+  applies_to:
+    disciplines:
+    - ATH
+  primitive: code_membership
+  target: .//*[@Unit]
+  attribute: Unit
+  params:
+    codeset: EVENT_UNIT
+    exclude_tags:
+    - Precipitation
+    - Pressure
+    - Temperature
+    - Wind
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ATH_Data_Dictionary.pdf line 3377: Full RSC of the phase'
+  status: active
+- id: ATH_DOCUMENTSUBCODE_POSINT
+  applies_to:
+    doc_types:
+    - DT_IMAGE
+    disciplines:
+    - ATH
+  primitive: value_format
+  target: .
+  attribute: DocumentSubcode
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_ATH_Data_Dictionary.pdf line 3563: Picture number'
+  status: active
+- id: ATH_COUNTRY_CODE
+  applies_to:
+    disciplines:
+    - ATH
+  primitive: code_membership
+  target: .//*[@Country]
+  attribute: Country
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ATH_Data_Dictionary.pdf line 3906: Send always unless the record is not established.'
+  status: active
+- id: ATH_WIND_DIRECTION_CODE
+  applies_to:
+    disciplines:
+    - ATH
+  primitive: code_membership
+  target: .//*[@Wind_Direction]
+  attribute: Wind_Direction
+  params:
+    codeset: WIND_DIRECTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ATH_Data_Dictionary.pdf line 4538: Wind direction'
+  status: active

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rulesets — ODF Validator</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="rig">
+    <div class="rig-inner">
+      <a class="wordmark" href="/"><b>ODF</b><i></i><span>Validator</span></a>
+      <nav class="rig-nav end" aria-label="Sections">
+        <a href="/">Validate</a>
+        <a href="/drafts">Drafts</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <h1 class="eyebrow page-title">Rulesets</h1>
+
+    {% if not rulesets %}
+      <p class="empty">No rulesets loaded. Add a ruleset folder under <code>Rules/</code>, then restart the validator.</p>
+    {% endif %}
+
+    <ul class="stack">
+      {% for r in rulesets %}
+      <li>
+        <div class="item-head">
+          <span class="item-name">{{ r.name }}</span>
+          <span class="item-meta">
+            {% if r.version %}v{{ r.version }} &middot; {% endif %}{{ r.rule_count }} active rule{{ '' if r.rule_count == 1 else 's' }}{% if r.error_count %} &middot; <span class="bad">{{ r.error_count }} failed to load</span>{% endif %}{% if r.cache_warning_count %} &middot; <span class="bad">{{ r.cache_warning_count }} obligation cache warning{{ '' if r.cache_warning_count == 1 else 's' }}</span>{% endif %}
+          </span>
+        </div>
+        {% if r.disciplines %}
+        <ul class="chips">
+          {% for d in r.disciplines %}<li>{{ d }}</li>{% endfor %}
+        </ul>
+        {% else %}
+        <p class="item-meta item-note">No disciplines in this ruleset.</p>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    <h2 class="eyebrow">Source documents</h2>
+    <p class="item-meta item-note">
+      Checked against the ODF publication page when the validator starts.
+      Downloads are staged and go live only when you apply them.
+    </p>
+
+    <ul class="stack" id="source-rows">
+      <li><p class="item-meta item-note">Checking&hellip;</p></li>
+    </ul>
+
+    {% if default_pack %}
+    <form method="post" action="/sources/fetch" class="row-actions">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="pack" value="{{ default_pack }}">
+      <button type="submit">Check and download updates</button>
+    </form>
+    <form method="post" action="/sources/apply" class="row-actions">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="pack" value="{{ default_pack }}">
+      <button type="submit">Apply downloaded</button>
+    </form>
+    {% endif %}
+
+    <script>
+    (function () {
+      var LABELS = {
+        "update": "newer upstream",
+        "new": "not held locally",
+        "unverified": "held, not yet verified",
+        "missing-upstream": "no longer published",
+        "unknown": "announced, no file published"
+      };
+      var host = document.getElementById("source-rows");
+
+      function el(tag, className, text) {
+        var node = document.createElement(tag);
+        if (className) { node.className = className; }
+        if (text !== undefined) { node.textContent = text; }
+        return node;
+      }
+
+      function row(data) {
+        var li = el("li");
+        var head = el("div", "item-head");
+        head.appendChild(el("span", "item-name", data.pack));
+
+        var interesting = (data.entries || []).filter(function (e) {
+          return e.state !== "current";
+        });
+
+        if (!data.configured) {
+          head.appendChild(el("span", "item-meta",
+                              "no publication page configured"));
+        } else if (data.error) {
+          // Show the message, not just that there was one. A bare
+          // "could not check" is what this said while the site was
+          // rejecting every request, and it gave no way to find out why.
+          head.appendChild(el("span", "item-meta bad", data.error));
+        } else if (!interesting.length) {
+          head.appendChild(el("span", "item-meta", "everything up to date"));
+        } else {
+          head.appendChild(el("span", "item-meta",
+                              interesting.length + " to review"));
+        }
+        li.appendChild(head);
+
+        if (interesting.length) {
+          var list = el("ul", "chips");
+          interesting.forEach(function (e) {
+            var label = LABELS[e.state] || e.state;
+            var text = e.title + " · " + label
+              + (e.published ? " · " + e.published : "");
+            list.appendChild(el("li", null, text));
+          });
+          li.appendChild(list);
+        }
+        return li;
+      }
+
+      function replace(nodes) {
+        host.textContent = "";
+        nodes.forEach(function (n) { host.appendChild(n); });
+      }
+
+      fetch("/sources").then(function (r) { return r.json(); })
+        .then(function (rows) {
+          replace(rows.length
+                  ? rows.map(row)
+                  : [el("li", null, "No rulesets.")]);
+        })
+        .catch(function () {
+          replace([el("li", null, "Source status unavailable.")]);
+        });
+    })();
+    </script>
+  </main>
+</body>
+</html>

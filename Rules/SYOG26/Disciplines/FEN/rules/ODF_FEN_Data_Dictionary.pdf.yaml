@@ -1,0 +1,233 @@
+- id: FEN_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - FEN
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_FEN_Data_Dictionary.pdf line 347: Version number (ascending) associated
+    to the message content.'
+  status: active
+- id: FEN_VENUE_CODE
+  applies_to:
+    disciplines:
+    - FEN
+  primitive: code_membership
+  target: .//*[@Venue]
+  attribute: Venue
+  params:
+    codeset: VENUE
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_FEN_Data_Dictionary.pdf line 507: Venue where the session takes place'
+  status: active
+- id: FEN_SESSIONSTATUS_CODE
+  applies_to:
+    disciplines:
+    - FEN
+  primitive: code_membership
+  target: .//*[@SessionStatus]
+  attribute: SessionStatus
+  params:
+    codeset: SCHEDULESTATUS
+  severity: warning
+  scope: message
+  source_ref: 'ODF_FEN_Data_Dictionary.pdf line 511: Only use CANCELLED if applicable. All
+    other sessions are [codeset corrected from doc spelling ''SHEDULESTATUS'']'
+  status: active
+- id: FEN_SESSIONTYPE_CODE
+  applies_to:
+    disciplines:
+    - FEN
+  primitive: code_membership
+  target: .//*[@SessionType]
+  attribute: SessionType
+  params:
+    codeset: SESSION_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_FEN_Data_Dictionary.pdf line 514: Session type of the Session.'
+  status: active
+- id: FEN_LANGUAGE_CODE
+  applies_to:
+    disciplines:
+    - FEN
+  primitive: code_membership
+  target: .//*[@Language]
+  attribute: Language
+  params:
+    codeset: LANGUAGE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_FEN_Data_Dictionary.pdf line 525: Language of the Session Description'
+  status: active
+- id: FEN_PHASETYPE_CODE
+  applies_to:
+    disciplines:
+    - FEN
+  primitive: code_membership
+  target: .//*[@PhaseType]
+  attribute: PhaseType
+  params:
+    codeset: PHASE_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_FEN_Data_Dictionary.pdf line 541: Phase type for the unit'
+  status: active
+- id: FEN_SCHEDULESTATUS_CODE
+  applies_to:
+    disciplines:
+    - FEN
+  primitive: code_membership
+  target: .//*[@ScheduleStatus]
+  attribute: ScheduleStatus
+  params:
+    codeset: SCHEDULESTATUS
+  severity: warning
+  scope: message
+  source_ref: 'ODF_FEN_Data_Dictionary.pdf line 547: Unit Status'
+  status: active
+- id: FEN_LOCATION_CODE
+  applies_to:
+    disciplines:
+    - FEN
+  primitive: code_membership
+  target: .//*[@Location]
+  attribute: Location
+  params:
+    codeset: LOCATION
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_FEN_Data_Dictionary.pdf line 616: Location where the unit takes place.'
+  status: active
+- id: FEN_UNIT_CODE
+  applies_to:
+    disciplines:
+    - FEN
+  primitive: code_membership
+  target: .//*[@Unit]
+  attribute: Unit
+  params:
+    codeset: EVENT_UNIT
+    exclude_tags: [Precipitation, Pressure, Temperature, Wind]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_FEN_Data_Dictionary.pdf line 674: The full RSC of the unit where this competitor
+    came from. This'
+  status: active
+- id: FEN_ORGANISATION_CODE
+  applies_to:
+    disciplines:
+    - FEN
+  primitive: code_membership
+  target: .//*[@Organisation]
+  attribute: Organisation
+  params:
+    codeset: ORGANISATION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_FEN_Data_Dictionary.pdf line 698: Should be sent when known'
+  status: active
+- id: FEN_STATUS_CODE
+  applies_to:
+    disciplines:
+    - FEN
+  primitive: code_membership
+  target: .//*[@Status]
+  attribute: Status
+  params:
+    codeset: PARTICIPANT_STATUS
+    exclude_tags: [Protest]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_FEN_Data_Dictionary.pdf line 901: Participant''s sport entry status.'
+  status: active
+- id: FEN_COUNTRYOFBIRTH_CODE
+  applies_to:
+    disciplines:
+    - FEN
+  primitive: code_membership
+  target: .//*[@CountryofBirth]
+  attribute: CountryofBirth
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_FEN_Data_Dictionary.pdf line 936: Country ID of Birth'
+  status: active
+- id: FEN_COUNTRYOFRESIDENCE_CODE
+  applies_to:
+    disciplines:
+    - FEN
+  primitive: code_membership
+  target: .//*[@CountryofResidence]
+  attribute: CountryofResidence
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_FEN_Data_Dictionary.pdf line 940: Country ID of Residence'
+  status: active
+- id: FEN_NATIONALITY_CODE
+  applies_to:
+    disciplines:
+    - FEN
+  primitive: code_membership
+  target: .//*[@Nationality]
+  attribute: Nationality
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_FEN_Data_Dictionary.pdf line 942: Participant''s nationality.'
+  status: active
+- id: FEN_MAINFUNCTIONID_CODE
+  applies_to:
+    disciplines:
+    - FEN
+  primitive: code_membership
+  target: .//*[@MainFunctionId]
+  attribute: MainFunctionId
+  params:
+    codeset: DISCIPLINE_FUNCTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_FEN_Data_Dictionary.pdf line 947: Main function'
+  status: active
+- id: FEN_FUNCTION_CODE
+  applies_to:
+    disciplines:
+    - FEN
+  primitive: code_membership
+  target: .//*[@Function]
+  attribute: Function
+  params:
+    codeset: DISCIPLINE_FUNCTION
+    exclude_tags: [Presenter]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_FEN_Data_Dictionary.pdf line 1546: Official''s function (example: referee,
+    etc.).'
+  status: active
+- id: FEN_LASTUNIT_CODE
+  applies_to:
+    disciplines:
+    - FEN
+  primitive: code_membership
+  target: .//*[@LastUnit]
+  attribute: LastUnit
+  params:
+    codeset: EVENT_UNIT
+  severity: warning
+  scope: message
+  source_ref: 'ODF_FEN_Data_Dictionary.pdf line 2122: Send the full RSC of the most recently
+    unit made official for the'
+  status: active

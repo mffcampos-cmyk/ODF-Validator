@@ -1,0 +1,276 @@
+- id: RCB_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - RCB
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_RCB_Data_Dictionary.pdf line 316: Version number (ascending) associated
+    to the message content.'
+  status: active
+- id: RCB_STATUS_CODE
+  applies_to:
+    disciplines:
+    - RCB
+  primitive: code_membership
+  target: .//*[@Status]
+  attribute: Status
+  params:
+    codeset: PARTICIPANT_STATUS
+    exclude_tags: [Protest]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RCB_Data_Dictionary.pdf line 425: Participant''s accreditation status this
+    attribute is Mandatory in the case'
+  status: active
+- id: RCB_ORGANISATION_CODE
+  applies_to:
+    disciplines:
+    - RCB
+  primitive: code_membership
+  target: .//*[@Organisation]
+  attribute: Organisation
+  params:
+    codeset: ORGANISATION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RCB_Data_Dictionary.pdf line 453: Organisation ID'
+  status: active
+- id: RCB_COUNTRYOFBIRTH_CODE
+  applies_to:
+    disciplines:
+    - RCB
+  primitive: code_membership
+  target: .//*[@CountryofBirth]
+  attribute: CountryofBirth
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RCB_Data_Dictionary.pdf line 461: Country ID of Birth'
+  status: active
+- id: RCB_COUNTRYOFRESIDENCE_CODE
+  applies_to:
+    disciplines:
+    - RCB
+  primitive: code_membership
+  target: .//*[@CountryofResidence]
+  attribute: CountryofResidence
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RCB_Data_Dictionary.pdf line 465: Country ID of Residence'
+  status: active
+- id: RCB_NATIONALITY_CODE
+  applies_to:
+    disciplines:
+    - RCB
+  primitive: code_membership
+  target: .//*[@Nationality]
+  attribute: Nationality
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RCB_Data_Dictionary.pdf line 467: Participant''s nationality.'
+  status: active
+- id: RCB_MAINFUNCTIONID_CODE
+  applies_to:
+    disciplines:
+    - RCB
+  primitive: code_membership
+  target: .//*[@MainFunctionId]
+  attribute: MainFunctionId
+  params:
+    codeset: DISCIPLINE_FUNCTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RCB_Data_Dictionary.pdf line 471: Main function'
+  status: active
+- id: RCB_DISCIPLINENAME_CODE
+  applies_to:
+    disciplines:
+    - RCB
+  primitive: code_membership
+  target: .//*[@DisciplineName]
+  attribute: DisciplineName
+  params:
+    codeset: DISCIPLINE
+    field: ENG_Description
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RCB_Data_Dictionary.pdf line 1044: Discipline ENG Description (not code)
+    from Common Codes [description attribute, validated as ENG_Description, not code
+    membership]'
+  status: active
+- id: RCB_EVENTNAME_CODE
+  applies_to:
+    disciplines:
+    - RCB
+  primitive: code_membership
+  target: .//*[@EventName]
+  attribute: EventName
+  params:
+    codeset: EVENT
+    field: ENG_Description
+    code_attr: Event
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RCB_Data_Dictionary.pdf line 1046: Event ENG Description (not code) from
+    Common Codes [description attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: RCB_SUBEVENTNAME_CODE
+  applies_to:
+    disciplines:
+    - RCB
+  primitive: code_membership
+  target: .//*[@SubEventName]
+  attribute: SubEventName
+  params:
+    codeset: EVENT_UNIT
+    field: ENG_shortDescription
+    code_attr: Unit
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RCB_Data_Dictionary.pdf line 1050: EventUnit ENG Description (not code)
+    from Common Codes [the machine-readable DD column says CC@EVENT_UNIT ENG ShortDescription while the prose beside it says ENG Description; the column governs. All 24 discipline DDs specify ShortDescription, so all 13 discipline rules were corrected together.]'
+  status: active
+- id: RCB_VENUE_CODE
+  applies_to:
+    disciplines:
+    - RCB
+  primitive: code_membership
+  target: .//*[@Venue]
+  attribute: Venue
+  params:
+    codeset: VENUE
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RCB_Data_Dictionary.pdf line 1065: Venue Code'
+  status: active
+- id: RCB_VENUENAME_CODE
+  applies_to:
+    disciplines:
+    - RCB
+  primitive: code_membership
+  target: .//*[@VenueName]
+  attribute: VenueName
+  params:
+    codeset: VENUE
+    field: ENG_Description
+    code_attr: Venue
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RCB_Data_Dictionary.pdf line 1067: Venue ENG Description (not code) from
+    Common Codes [description attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: RCB_LOCATION_CODE
+  applies_to:
+    disciplines:
+    - RCB
+  primitive: code_membership
+  target: .//*[@Location]
+  attribute: Location
+  params:
+    codeset: LOCATION
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RCB_Data_Dictionary.pdf line 1069: Location code'
+  status: active
+- id: RCB_LOCATIONNAME_CODE
+  applies_to:
+    disciplines:
+    - RCB
+  primitive: code_membership
+  target: .//*[@LocationName]
+  attribute: LocationName
+  params:
+    codeset: LOCATION
+    field: ENG_Description
+    code_attr: Location
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RCB_Data_Dictionary.pdf line 1072: Location ENG Description (not code)
+    from Common Codes [description attribute, validated as ENG_Description, not code
+    membership]'
+  status: active
+- id: RCB_FUNCTION_CODE
+  applies_to:
+    disciplines:
+    - RCB
+  primitive: code_membership
+  target: .//*[@Function]
+  attribute: Function
+  params:
+    codeset: DISCIPLINE_FUNCTION
+    exclude_tags: [Presenter]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RCB_Data_Dictionary.pdf line 1080: Official''s function.'
+  status: active
+- id: RCB_DOCUMENTSUBCODE_POSINT
+  applies_to:
+    doc_types:
+    - DT_IMAGE
+    disciplines:
+    - RCB
+  primitive: value_format
+  target: .
+  attribute: DocumentSubcode
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_RCB_Data_Dictionary.pdf line 1443: Picture number'
+  status: active
+- id: RCB_LASTUNIT_CODE
+  applies_to:
+    disciplines:
+    - RCB
+  primitive: code_membership
+  target: .//*[@LastUnit]
+  attribute: LastUnit
+  params:
+    codeset: EVENT_UNIT
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RCB_Data_Dictionary.pdf line 1746: Send the full RSC of the most recently
+    completed unit in the'
+  status: active
+- id: RCB_UNIT_CODE
+  applies_to:
+    disciplines:
+    - RCB
+  primitive: code_membership
+  target: .//*[@Unit]
+  attribute: Unit
+  params:
+    codeset: EVENT_UNIT
+    exclude_tags: [Precipitation, Pressure, Temperature, Wind]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RCB_Data_Dictionary.pdf line 1807: Full RSC of the unit for the BracketItem'
+  status: active
+- id: RCB_WIND_DIRECTION_CODE
+  applies_to:
+    disciplines:
+    - RCB
+  primitive: code_membership
+  target: .//*[@Wind_Direction]
+  attribute: Wind_Direction
+  params:
+    codeset: WIND_DIRECTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RCB_Data_Dictionary.pdf line 2486: Wind direction [codeset corrected from
+    doc spelling ''WINDDIRECTION'']'
+  status: active

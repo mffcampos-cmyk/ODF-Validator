@@ -1,0 +1,894 @@
+/* ODF Validator — "instrument panel"
+   ---------------------------------------------------------------------------
+   The tool exists to deliver a verdict on a message, so the verdict is the
+   largest thing on the page. Everything else is graphite ink on technical-
+   drawing paper: DIN-derived type for the chrome, fixed-width type for machine
+   data, hairlines for structure.
+
+   ONE RULE, and it is load-bearing for the whole design: the only saturated
+   colour in this interface is a severity. If something is red, amber or blue,
+   it is stating a verdict. Nothing decorative may borrow those hues.
+
+   Class contract with app.js / filter.js — do not rename without updating them:
+     .sevf  .modef  .tag.error/.warning/.info  .sev-error/.sev-warning/.sev-info
+     .seg / .seg-static / .seg-<severity>   .mk / .mk-<severity>
+     .num-<severity>  .count  .loc  .microbar  .pass  .omitted  .empty  .clear
+   =========================================================================== */
+
+:root {
+  /* --- ground & ink ------------------------------------------------------ */
+  --ground:      #e4e9ef;   /* cool blue-grey field: drafting paper, not cream */
+  --panel:       #fbfcfd;
+  --panel-sunk:  #edf1f6;
+  --ink:         #10151c;
+  --ink-mid:     #56606e;
+  --ink-soft:    #5f6775;   /* 4.67:1 on ground — small caps labels are text */
+  --rule:        #c6ceda;   /* hairline registration lines, decorative */
+  --rule-strong: #738296;   /* 3.0:1+ — these outline real controls */
+
+  /* The readout is unlit until it is driven. A dark recess is also what lets
+     the three fills clear 3:1 apiece; on a light channel amber and blue land
+     at nearly the same luminance and the bar reads as one smear. */
+  --readout:      #232a34;
+  --readout-line: #3b4553;
+  --readout-text: #98a2b0;
+
+  /* --- signals: the only saturated colour on the page -------------------- */
+  /* `--x` states a verdict in text; `--x-fill` paints it on the dark readout;
+     `--x-tint` backs a chip on paper. */
+  --error:        #c0261b;
+  --error-fill:   #e0483a;
+  --error-tint:   #f9e6e4;
+  --warning:      #96580b;
+  --warning-fill: #e8a11c;
+  --warning-tint: #fbefdb;
+  --info:         #1f5ea8;
+  --info-fill:    #5e9bdd;
+  --info-tint:    #e5eefa;
+
+  /* --- type -------------------------------------------------------------- */
+  /* Display: Bahnschrift is Windows' variable DIN — the type of timing gear,
+     transport signage and instrument faces. Fallbacks keep the condensed,
+     industrial voice on other platforms. */
+  --font-display: "Bahnschrift", "DIN Alternate", "DIN Condensed",
+                  "Roboto Condensed", "Segoe UI", system-ui, sans-serif;
+  --font-data:    "Consolas", "Cascadia Mono", ui-monospace, "SF Mono",
+                  "Liberation Mono", Menlo, monospace;
+  --font-prose:   "Segoe UI Variable Text", "Segoe UI", system-ui,
+                  -apple-system, Roboto, sans-serif;
+
+  --code-lh: 1.55;
+
+  /* --- metrics ----------------------------------------------------------- */
+  --s1: .25rem; --s2: .5rem;  --s3: .75rem; --s4: 1rem;
+  --s5: 1.5rem; --s6: 2rem;   --s7: 3rem;
+  --radius: 2px;              /* machined, not pill-soft */
+  --measure: 1180px;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-prose);
+  font-size: 15px;
+  line-height: 1.55;
+  font-feature-settings: "tnum" 1;   /* tabular figures: it is an instrument */
+  -webkit-font-smoothing: antialiased;
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+/* Every interactive element gets the same unmistakable ring, including on
+   coloured segments where a plain outline would disappear. */
+:where(a, button, select, textarea, input):focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.sevf:focus-visible + .key-body,
+.modef:focus-visible + .mode-body {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* app.js hides everything through `.hidden = true` — the DOM-light constraint
+   at the top of app.js rules out classList. A UA's `[hidden] {display:none}`
+   is an origin below any author `display`, so a component rule that sets
+   display (e.g. the idle plate) is enough to keep a "hidden" element painted.
+   This makes the attribute authoritative. */
+[hidden] { display: none !important; }
+
+/* ===========================================================================
+   NAMEPLATE — a thin instrument header. The ruleset selector lives here
+   because the ruleset is the instrument's setting, like a range dial.
+   ========================================================================= */
+
+.rig {
+  background: var(--panel);
+  border-bottom: 1px solid var(--rule-strong);
+}
+
+.rig-inner {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: var(--s3) var(--s5);
+  display: flex;
+  align-items: center;
+  gap: var(--s5);
+  flex-wrap: wrap;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-variation-settings: "wdth" 100;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  font-size: .95rem;
+  letter-spacing: .14em;
+  white-space: nowrap;
+}
+/* Weight alone separates the two words. A divider rule here was ornament. */
+.wordmark b { font-weight: 700; }
+.wordmark span { font-weight: 400; color: var(--ink-mid); }
+
+.rig-field {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  margin-left: auto;
+}
+
+.rig-nav {
+  display: flex;
+  gap: var(--s4);
+}
+.rig-nav.end { margin-left: auto; }   /* pages with no ruleset dial */
+.rig-nav a {
+  font-family: var(--font-display);
+  font-size: .8rem;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 1px solid transparent;
+}
+.rig-nav a:hover { color: var(--ink); border-bottom-color: var(--ink); }
+
+/* --- shared form primitives ---------------------------------------------- */
+
+.field-label {
+  font-family: var(--font-display);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+select {
+  font-family: var(--font-data);
+  font-size: .82rem;
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  padding: .3rem .45rem;
+}
+
+/* Load errors and conflicts in the ruleset: a strip, not a muttered aside. */
+.notice {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: var(--s2) var(--s5);
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-data);
+  font-size: .78rem;
+  color: var(--error);
+  background: var(--error-tint);
+}
+
+/* Pack bookkeeping — rule count, duplicates merged. Nothing is wrong, so it
+   takes no signal colour: on this page red would be claiming a verdict. */
+.notice-quiet {
+  color: var(--ink-soft);
+  background: var(--panel-sunk);
+}
+
+/* ===========================================================================
+   PAGE
+   ========================================================================= */
+
+.page {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 0 var(--s5) var(--s7);
+}
+
+.eyebrow {
+  font-family: var(--font-display);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 var(--s3);
+  display: flex;
+  align-items: baseline;
+  gap: var(--s3);
+}
+.eyebrow::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+.page-title { margin-top: var(--s6); }
+
+/* ===========================================================================
+   TALLY RAIL — the signature.
+
+   A recessed channel that reads out the verdict as proportional signal-colour
+   segments, with the counts below in condensed DIN numerals. It is also the
+   filter: each key is a real checkbox, so it toggles with Space and the rail
+   re-proportions. The biggest element on the page is also its main control.
+   ========================================================================= */
+
+.tally {
+  margin: var(--s6) 0 var(--s6);
+}
+
+.tally-channel {
+  position: relative;
+  height: 30px;
+  background: var(--readout);
+  border-radius: var(--radius);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, .45);
+  overflow: hidden;
+}
+
+/* The 2px gap is the channel showing through, so every segment boundary is
+   unambiguous even where two fills sit close in luminance. */
+.tally-bar {
+  display: flex;
+  gap: 2px;
+  height: 100%;
+}
+
+.seg {
+  display: block;
+  height: 100%;
+  min-width: 3px;
+  transform-origin: left center;
+  animation: seg-settle .5s var(--ease) both;
+}
+.seg-error   { background: var(--error-fill); }
+.seg-warning { background: var(--warning-fill); }
+.seg-info    { background: var(--info-fill); }
+.seg-error   { animation-delay: 0s; }
+.seg-warning { animation-delay: .06s; }
+.seg-info    { animation-delay: .12s; }
+
+/* The rail settles once, when a result lands. Toggling a key re-proportions
+   it without replaying the sweep. */
+.seg-static { animation: none; }
+
+@keyframes seg-settle {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* Idle: an unlit readout with a centred hairline, waiting to be driven. */
+.tally-idle {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s3);
+  font-family: var(--font-display);
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--readout-text);
+  background: var(--readout);
+}
+.tally-idle::before, .tally-idle::after {
+  content: "";
+  width: 15%;
+  height: 1px;
+  background: var(--readout-line);
+}
+
+/* --- the three keys ------------------------------------------------------ */
+
+.tally-keys {
+  border: 0;
+  margin: 0;
+  padding: var(--s3) 0 0;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s6);
+  flex-wrap: wrap;
+}
+
+/* Real checkboxes, visually replaced by the key. Space toggles, focus rings,
+   screen readers get a plain "Errors, checkbox, checked". */
+.key { cursor: pointer; position: relative; }
+.key > input {
+  position: absolute; inset: 0 auto auto 0;
+  width: 1px; height: 1px; opacity: 0; pointer-events: none;
+}
+
+.key-body {
+  display: block;
+  border-top: 3px solid currentColor;
+  padding-top: var(--s2);
+  min-width: 5.5rem;
+  transition: opacity .18s var(--ease);
+}
+.key-error   .key-body { color: var(--error); }
+.key-warning .key-body { color: var(--warning); }
+.key-info    .key-body { color: var(--info); }
+
+.key-count {
+  display: block;
+  font-family: var(--font-display);
+  font-variation-settings: "wdth" 85, "wght" 700;
+  font-weight: 700;
+  font-size: 2.5rem;
+  line-height: .92;
+  letter-spacing: -.01em;
+  color: currentColor;
+}
+.key-name {
+  display: block;
+  font-family: var(--font-display);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+}
+
+/* Hidden severities: greyed and struck, so you can still see what you muted. */
+.key > input:not(:checked) + .key-body {
+  color: var(--ink-soft);
+  opacity: .55;
+}
+.key > input:not(:checked) + .key-body .key-count {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+.key:hover .key-body { opacity: .8; }
+
+.tally-scope {
+  margin: 0 0 0 auto;
+  align-self: flex-end;
+  font-family: var(--font-data);
+  font-size: .78rem;
+  color: var(--ink-mid);
+  text-align: right;
+}
+
+/* ===========================================================================
+   WORK SURFACE — one input mode at a time. The old page showed paste, file
+   and batch at once while validate() silently honoured only one of them.
+   ========================================================================= */
+
+.surface {
+  background: var(--panel);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+}
+
+.modes {
+  display: flex;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid var(--rule-strong);
+}
+.mode { cursor: pointer; position: relative; }
+.mode > input {
+  position: absolute; inset: 0 auto auto 0;
+  width: 1px; height: 1px; opacity: 0; pointer-events: none;
+}
+
+.mode-body {
+  display: block;
+  font-family: var(--font-display);
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding: var(--s3) var(--s5);
+  border-right: 1px solid var(--rule);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color .15s var(--ease), background-color .15s var(--ease);
+}
+.mode:hover .mode-body { color: var(--ink-mid); background: var(--panel-sunk); }
+.mode > input:checked + .mode-body {
+  color: var(--ink);
+  background: var(--panel);
+  border-bottom-color: var(--ink);
+}
+
+.pane { padding: var(--s4) var(--s5) 0; }
+
+/* --- the editor: gutter + textarea share one baseline grid --------------- */
+
+.editor {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: var(--panel-sunk);
+  overflow: hidden;
+}
+
+.gutter, .editor textarea {
+  font-family: var(--font-data);
+  font-size: .82rem;
+  line-height: var(--code-lh);
+  padding: var(--s3) 0;
+  margin: 0;
+  border: 0;
+}
+
+.gutter {
+  flex: 0 0 auto;
+  min-width: 3.4rem;
+  padding-right: var(--s2);
+  padding-left: var(--s3);
+  text-align: right;
+  color: var(--ink-soft);
+  background: var(--panel-sunk);
+  border-right: 1px solid var(--rule);
+  overflow: hidden;
+  user-select: none;
+  white-space: pre;
+}
+
+/* Line numbers are the one legitimate numbering device here: findings cite
+   them. A tick marks a line that produced one. */
+.mk {
+  display: inline-block;
+  font-weight: 700;
+  position: relative;
+  padding-right: .35rem;
+}
+.mk::after {
+  content: "";
+  position: absolute;
+  right: -.35rem; top: .28em;
+  width: 3px; height: .95em;
+  background: currentColor;
+}
+.mk-error   { color: var(--error); }
+.mk-warning { color: var(--warning); }
+.mk-info    { color: var(--info); }
+
+.editor textarea {
+  flex: 1;
+  min-width: 0;
+  height: 15rem;
+  padding-left: var(--s3);
+  padding-right: var(--s3);
+  resize: vertical;
+  color: var(--ink);
+  background: var(--panel);
+}
+.editor textarea::placeholder { color: var(--ink-soft); }
+.editor textarea:focus-visible { outline-offset: -2px; }
+
+/* --- file / batch drop panes --------------------------------------------- */
+
+.drop {
+  border: 1px dashed var(--rule-strong);
+  border-radius: var(--radius);
+  background: var(--panel-sunk);
+  padding: var(--s6) var(--s5);
+  text-align: center;
+}
+.drop input[type="file"] {
+  font-family: var(--font-data);
+  font-size: .82rem;
+  color: var(--ink-mid);
+}
+.drop p {
+  margin: 0 0 var(--s3);
+  font-size: .88rem;
+  color: var(--ink-mid);
+}
+
+/* --- controls ------------------------------------------------------------ */
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s4) var(--s5);
+  flex-wrap: wrap;
+}
+
+.btn {
+  font-family: var(--font-display);
+  font-size: .82rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: .58rem 1.35rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--ink-mid);
+  cursor: pointer;
+  transition: background-color .14s var(--ease), color .14s var(--ease),
+              border-color .14s var(--ease);
+}
+.btn:hover { color: var(--ink); border-color: var(--ink-mid); }
+.btn:active { transform: translateY(1px); }
+
+.btn-run {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--panel);
+}
+.btn-run:hover { background: #000; border-color: #000; color: #fff; }
+.btn-run[aria-busy="true"] { opacity: .6; cursor: progress; }
+
+.hint {
+  margin: 0 0 0 auto;
+  font-size: .8rem;
+  color: var(--ink-soft);
+}
+
+/* ===========================================================================
+   LEDGER — the findings themselves
+   ========================================================================= */
+
+.ledger { margin-top: var(--s6); }
+
+.empty {
+  margin: 0;
+  padding: var(--s6) var(--s5);
+  border: 1px dashed var(--rule-strong);
+  border-radius: var(--radius);
+  text-align: center;
+  color: var(--ink-mid);
+  font-size: .92rem;
+}
+
+.clear {
+  border-style: solid;
+  border-color: var(--rule-strong);
+  background: var(--panel);
+}
+.clear b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: var(--s1);
+}
+
+/* --- batch roll-up: the rail again, at small scale ----------------------- */
+
+#batch-summary {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 var(--s5);
+  background: var(--panel);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  font-size: .84rem;
+}
+#batch-summary:empty { display: none; }
+
+#batch-summary th {
+  font-family: var(--font-display);
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  text-align: left;
+  padding: var(--s2) var(--s3);
+  border-bottom: 1px solid var(--rule-strong);
+  background: var(--panel-sunk);
+}
+#batch-summary td {
+  padding: var(--s2) var(--s3);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-data);
+  vertical-align: middle;
+}
+#batch-summary tr:last-child td { border-bottom: 0; }
+#batch-summary .num { text-align: right; width: 4.5rem; }
+#batch-summary .num-error   { color: var(--error); }
+#batch-summary .num-warning { color: var(--warning); }
+#batch-summary .num-info    { color: var(--info); }
+#batch-summary .zero { color: var(--ink-soft); }
+#batch-summary .file { color: var(--ink); word-break: break-all; }
+
+/* The rail again, at row scale: width shows this file's share of the worst
+   file in the batch, fill shows its severity mix. Same dark recess so the
+   two readouts are recognisably one device. */
+.microbar {
+  display: flex;
+  gap: 1px;
+  width: 100%;
+  height: 8px;
+  background: var(--readout);
+  border-radius: 1px;
+  overflow: hidden;
+}
+.microbar span { display: block; height: 100%; min-width: 2px; }
+#batch-summary td:last-child { width: 30%; }
+
+.pass {
+  font-family: var(--font-display);
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* --- finding rows -------------------------------------------------------- */
+
+#findings {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+#findings:empty { display: none; }
+
+#findings > li {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 0 var(--s4);
+  padding: var(--s3) var(--s4);
+  border-bottom: 1px solid var(--rule);
+  border-left: 3px solid transparent;
+}
+#findings > li:last-child { border-bottom: 0; }
+#findings > li:hover { background: var(--panel-sunk); }
+
+.sev-error   { border-left-color: var(--error); }
+.sev-warning { border-left-color: var(--warning); }
+.sev-info    { border-left-color: var(--info); }
+
+.tag {
+  grid-row: 1 / span 3;
+  align-self: start;
+  font-family: var(--font-display);
+  font-size: .66rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: .2rem 0;
+  border-radius: var(--radius);
+}
+.tag.error   { color: var(--error);   background: var(--error-tint); }
+.tag.warning { color: var(--warning); background: var(--warning-tint); }
+.tag.info    { color: var(--info);    background: var(--info-tint); }
+
+.rule-id {
+  font-family: var(--font-data);
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--ink);
+  word-break: break-all;
+}
+
+.count {
+  font-family: var(--font-display);
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  color: var(--ink-mid);
+  background: var(--panel-sunk);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 0 .3rem;
+  margin-left: .4rem;
+  white-space: nowrap;
+}
+
+.msg {
+  font-size: .9rem;
+  color: var(--ink);
+  margin: .1rem 0 .2rem;
+}
+
+.loc {
+  font-family: var(--font-data);
+  font-size: .76rem;
+  color: var(--ink-mid);
+  word-break: break-all;
+}
+.loc .ln {
+  color: var(--ink);
+  font-weight: 700;
+  margin-right: .3rem;
+}
+.loc .sep { color: var(--ink-soft); margin: 0 .45rem; }
+.loc .ref { color: var(--ink-soft); }
+.loc .file { color: var(--ink); font-weight: 700; margin-right: .3rem; }
+
+#findings > li.omitted {
+  display: block;
+  font-family: var(--font-data);
+  font-size: .78rem;
+  color: var(--ink-mid);
+  background: var(--panel-sunk);
+  border-left-color: var(--rule-strong);
+}
+
+/* ===========================================================================
+   RULESETS + DRAFTS
+   ========================================================================= */
+
+.stack {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+.stack > li {
+  background: var(--panel);
+  border: 1px solid var(--rule-strong);
+  border-left: 3px solid var(--ink);
+  border-radius: var(--radius);
+  padding: var(--s4) var(--s5);
+}
+
+.item-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s3);
+  flex-wrap: wrap;
+}
+.item-name {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.item-meta {
+  font-family: var(--font-data);
+  font-size: .78rem;
+  color: var(--ink-mid);
+}
+.item-meta .bad { color: var(--error); font-weight: 700; }
+.item-note { margin: var(--s2) 0 0; }
+
+.chips {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin: var(--s3) 0 0;
+  padding: 0;
+}
+.chips li {
+  font-family: var(--font-data);
+  font-size: .74rem;
+  color: var(--ink-mid);
+  background: var(--panel-sunk);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: .1rem .4rem;
+}
+
+.stack pre {
+  background: var(--panel-sunk);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: var(--s3);
+  font-family: var(--font-data);
+  font-size: .76rem;
+  line-height: var(--code-lh);
+  overflow-x: auto;
+  margin: var(--s3) 0;
+  color: var(--ink-mid);
+}
+
+.row-actions {
+  display: flex;
+  gap: var(--s2);
+  align-items: center;
+}
+.row-actions form { margin: 0; }
+
+.flag {
+  font-family: var(--font-display);
+  font-size: .66rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--warning);
+  background: var(--warning-tint);
+  border-radius: var(--radius);
+  padding: .1rem .4rem;
+}
+
+/* A draft that would discard a hand-set parameter is not a warning, it is a
+   loss. Same chip, error colour, so it reads differently at a glance from
+   "changes an active rule". */
+.flag.bad { color: var(--error); background: var(--error-tint); }
+
+/* Draft fields, in place of the raw dict repr the page used to print. */
+.kv {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: .15rem var(--s3);
+  margin: var(--s2) 0 0;
+  font-size: .82rem;
+}
+.kv dt { color: var(--ink-soft); font-family: var(--font-display); }
+.kv dd { margin: 0; word-break: break-word; }
+
+.bar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  margin-bottom: var(--s5);
+}
+.bar-actions form { margin: 0; }
+
+/* ===========================================================================
+   RESPONSIVE + MOTION
+   ========================================================================= */
+
+@media (max-width: 720px) {
+  .rig-inner { gap: var(--s3); }
+  .rig-field { margin-left: 0; width: 100%; }
+  .page { padding-left: var(--s4); padding-right: var(--s4); }
+  .notice { padding-left: var(--s4); padding-right: var(--s4); }
+  .tally-keys { gap: var(--s5); }
+  .key-count { font-size: 2rem; }
+  .tally-scope { margin-left: 0; width: 100%; text-align: left; }
+  .mode-body { padding: var(--s3) var(--s4); letter-spacing: .08em; }
+  .pane { padding-left: var(--s4); padding-right: var(--s4); }
+  .controls { padding-left: var(--s4); padding-right: var(--s4); }
+  .hint { margin-left: 0; width: 100%; }
+  .gutter { min-width: 2.6rem; }
+  #findings > li { grid-template-columns: 4.5rem 1fr; padding: var(--s3); }
+  #batch-summary .num { width: 3rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

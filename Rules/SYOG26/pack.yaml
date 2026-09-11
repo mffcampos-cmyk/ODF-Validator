@@ -1,0 +1,5 @@
+version: "2026.09"
+root_xsd: odf2.xsd
+source:
+  index_url: https://odf.olympictech.org/2026-Dakar/dakar_2026_YOG.html
+  check_on_start: true

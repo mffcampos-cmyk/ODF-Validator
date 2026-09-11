@@ -1,0 +1,15 @@
+- id: ARC_MEDAL_INT
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: value_domain
+  target: .//*[@Medal]
+  attribute: Medal
+  params:
+    min: 0
+    integer: true
+  severity: error
+  scope: message
+  source_ref: 'ARC DD 524 (planned gold-medal count #0, may be 0) and 619 (SCGEN@UnitMedalType,
+    codes 0-3); minimum corrected from 1 to 0'
+  status: active

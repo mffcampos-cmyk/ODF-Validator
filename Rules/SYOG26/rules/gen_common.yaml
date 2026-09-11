@@ -1,0 +1,11 @@
+- id: GEN_RESULTSTATUS_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .
+  attribute: ResultStatus
+  params:
+    codeset: RESULTSTATUS
+  severity: warning
+  scope: message
+  source_ref: 'ODF GEN header tables: ResultStatus CC@RESULTSTATUS'
+  status: active

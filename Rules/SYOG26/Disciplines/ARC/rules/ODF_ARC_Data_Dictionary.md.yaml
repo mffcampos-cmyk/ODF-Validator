@@ -1,0 +1,234 @@
+- id: ARC_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_ARC_Data_Dictionary.md line 352: Version number associated to the
+    message''s content. Ascending number'
+  status: active
+- id: ARC_VENUE_CODE
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: code_membership
+  target: .//*[@Venue]
+  attribute: Venue
+  params:
+    codeset: VENUE
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ARC_Data_Dictionary.md line 515: Venue where the session takes
+    place'
+  status: active
+- id: ARC_SESSIONSTATUS_CODE
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: code_membership
+  target: .//*[@SessionStatus]
+  attribute: SessionStatus
+  params:
+    codeset: SCHEDULESTATUS
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ARC_Data_Dictionary.md line 519: Only use CANCELLED if applicable.
+    All other sessions are'
+  status: active
+- id: ARC_SESSIONTYPE_CODE
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: code_membership
+  target: .//*[@SessionType]
+  attribute: SessionType
+  params:
+    codeset: SESSION_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ARC_Data_Dictionary.md line 522: Session type of the Session.'
+  status: active
+- id: ARC_LANGUAGE_CODE
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: code_membership
+  target: .//*[@Language]
+  attribute: Language
+  params:
+    codeset: LANGUAGE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ARC_Data_Dictionary.md line 533: Language of the Session Description'
+  status: active
+- id: ARC_PHASETYPE_CODE
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: code_membership
+  target: .//*[@PhaseType]
+  attribute: PhaseType
+  params:
+    codeset: PHASE_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ARC_Data_Dictionary.md line 549: Phase type for the unit'
+  status: active
+- id: ARC_SCHEDULESTATUS_CODE
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: code_membership
+  target: .//*[@ScheduleStatus]
+  attribute: ScheduleStatus
+  params:
+    codeset: SCHEDULESTATUS
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ARC_Data_Dictionary.md line 560: Unit Status'
+  status: active
+- id: ARC_LOCATION_CODE
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: code_membership
+  target: .//*[@Location]
+  attribute: Location
+  params:
+    codeset: LOCATION
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ARC_Data_Dictionary.md line 624: Location where the unit takes
+    place.'
+  status: active
+- id: ARC_UNIT_CODE
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: code_membership
+  target: .//*[@Unit]
+  attribute: Unit
+  params:
+    codeset: EVENT_UNIT
+    exclude_tags: [Precipitation, Pressure, Temperature, Wind]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ARC_Data_Dictionary.md line 685: The full RSC of the unit where
+    this competitor came from. This'
+  status: active
+- id: ARC_ORGANISATION_CODE
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: code_membership
+  target: .//*[@Organisation]
+  attribute: Organisation
+  params:
+    codeset: ORGANISATION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ARC_Data_Dictionary.md line 709: Should be sent when known'
+  status: active
+- id: ARC_STATUS_CODE
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: code_membership
+  target: .//*[@Status]
+  attribute: Status
+  params:
+    codeset: PARTICIPANT_STATUS
+    exclude_tags: [Protest]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ARC_Data_Dictionary.md line 921: Participant''s accreditation status
+    this attribute is Mandatory in'
+  status: active
+- id: ARC_COUNTRYOFBIRTH_CODE
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: code_membership
+  target: .//*[@CountryofBirth]
+  attribute: CountryofBirth
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ARC_Data_Dictionary.md line 955: Country ID of Birth'
+  status: active
+- id: ARC_COUNTRYOFRESIDENCE_CODE
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: code_membership
+  target: .//*[@CountryofResidence]
+  attribute: CountryofResidence
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ARC_Data_Dictionary.md line 959: Country ID of Residence'
+  status: active
+- id: ARC_NATIONALITY_CODE
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: code_membership
+  target: .//*[@Nationality]
+  attribute: Nationality
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ARC_Data_Dictionary.md line 961: Participant''s nationality.'
+  status: active
+- id: ARC_MAINFUNCTIONID_CODE
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: code_membership
+  target: .//*[@MainFunctionId]
+  attribute: MainFunctionId
+  params:
+    codeset: DISCIPLINE_FUNCTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ARC_Data_Dictionary.md line 972: Main function'
+  status: active
+- id: ARC_FUNCTION_CODE
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: code_membership
+  target: .//*[@Function]
+  attribute: Function
+  params:
+    codeset: DISCIPLINE_FUNCTION
+    exclude_tags: [Presenter]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ARC_Data_Dictionary.md line 1271: Team Official function.'
+  status: active
+- id: ARC_WIND_DIRECTION_CODE
+  applies_to:
+    disciplines:
+    - ARC
+  primitive: code_membership
+  target: .//*[@Wind_Direction]
+  attribute: Wind_Direction
+  params:
+    codeset: WIND_DIRECTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_ARC_Data_Dictionary.md line 3343: Wind direction'
+  status: active

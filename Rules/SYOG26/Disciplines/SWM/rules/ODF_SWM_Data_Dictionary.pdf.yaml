@@ -1,0 +1,287 @@
+- id: SWM_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - SWM
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_SWM_Data_Dictionary.pdf line 302: Version number (ascending) associated to the message
+    content.'
+  status: active
+- id: SWM_STATUS_CODE
+  applies_to:
+    disciplines:
+    - SWM
+  primitive: code_membership
+  target: .//*[@Status]
+  attribute: Status
+  params:
+    codeset: PARTICIPANT_STATUS
+    exclude_tags:
+    - Protest
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SWM_Data_Dictionary.pdf line 421: Participant''s status.'
+  status: active
+- id: SWM_ORGANISATION_CODE
+  applies_to:
+    disciplines:
+    - SWM
+  primitive: code_membership
+  target: .//*[@Organisation]
+  attribute: Organisation
+  params:
+    codeset: ORGANISATION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SWM_Data_Dictionary.pdf line 443: Organisation ID'
+  status: active
+- id: SWM_COUNTRYOFBIRTH_CODE
+  applies_to:
+    disciplines:
+    - SWM
+  primitive: code_membership
+  target: .//*[@CountryofBirth]
+  attribute: CountryofBirth
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SWM_Data_Dictionary.pdf line 451: Country ID of Birth'
+  status: active
+- id: SWM_COUNTRYOFRESIDENCE_CODE
+  applies_to:
+    disciplines:
+    - SWM
+  primitive: code_membership
+  target: .//*[@CountryofResidence]
+  attribute: CountryofResidence
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SWM_Data_Dictionary.pdf line 455: Country ID of Residence'
+  status: active
+- id: SWM_NATIONALITY_CODE
+  applies_to:
+    disciplines:
+    - SWM
+  primitive: code_membership
+  target: .//*[@Nationality]
+  attribute: Nationality
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SWM_Data_Dictionary.pdf line 457: Participant''s nationality.'
+  status: active
+- id: SWM_MAINFUNCTIONID_CODE
+  applies_to:
+    disciplines:
+    - SWM
+  primitive: code_membership
+  target: .//*[@MainFunctionId]
+  attribute: MainFunctionId
+  params:
+    codeset: DISCIPLINE_FUNCTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SWM_Data_Dictionary.pdf line 462: Main function'
+  status: active
+- id: SWM_DISCIPLINENAME_CODE
+  applies_to:
+    disciplines:
+    - SWM
+  primitive: code_membership
+  target: .//*[@DisciplineName]
+  attribute: DisciplineName
+  params:
+    codeset: DISCIPLINE
+    field: ENG_Description
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SWM_Data_Dictionary.pdf line 1105: Discipline ENG Description (not code) from Common
+    Codes [description attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: SWM_EVENTNAME_CODE
+  applies_to:
+    disciplines:
+    - SWM
+  primitive: code_membership
+  target: .//*[@EventName]
+  attribute: EventName
+  params:
+    codeset: EVENT
+    field: ENG_Description
+    code_attr: Event
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SWM_Data_Dictionary.pdf line 1107: Event ENG Description (not code) from Common Codes.
+    [description attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: SWM_SUBEVENTNAME_CODE
+  applies_to:
+    disciplines:
+    - SWM
+  primitive: code_membership
+  target: .//*[@SubEventName]
+  attribute: SubEventName
+  params:
+    codeset: EVENT_UNIT
+    field: ENG_Description
+    code_attr: Unit
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SWM_Data_Dictionary.pdf line 1111: EventUnit ENG Description (not code) from Common
+    Codes [SWM EXCEPTION, owner decision: the SWM DD row states BOTH CC@EVENT_UNIT ENG ShortDescription
+    (column) and ENG Description (prose). The other 12 disciplines follow the column; SWM deliberately
+    does not, because the SWM feed sends the Description form and a manual audit accepted it -- reverting that would reintroduce ~370 warnings on a reading the DD itself contradicts. Do NOT
+    ''fix'' this to match the others without an ODF owner ruling.]'
+  status: active
+- id: SWM_VENUE_CODE
+  applies_to:
+    disciplines:
+    - SWM
+  primitive: code_membership
+  target: .//*[@Venue]
+  attribute: Venue
+  params:
+    codeset: VENUE
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SWM_Data_Dictionary.pdf line 1118: Venue Code'
+  status: active
+- id: SWM_VENUENAME_CODE
+  applies_to:
+    disciplines:
+    - SWM
+  primitive: code_membership
+  target: .//*[@VenueName]
+  attribute: VenueName
+  params:
+    codeset: VENUE
+    field: ENG_Description
+    code_attr: Venue
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SWM_Data_Dictionary.pdf line 1120: Venue ENG Description (not code) from Common Codes
+    [description attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: SWM_LOCATION_CODE
+  applies_to:
+    disciplines:
+    - SWM
+  primitive: code_membership
+  target: .//*[@Location]
+  attribute: Location
+  params:
+    codeset: LOCATION
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SWM_Data_Dictionary.pdf line 1122: Location code'
+  status: active
+- id: SWM_LOCATIONNAME_CODE
+  applies_to:
+    disciplines:
+    - SWM
+  primitive: code_membership
+  target: .//*[@LocationName]
+  attribute: LocationName
+  params:
+    codeset: LOCATION
+    field: ENG_Description
+    code_attr: Location
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SWM_Data_Dictionary.pdf line 1124: Location ENG Description (not code) from Common
+    Codes [description attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: SWM_RECORDTYPE_CODE
+  applies_to:
+    disciplines:
+    - SWM
+  primitive: code_membership
+  target: .//*[@RecordType]
+  attribute: RecordType
+  params:
+    codeset: RECORD_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SWM_Data_Dictionary.pdf line 1259: Code which specifies the level at which the record
+    is broken'
+  status: active
+- id: SWM_LASTUNIT_CODE
+  applies_to:
+    disciplines:
+    - SWM
+  primitive: code_membership
+  target: .//*[@LastUnit]
+  attribute: LastUnit
+  params:
+    codeset: EVENT_UNIT
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SWM_Data_Dictionary.pdf line 1571: Full RSC of the most recent unit information included
+    in the'
+  status: active
+- id: SWM_NAME_CODE
+  applies_to:
+    disciplines:
+    - SWM
+  primitive: code_membership
+  target: .//Record/Description[@Name]
+  attribute: Name
+  params:
+    codeset: RECORD
+    field: ENG_Description
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SWM_Data_Dictionary.pdf line 1868: Record description (not code) from Common Codes.
+    Narrowed from .//*[@Name] to .//Record/Description[@Name]: the XSD declares @Name on seven complexTypes
+    (teamofteamscompositionType, teamType, horseType, competitorAchievementDataType, teamBIOType, horseBIOType,
+    brokenRecordDescriptionType) and only Competition/Record/Description is a record description (ODF_SWM_Data_Dictionary.md
+    line 1097: "Name | M | CC@RECORD ENG Description"); the other six are relay/team names and biography
+    text, so real team names like "UNITED STATES" were flagged on essentially every SWM team result (item4
+    a rules review).'
+  status: active
+- id: SWM_UNIT_CODE
+  applies_to:
+    disciplines:
+    - SWM
+  primitive: code_membership
+  target: .//*[@Unit]
+  attribute: Unit
+  params:
+    codeset: EVENT_UNIT
+    exclude_tags:
+    - Precipitation
+    - Pressure
+    - Temperature
+    - Wind
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SWM_Data_Dictionary.pdf line 1911: The full RSC of the unit in the current competition
+    where the'
+  status: active
+- id: SWM_COUNTRY_CODE
+  applies_to:
+    disciplines:
+    - SWM
+  primitive: code_membership
+  target: .//*[@Country]
+  attribute: Country
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SWM_Data_Dictionary.pdf line 1914: Always send for new records and where known for
+    historical'
+  status: active

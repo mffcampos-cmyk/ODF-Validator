@@ -1,0 +1,252 @@
+- id: SKB_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - SKB
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_SKB_Data_Dictionary.pdf line 261: Version number (ascending) associated
+    to the message content.'
+  status: active
+- id: SKB_STATUS_CODE
+  applies_to:
+    disciplines:
+    - SKB
+  primitive: code_membership
+  target: .//*[@Status]
+  attribute: Status
+  params:
+    codeset: PARTICIPANT_STATUS
+    exclude_tags: [Protest]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SKB_Data_Dictionary.pdf line 390: Participant''s accreditation status this
+    attribute is Mandatory in the'
+  status: active
+- id: SKB_ORGANISATION_CODE
+  applies_to:
+    disciplines:
+    - SKB
+  primitive: code_membership
+  target: .//*[@Organisation]
+  attribute: Organisation
+  params:
+    codeset: ORGANISATION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SKB_Data_Dictionary.pdf line 419: Organisation ID'
+  status: active
+- id: SKB_COUNTRYOFBIRTH_CODE
+  applies_to:
+    disciplines:
+    - SKB
+  primitive: code_membership
+  target: .//*[@CountryofBirth]
+  attribute: CountryofBirth
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SKB_Data_Dictionary.pdf line 427: Country ID of Birth'
+  status: active
+- id: SKB_COUNTRYOFRESIDENCE_CODE
+  applies_to:
+    disciplines:
+    - SKB
+  primitive: code_membership
+  target: .//*[@CountryofResidence]
+  attribute: CountryofResidence
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SKB_Data_Dictionary.pdf line 431: Country ID of Residence'
+  status: active
+- id: SKB_NATIONALITY_CODE
+  applies_to:
+    disciplines:
+    - SKB
+  primitive: code_membership
+  target: .//*[@Nationality]
+  attribute: Nationality
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SKB_Data_Dictionary.pdf line 433: Participant''s nationality.'
+  status: active
+- id: SKB_MAINFUNCTIONID_CODE
+  applies_to:
+    disciplines:
+    - SKB
+  primitive: code_membership
+  target: .//*[@MainFunctionId]
+  attribute: MainFunctionId
+  params:
+    codeset: DISCIPLINE_FUNCTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SKB_Data_Dictionary.pdf line 443: Main function'
+  status: active
+- id: SKB_DISCIPLINENAME_CODE
+  applies_to:
+    disciplines:
+    - SKB
+  primitive: code_membership
+  target: .//*[@DisciplineName]
+  attribute: DisciplineName
+  params:
+    codeset: DISCIPLINE
+    field: ENG_Description
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SKB_Data_Dictionary.pdf line 975: Discipline ENG Description (not code)
+    from Common Codes [description attribute, validated as ENG_Description, not code
+    membership]'
+  status: active
+- id: SKB_EVENTNAME_CODE
+  applies_to:
+    disciplines:
+    - SKB
+  primitive: code_membership
+  target: .//*[@EventName]
+  attribute: EventName
+  params:
+    codeset: EVENT
+    field: ENG_Description
+    code_attr: Event
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SKB_Data_Dictionary.pdf line 977: Event ENG Description (not code) from
+    Common Codes. [description attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: SKB_SUBEVENTNAME_CODE
+  applies_to:
+    disciplines:
+    - SKB
+  primitive: code_membership
+  target: .//*[@SubEventName]
+  attribute: SubEventName
+  params:
+    codeset: EVENT_UNIT
+    field: ENG_shortDescription
+    code_attr: Unit
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SKB_Data_Dictionary.pdf line 982: EventUnit ENG Description (not code)
+    from Common Codes [the machine-readable DD column says CC@EVENT_UNIT ENG ShortDescription while the prose beside it says ENG Description; the column governs. All 24 discipline DDs specify ShortDescription, so all 13 discipline rules were corrected together.]'
+  status: active
+- id: SKB_VENUE_CODE
+  applies_to:
+    disciplines:
+    - SKB
+  primitive: code_membership
+  target: .//*[@Venue]
+  attribute: Venue
+  params:
+    codeset: VENUE
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SKB_Data_Dictionary.pdf line 987: Venue Code'
+  status: active
+- id: SKB_VENUENAME_CODE
+  applies_to:
+    disciplines:
+    - SKB
+  primitive: code_membership
+  target: .//*[@VenueName]
+  attribute: VenueName
+  params:
+    codeset: VENUE
+    field: ENG_Description
+    code_attr: Venue
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SKB_Data_Dictionary.pdf line 989: Venue ENG Description (not code) from
+    Common Codes [description attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: SKB_LOCATION_CODE
+  applies_to:
+    disciplines:
+    - SKB
+  primitive: code_membership
+  target: .//*[@Location]
+  attribute: Location
+  params:
+    codeset: LOCATION
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SKB_Data_Dictionary.pdf line 991: Location code'
+  status: active
+- id: SKB_LOCATIONNAME_CODE
+  applies_to:
+    disciplines:
+    - SKB
+  primitive: code_membership
+  target: .//*[@LocationName]
+  attribute: LocationName
+  params:
+    codeset: LOCATION
+    field: ENG_Description
+    code_attr: Location
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SKB_Data_Dictionary.pdf line 993: Location ENG Description (not code) from
+    Common Codes [description attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: SKB_FUNCTION_CODE
+  applies_to:
+    disciplines:
+    - SKB
+  primitive: code_membership
+  target: .//*[@Function]
+  attribute: Function
+  params:
+    codeset: DISCIPLINE_FUNCTION
+    exclude_tags: [Presenter]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SKB_Data_Dictionary.pdf line 998: Official''s function for the event unit.
+    [codeset corrected from doc spelling ''DISCIPLINE_FUNCTI'']'
+  status: active
+- id: SKB_UNIT_CODE
+  applies_to:
+    disciplines:
+    - SKB
+  primitive: code_membership
+  target: .//Configs/Config[@Unit]
+  attribute: Unit
+  params:
+    codeset: PHASE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SKB_Data_Dictionary.pdf line 1450 (line reference predates a converter change):
+    "Element: Competition /Configs /Config (1,N) ... Unit | M | CC@Phase Code | Full RSC
+    of the Phase." governs @Unit only on Competition/Configs/Config. The prior target
+    .//*[@Unit] applied it to every @Unit in the message, including Competitor/@Unit
+    (a GEN EVENT_UNIT RSC per GEN DD line 1272), so only ~26% of conforming unit codes
+    passed. Narrowed to the Config element the DD actually describes
+    (rule-content-fixes audit).'
+  status: active
+- id: SKB_WIND_DIRECTION_CODE
+  applies_to:
+    disciplines:
+    - SKB
+  primitive: code_membership
+  target: .//*[@Wind_Direction]
+  attribute: Wind_Direction
+  params:
+    codeset: WIND_DIRECTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SKB_Data_Dictionary.pdf line 1641: Wind direction [codeset corrected from
+    doc spelling ''WINDDIRECTION'']'
+  status: active

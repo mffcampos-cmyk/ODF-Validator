@@ -1,0 +1,326 @@
+- id: RU7_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 376: Version number (ascending) associated
+    to the message content.'
+  status: active
+- id: RU7_VENUE_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@Venue]
+  attribute: Venue
+  params:
+    codeset: VENUE
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 517: Venue where the session takes place'
+  status: active
+- id: RU7_VENUENAME_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@VenueName]
+  attribute: VenueName
+  params:
+    codeset: VENUE
+    field: ENG_Description
+    code_attr: Venue
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 520: Venue ENG Description (not code) from
+    Common Codes [description attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: RU7_SESSIONSTATUS_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@SessionStatus]
+  attribute: SessionStatus
+  params:
+    codeset: SCHEDULESTATUS
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 528: Only use CANCELLED if applicable. All
+    other sessions are [codeset corrected from doc spelling ''SHEDULESTATUS'']'
+  status: active
+- id: RU7_SESSIONTYPE_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@SessionType]
+  attribute: SessionType
+  params:
+    codeset: SESSION_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 531: Session type of the Session.'
+  status: active
+- id: RU7_LANGUAGE_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@Language]
+  attribute: Language
+  params:
+    codeset: LANGUAGE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 542: Language of the Session Description'
+  status: active
+- id: RU7_PHASETYPE_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@PhaseType]
+  attribute: PhaseType
+  params:
+    codeset: PHASE_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 558: Phase type for the unit'
+  status: active
+- id: RU7_SCHEDULESTATUS_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@ScheduleStatus]
+  attribute: ScheduleStatus
+  params:
+    codeset: SCHEDULESTATUS
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 564: Unit Status'
+  status: active
+- id: RU7_LOCATION_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@Location]
+  attribute: Location
+  params:
+    codeset: LOCATION
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 623: Location where the unit takes place.'
+  status: active
+- id: RU7_LOCATIONNAME_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@LocationName]
+  attribute: LocationName
+  params:
+    codeset: LOCATION
+    field: ENG_Description
+    code_attr: Location
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 679: Location ENG Description (not code) from
+    Common Codes [description attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: RU7_UNIT_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@Unit]
+  attribute: Unit
+  params:
+    codeset: EVENT_UNIT
+    exclude_tags: [Precipitation, Pressure, Temperature, Wind]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 699: The full RSC of the unit where this competitor
+    came from. This'
+  status: active
+- id: RU7_ORGANISATION_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@Organisation]
+  attribute: Organisation
+  params:
+    codeset: ORGANISATION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 723: Should be sent when known'
+  status: active
+- id: RU7_STATUS_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@Status]
+  attribute: Status
+  params:
+    codeset: PARTICIPANT_STATUS
+    exclude_tags: [Protest]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 899: Participant''s sport entry status.'
+  status: active
+- id: RU7_COUNTRYOFBIRTH_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@CountryofBirth]
+  attribute: CountryofBirth
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 939: Country ID of Birth'
+  status: active
+- id: RU7_COUNTRYOFRESIDENCE_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@CountryofResidence]
+  attribute: CountryofResidence
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 943: Country ID of Residence'
+  status: active
+- id: RU7_NATIONALITY_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@Nationality]
+  attribute: Nationality
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 945: Participant''s nationality.'
+  status: active
+- id: RU7_MAINFUNCTIONID_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@MainFunctionId]
+  attribute: MainFunctionId
+  params:
+    codeset: DISCIPLINE_FUNCTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 950: Main function'
+  status: active
+- id: RU7_FUNCTION_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@Function]
+  attribute: Function
+  params:
+    codeset: DISCIPLINE_FUNCTION
+    exclude_tags: [Presenter]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 1364: Team Official function.'
+  status: active
+- id: RU7_DISCIPLINENAME_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@DisciplineName]
+  attribute: DisciplineName
+  params:
+    codeset: DISCIPLINE
+    field: ENG_Description
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 1757: Discipline ENG Description (not code)
+    from Common Codes [description attribute, validated as ENG_Description, not code
+    membership]'
+  status: active
+- id: RU7_EVENTNAME_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@EventName]
+  attribute: EventName
+  params:
+    codeset: EVENT
+    field: ENG_Description
+    code_attr: Event
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 1759: Event ENG Description (not code) from
+    Common Codes. [description attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: RU7_SUBEVENTNAME_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@SubEventName]
+  attribute: SubEventName
+  params:
+    codeset: EVENT_UNIT
+    field: ENG_shortDescription
+    code_attr: Unit
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 1763: EventUnit ENG Description (not code)
+    from Common Codes [the machine-readable DD column says CC@EVENT_UNIT ENG ShortDescription while the prose beside it says ENG Description; the column governs. All 24 discipline DDs specify ShortDescription, so all 13 discipline rules were corrected together.]'
+  status: active
+- id: RU7_LASTUNIT_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@LastUnit]
+  attribute: LastUnit
+  params:
+    codeset: EVENT_UNIT
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 2718: Send the full RSC of the most recently
+    unit made official for the'
+  status: active
+- id: RU7_WIND_DIRECTION_CODE
+  applies_to:
+    disciplines:
+    - RU7
+  primitive: code_membership
+  target: .//*[@Wind_Direction]
+  attribute: Wind_Direction
+  params:
+    codeset: WIND_DIRECTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_RU7_Data_Dictionary.pdf line 3973: Wind direction [codeset corrected from
+    doc spelling ''WINDDIRECTION'']'
+  status: active

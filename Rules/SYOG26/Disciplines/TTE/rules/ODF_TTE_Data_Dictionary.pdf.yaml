@@ -1,0 +1,286 @@
+- id: TTE_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 364: Version number (ascending) associated
+    to the message content.'
+  status: active
+- id: TTE_LANGUAGE_CODE
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: code_membership
+  target: .//*[@Language]
+  attribute: Language
+  params:
+    codeset: LANGUAGE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 542: Language of the Session Description'
+  status: active
+- id: TTE_PHASETYPE_CODE
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: code_membership
+  target: .//*[@PhaseType]
+  attribute: PhaseType
+  params:
+    codeset: PHASE_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 558: Phase type for the unit'
+  status: active
+- id: TTE_SCHEDULESTATUS_CODE
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: code_membership
+  target: .//*[@ScheduleStatus]
+  attribute: ScheduleStatus
+  params:
+    codeset: SCHEDULESTATUS
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 569: Unit Status'
+  status: active
+- id: TTE_VENUE_CODE
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: code_membership
+  target: .//*[@Venue]
+  attribute: Venue
+  params:
+    codeset: VENUE
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 630: Venue where the unit takes place'
+  status: active
+- id: TTE_LOCATION_CODE
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: code_membership
+  target: .//*[@Location]
+  attribute: Location
+  params:
+    codeset: LOCATION
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 633: Location where the unit takes place.'
+  status: active
+- id: TTE_VENUENAME_CODE
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: code_membership
+  target: .//*[@VenueName]
+  attribute: VenueName
+  params:
+    codeset: VENUE
+    field: ENG_Description
+    code_attr: Venue
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 679: Venue ENG Description (not code) from
+    Common Codes [description attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: TTE_LOCATIONNAME_CODE
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: code_membership
+  target: .//*[@LocationName]
+  attribute: LocationName
+  params:
+    codeset: LOCATION
+    field: ENG_Description
+    code_attr: Location
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 681: Location ENG Description (not code) from
+    Common Codes [description attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: TTE_UNIT_CODE
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: code_membership
+  target: .//*[@Unit]
+  attribute: Unit
+  params:
+    codeset: EVENT_UNIT
+    exclude_tags: [Precipitation, Pressure, Temperature, Wind]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 694: The full RSC of the unit where this competitor
+    came from. This'
+  status: active
+- id: TTE_ORGANISATION_CODE
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: code_membership
+  target: .//*[@Organisation]
+  attribute: Organisation
+  params:
+    codeset: ORGANISATION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 717: Should be sent when known'
+  status: active
+- id: TTE_STATUS_CODE
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: code_membership
+  target: .//*[@Status]
+  attribute: Status
+  params:
+    codeset: PARTICIPANT_STATUS
+    exclude_tags: [Protest]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 922: Participant''s accreditation status this
+    attribute is Mandatory in'
+  status: active
+- id: TTE_COUNTRYOFBIRTH_CODE
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: code_membership
+  target: .//*[@CountryofBirth]
+  attribute: CountryofBirth
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 956: Country ID of Birth'
+  status: active
+- id: TTE_COUNTRYOFRESIDENCE_CODE
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: code_membership
+  target: .//*[@CountryofResidence]
+  attribute: CountryofResidence
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 960: Country ID of Residence'
+  status: active
+- id: TTE_NATIONALITY_CODE
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: code_membership
+  target: .//*[@Nationality]
+  attribute: Nationality
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 962: Participant''s nationality.'
+  status: active
+- id: TTE_MAINFUNCTIONID_CODE
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: code_membership
+  target: .//*[@MainFunctionId]
+  attribute: MainFunctionId
+  params:
+    codeset: DISCIPLINE_FUNCTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 967: Main function'
+  status: active
+- id: TTE_FUNCTION_CODE
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: code_membership
+  target: .//*[@Function]
+  attribute: Function
+  params:
+    codeset: DISCIPLINE_FUNCTION
+    exclude_tags: [Presenter]
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 1378: Team Official function.'
+  status: active
+- id: TTE_DISCIPLINENAME_CODE
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: code_membership
+  target: .//*[@DisciplineName]
+  attribute: DisciplineName
+  params:
+    codeset: DISCIPLINE
+    field: ENG_Description
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 1968: Discipline ENG Description (not code)
+    from Common Codes [description attribute, validated as ENG_Description, not code
+    membership]'
+  status: active
+- id: TTE_EVENTNAME_CODE
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: code_membership
+  target: .//*[@EventName]
+  attribute: EventName
+  params:
+    codeset: EVENT
+    field: ENG_Description
+    code_attr: Event
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 1970: Event ENG Description (not code) from
+    Common Codes. [description attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: TTE_SUBEVENTNAME_CODE
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: code_membership
+  target: .//*[@SubEventName]
+  attribute: SubEventName
+  params:
+    codeset: EVENT_UNIT
+    field: ENG_shortDescription
+    code_attr: Unit
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 1974: EventUnit ENG Description (not code)
+    from Common Codes [the machine-readable DD column says CC@EVENT_UNIT ENG ShortDescription while the prose beside it says ENG Description; the column governs. All 24 discipline DDs specify ShortDescription, so all 13 discipline rules were corrected together.]'
+  status: active
+- id: TTE_LASTUNIT_CODE
+  applies_to:
+    disciplines:
+    - TTE
+  primitive: code_membership
+  target: .//*[@LastUnit]
+  attribute: LastUnit
+  params:
+    codeset: EVENT_UNIT
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TTE_Data_Dictionary.pdf line 2892: Send the full RSC of the most recently
+    unit made official for the'
+  status: active

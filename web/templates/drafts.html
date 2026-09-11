@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft rules — ODF Validator</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="rig">
+    <div class="rig-inner">
+      <a class="wordmark" href="/"><b>ODF</b><i></i><span>Validator</span></a>
+      <nav class="rig-nav end" aria-label="Sections">
+        <a href="/">Validate</a>
+        <a href="/rulesets">Rulesets</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <h1 class="eyebrow page-title">Draft rules</h1>
+
+    {% if skipped %}
+      <p class="notice">{{ skipped }} draft(s) were <b>not</b> approved because they
+      would have discarded parameters set by hand on the live rule. They are still
+      listed below — approve them one at a time, with the change on screen.</p>
+    {% endif %}
+
+    {% if not drafts %}
+      <p class="empty clear"><b>Nothing to review</b> — no draft rules are waiting.</p>
+    {% else %}
+      <div class="bar-actions">
+        <form method="post" action="/drafts/approve_all"
+              onsubmit="return confirm('Approve all {{ drafts|length }} draft rule(s)? Any that would discard a hand-set parameter are skipped and stay in the queue.');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <button type="submit" class="btn btn-run">Approve all {{ drafts|length }}</button>
+        </form>
+        <p class="hint">Approved rules join their ruleset and run on the next validation.
+        Drafts that would drop a hand-set parameter are skipped here.</p>
+      </div>
+
+      <ul class="stack">
+        {% for d in drafts %}
+        {% set delta = d._delta %}
+        <li>
+          <div class="item-head">
+            <span class="item-name">{{ d.id }}</span>
+            <span class="item-meta">{{ d.primitive }} &middot; {{ d.severity }}</span>
+            {% if delta.new %}<span class="flag">New rule</span>
+            {% elif delta.dropped %}<span class="flag bad">Would discard {{ delta.dropped|length }} hand-set parameter(s)</span>
+            {% elif delta.changed or delta.fields or delta.added %}<span class="flag">Changes an active rule</span>
+            {% else %}<span class="flag">Identical to the active rule</span>{% endif %}
+          </div>
+
+          <dl class="kv">
+            <dt>target</dt><dd><code>{{ d.target }}</code>{% if d.attribute %} · <code>@{{ d.attribute }}</code>{% endif %}</dd>
+            <dt>params</dt><dd><code>{{ d.params }}</code></dd>
+            <dt>source</dt><dd>{{ d.source_ref }}</dd>
+          </dl>
+
+          {% if delta.dropped %}
+          <p class="notice"><b>Approving this would remove, from the live rule:</b></p>
+          <ul class="chips">
+            {% for k, v in delta.dropped.items() %}<li><code>{{ k }}: {{ v }}</code></li>{% endfor %}
+          </ul>
+          <p class="hint">The derivation only ever emits what the Data Dictionary
+          literally states, so a parameter present on the live rule but missing here
+          was almost certainly added deliberately.</p>
+          {% endif %}
+
+          {% if delta.changed %}
+          <p class="hint">Changed: {% for k, pair in delta.changed.items() %}<code>{{ k }}</code>: {{ pair[0] }} &rarr; {{ pair[1] }}{{ ", " if not loop.last }}{% endfor %}</p>
+          {% endif %}
+          {% if delta.fields %}
+          <p class="hint">Also changed: {% for f, pair in delta.fields.items() %}<code>{{ f }}</code>{{ ", " if not loop.last }}{% endfor %}</p>
+          {% endif %}
+
+          <div class="row-actions">
+            <form method="post" action="/drafts/approve"
+                  {% if delta.dropped %}onsubmit="return confirm('This discards {{ delta.dropped|length }} hand-set parameter(s) from {{ d.id }}: {{ delta.dropped.keys()|join(', ') }}. Approve anyway?');"{% endif %}>
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+              <input type="hidden" name="draft_file" value="{{ d._draft_file }}">
+              <input type="hidden" name="rule_id" value="{{ d.id }}">
+              {% if delta.dropped %}<input type="hidden" name="confirm_loss" value="1">{% endif %}
+              <button type="submit" class="btn">{% if delta.dropped %}Approve &amp; discard{% else %}Approve{% endif %}</button>
+            </form>
+            <form method="post" action="/drafts/reject"
+                  onsubmit="return confirm('Reject {{ d.id }}? The draft is deleted.');">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+              <input type="hidden" name="draft_file" value="{{ d._draft_file }}">
+              <input type="hidden" name="rule_id" value="{{ d.id }}">
+              <button type="submit" class="btn">Reject</button>
+            </form>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </main>
+</body>
+</html>

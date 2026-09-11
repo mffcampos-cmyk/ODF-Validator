@@ -1,0 +1,18 @@
+- id: ARC_EXTCONFIG_CODE
+  applies_to:
+    doc_types:
+    - DT_CONFIG
+    disciplines:
+    - ARC
+  primitive: set_filter
+  target: .//ExtendedConfig
+  attribute: Code
+  params:
+    allowed:
+    - BRACKET_SIZE
+    - TEAM_SIZE
+  severity: error
+  scope: message
+  source_ref: 'ARC DD: Competition/Configs/Config/ExtendedConfig @Code is one of BRACKET_SIZE,
+    TEAM_SIZE'
+  status: active
