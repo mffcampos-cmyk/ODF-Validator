@@ -1,0 +1,575 @@
+- id: GEN_VENUE_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@Venue]
+  attribute: Venue
+  params:
+    codeset: VENUE
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 766: Venue where the session takes place'
+  status: active
+- id: GEN_SESSIONSTATUS_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@SessionStatus]
+  attribute: SessionStatus
+  params:
+    codeset: SCHEDULESTATUS
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 768: Id Only CANCELLED if applicable.
+    All other sessions are assumed to be scheduled. There is no change to running
+    or finished.'
+  status: active
+- id: GEN_SESSIONTYPE_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@SessionType]
+  attribute: SessionType
+  params:
+    codeset: SESSION_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 769: Id Session type of the Session.'
+  status: active
+- id: GEN_LANGUAGE_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@Language]
+  attribute: Language
+  params:
+    codeset: LANGUAGE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 776: Language of the Session Description'
+  status: active
+- id: GEN_PHASETYPE_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@PhaseType]
+  attribute: PhaseType
+  params:
+    codeset: PHASE_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 788: Id Phase type for the unit. Mandatory
+    when unit is phase or event unit, otherwise do not send.'
+  status: active
+- id: GEN_SCHEDULESTATUS_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@ScheduleStatus]
+  attribute: ScheduleStatus
+  params:
+    codeset: SCHEDULESTATUS
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 791: Id Unit Status'
+  status: active
+- id: GEN_LOCATION_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@Location]
+  attribute: Location
+  params:
+    codeset: LOCATION
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 806: Id Location where the unit takes
+    place. Mandatory unless UNSCHEDULED.'
+  status: active
+- id: GEN_UNIT_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@Unit]
+  attribute: Unit
+  params:
+    codeset: EVENT_UNIT
+    exclude_tags:
+    - Precipitation
+    - Pressure
+    - Temperature
+    - Wind
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 852: Code CC@PHASE Cod The full RSC
+    of the unit where this competitor came from. This attribute is only filled if
+    the progression of the competitors are 100% confirmed as participating at this
+    time and not subject to change depending on TV times etc. Further, the data is
+    removed when the real competitors are known.'
+  status: active
+- id: GEN_ORGANISATION_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@Organisation]
+  attribute: Organisation
+  params:
+    codeset: ORGANISATION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 861: Id Should be sent when known'
+  status: active
+- id: GEN_STATUS_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@Status]
+  attribute: Status
+  params:
+    codeset: PARTICIPANT_STATUS
+    exclude_tags:
+    - Protest
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 1032: Id Participant''s sport entry
+    status. To delete a participant, a specific value of the Status attribute is used.'
+  status: active
+- id: GEN_COUNTRYOFBIRTH_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@CountryofBirth]
+  attribute: CountryofBirth
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 1053: Id Country Id of Birth'
+  status: active
+- id: GEN_COUNTRYOFRESIDENCE_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@CountryofResidence]
+  attribute: CountryofResidence
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 1055: Id Country Id of Residence'
+  status: active
+- id: GEN_NATIONALITY_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@Nationality]
+  attribute: Nationality
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 1056: Id Participant''s Nationality,
+    if known'
+  status: active
+- id: GEN_MAINFUNCTIONID_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@MainFunctionId]
+  attribute: MainFunctionId
+  params:
+    codeset: DISCIPLINE_FUNCTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 1057: Id Main Function is optional if
+    @Status is Historical, otherwise is mandatory.'
+  status: active
+- id: GEN_FUNCTIONID_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@FunctionId]
+  attribute: FunctionId
+  params:
+    codeset: DISCIPLINE_FUNCTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 1082: Id Additional officials'' function
+    code'
+  status: active
+- id: GEN_SEX_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@Sex]
+  attribute: Sex
+  params:
+    codeset: HORSE_GENDER
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 1255: Horse''s sex.'
+  status: active
+- id: GEN_COLOURCODE_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@ColourCode]
+  attribute: ColourCode
+  params:
+    codeset: HORSE_COLOUR
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 1264: Id Horse''s colour code.'
+  status: active
+- id: GEN_BREEDCODE_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@BreedCode]
+  attribute: BreedCode
+  params:
+    codeset: HORSE_BREED
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 1266: Id Horse''s breed code if available'
+  status: active
+- id: GEN_FUNCTION_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@Function]
+  attribute: Function
+  params:
+    codeset: DISCIPLINE_FUNCTION
+    exclude_tags:
+    - Presenter
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 1421: Id Te am Official function.'
+  status: active
+- id: GEN_RECORDTYPE_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@RecordType]
+  attribute: RecordType
+  params:
+    codeset: RECORD_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 1901: RecordType Code which specifies
+    the level at which the record is broken.'
+  status: active
+- id: GEN_LASTUNIT_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@LastUnit]
+  attribute: LastUnit
+  params:
+    codeset: EVENT_UNIT
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 4362: Code Full RSC of the last unit
+    completed (or in progress if applicable) related to the message''s content'
+  status: active
+- id: GEN_DOCUMENTSUBCODE_POSINT
+  applies_to:
+    doc_types:
+    - DT_PRESSPHOTOFINISH_LK
+    - DT_COMMUNICATION
+  primitive: value_format
+  target: .
+  attribute: DocumentSubcode
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 5679: Picture number'
+  status: active
+- id: GEN_COUNTRY_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@Country]
+  attribute: Country
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 7139: Id Always send for new records
+    and where known for historical records. Not applicable for not established records'
+  status: active
+- id: GEN_WIND_DIRECTION_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@Wind_Direction]
+  attribute: Wind_Direction
+  params:
+    codeset: WIND_DIRECTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 8903: Id Wind direction'
+  status: active
+- id: GEN_EVENT_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@Event]
+  attribute: Event
+  params:
+    codeset: EVENT
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 9034: CC@DISCIPLINE Code Full RSC of
+    the event for the medal or GEN------------------------- ------ when sending the
+    list of names (DocumentSubtype=PRESENTERS)'
+  status: active
+- id: GEN_LASTEVENT_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@LastEvent]
+  attribute: LastEvent
+  params:
+    codeset: EVENT
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 9394: Code Event RSC Last event updating
+    the medal standings message'
+  status: active
+- id: GEN_REPORTTYPE_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@ReportType]
+  attribute: ReportType
+  params:
+    codeset: BACKGROUND_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 9825: Id Report Type code (for example
+    MDL – Past Medallists, PRE –Past Results, FCT-Facts, CER – Ceremonies Facts, etc.)'
+  status: active
+- id: GEN_DISCIPLINE_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@Discipline]
+  attribute: Discipline
+  params:
+    codeset: DISCIPLINE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 11684: Full RSC of the discipline of
+    the athlete, S(34)'
+  status: active
+- id: GEN_CLUSTER_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@Cluster]
+  attribute: Cluster
+  params:
+    codeset: CLUSTER
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 11685: Cluster code from Common Codes'
+  status: active
+- id: GEN_CATEGORY_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@Category]
+  attribute: Category
+  params:
+    codeset: DISCIPLINE
+    column: Id
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 11967: Discipline code (char(3)) that
+    news apply.'
+  status: active
+- id: GEN_ITEM_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@Item]
+  attribute: Item
+  params:
+    codeset: NEWS_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 11969: News Subtype (Code of application
+    Criteria level 2), that is code of the item type like FQ for Flash Quotes.'
+  status: active
+- id: GEN_PHASE_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@Phase]
+  attribute: Phase
+  params:
+    codeset: PHASE
+    column: Phase
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 12752: Phase Phase Code where applicable'
+  status: active
+- id: GEN_EVENTUNIT_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@EventUnit]
+  attribute: EventUnit
+  params:
+    codeset: EVENT_UNIT
+    column: Eventunit
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 12753: Eventunit Event Unit Code where
+    applicable'
+  status: active
+- id: GEN_PROGRESSIONTYPE_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@ProgressionType]
+  attribute: ProgressionType
+  params:
+    codeset: PROGRESSION_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf line 12769: Id Code reflecting the applicable
+    progression type'
+  status: active
+- id: GEN_VENUENAME_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@VenueName]
+  attribute: VenueName
+  params:
+    codeset: VENUE
+    field: ENG_Description
+    code_attr: Venue
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.md line 1067: Venue ENG Description (not code)
+    from Common Codes [description attribute, validated as ENG_Description, not code
+    membership]'
+  status: active
+- id: GEN_LOCATIONNAME_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@LocationName]
+  attribute: LocationName
+  params:
+    codeset: LOCATION
+    field: ENG_Description
+    code_attr: Location
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.md line 1242: Location ENG Description (not code)
+    from Common Codes [description attribute, validated as ENG_Description, not code
+    membership]'
+  status: active
+- id: GEN_DISCIPLINENAME_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@DisciplineName]
+  attribute: DisciplineName
+  params:
+    codeset: DISCIPLINE
+    field: ENG_Description
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.md line 3132: Discipline ENG Description (not
+    code) from Common Codes [description attribute, validated as ENG_Description,
+    not code membership]'
+  status: active
+- id: GEN_EVENTNAME_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@EventName]
+  attribute: EventName
+  params:
+    codeset: EVENT
+    field: ENG_Description
+    code_attr: Event
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.md line 3146: Event ENG Description (not code)
+    from Common Codes. [description attribute, validated as ENG_Description, not code
+    membership]'
+  status: active
+- id: GEN_SUBEVENTNAME_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@SubEventName]
+  attribute: SubEventName
+  params:
+    codeset: EVENT_UNIT
+    field: ENG_shortDescription
+    code_attr: Unit
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.md line 3150: EventUnit ENG Short Description
+    (not code) from Common [description attribute, validated as ENG_shortDescription,
+    not code membership]'
+  status: active
+- id: GEN_ORGANISATIONNAME_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@OrganisationName]
+  attribute: OrganisationName
+  params:
+    codeset: ORGANISATION
+    field: ENG_longDescription
+    code_attr: Organisation
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.md line 15042: Name of the Organisation. Long
+    Description from common codes. [description attribute, validated as ENG_longDescription,
+    not code membership]'
+  status: active
+- id: GEN_CATEGORYNAME_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@CategoryName]
+  attribute: CategoryName
+  params:
+    codeset: DISCIPLINE
+    field: ENG_Description
+    code_attr: Category
+    column: Id
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.md line 15656: Category Name [description attribute,
+    validated as ENG_Description, not code membership]'
+  status: active
+- id: GEN_REPORTTYPENAME_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@ReportTypeName]
+  attribute: ReportTypeName
+  params:
+    codeset: BACKGROUND_TYPE
+    field: ENG_Description
+    code_attr: ReportType
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.md line 15681: Report Type Name [description
+    attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: GEN_CLUSTERNAME_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@ClusterName]
+  attribute: ClusterName
+  params:
+    codeset: CLUSTER
+    field: ENG_Description
+    code_attr: Cluster
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.md line 18664: Cluster ENG description [description
+    attribute, validated as ENG_Description, not code membership]'
+  status: active
+- id: GEN_COMPETITIONFORMATTY_CODE
+  applies_to: {}
+  primitive: code_membership
+  target: .//*[@CompetitionFormatTy]
+  attribute: CompetitionFormatTy
+  params:
+    codeset: COMPETITION_FORMAT_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.md line 20863: Code reflecting the applicable
+    competition format type [codeset corrected from doc spelling ''COMPETITION_FORMAT_T'']'
+  status: active
+- id: GEN_EXTENDEDINFO_CHILD_TAG
+  applies_to: {}
+  primitive: allowed_child_tags
+  target: .//ExtendedInfo
+  params:
+    allowed:
+    - Extension
+  severity: error
+  scope: message
+  source_ref: 'ODF GEN: Competition/ExtendedInfos/ExtendedInfo/Extension (0,N) --
+    the only permitted child element of <ExtendedInfo> is <Extension>. Defense-in-depth:
+    the XSD masks a misnamed child (e.g. <ExtensionElem>) when the parent ExtendedInfo
+    is itself rejected for element order (see 2026-07-20 BKG audit).'
+  status: active

@@ -1,17 +1,3 @@
-- id: WRB_VERSION_POSINT
-  applies_to:
-    disciplines:
-    - WRB
-  primitive: value_format
-  target: .//*[@Version]
-  attribute: Version
-  params:
-    regex: ^[0-9]+$
-  severity: error
-  scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 357: Version number (ascending) associated
-    to the message content.'
-  status: active
 - id: WRB_VENUE_CODE
   applies_to:
     disciplines:
@@ -25,7 +11,8 @@
     - TBD
   severity: warning
   scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 517: Venue where the session takes place'
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 517: Venue where the session takes
+    place'
   status: active
 - id: WRB_VENUENAME_CODE
   applies_to:
@@ -40,74 +27,9 @@
     code_attr: Venue
   severity: warning
   scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 519: Venue ENG Description (not code) from
-    Common Codes [description attribute, validated as ENG_Description, not code membership]'
-  status: active
-- id: WRB_SESSIONSTATUS_CODE
-  applies_to:
-    disciplines:
-    - WRB
-  primitive: code_membership
-  target: .//*[@SessionStatus]
-  attribute: SessionStatus
-  params:
-    codeset: SCHEDULESTATUS
-  severity: warning
-  scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 521: Only use CANCELLED if applicable. All
-    other sessions are [codeset corrected from doc spelling ''SHEDULESTATUS'']'
-  status: active
-- id: WRB_SESSIONTYPE_CODE
-  applies_to:
-    disciplines:
-    - WRB
-  primitive: code_membership
-  target: .//*[@SessionType]
-  attribute: SessionType
-  params:
-    codeset: SESSION_TYPE
-  severity: warning
-  scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 524: Session type of the Session.'
-  status: active
-- id: WRB_LANGUAGE_CODE
-  applies_to:
-    disciplines:
-    - WRB
-  primitive: code_membership
-  target: .//*[@Language]
-  attribute: Language
-  params:
-    codeset: LANGUAGE
-  severity: warning
-  scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 535: Language of the Session Description'
-  status: active
-- id: WRB_PHASETYPE_CODE
-  applies_to:
-    disciplines:
-    - WRB
-  primitive: code_membership
-  target: .//*[@PhaseType]
-  attribute: PhaseType
-  params:
-    codeset: PHASE_TYPE
-  severity: warning
-  scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 551: Phase type for the unit'
-  status: active
-- id: WRB_SCHEDULESTATUS_CODE
-  applies_to:
-    disciplines:
-    - WRB
-  primitive: code_membership
-  target: .//*[@ScheduleStatus]
-  attribute: ScheduleStatus
-  params:
-    codeset: SCHEDULESTATUS
-  severity: warning
-  scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 557: Unit Status'
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 519: Venue ENG Description (not code)
+    from Common Codes [description attribute, validated as ENG_Description, not code
+    membership]'
   status: active
 - id: WRB_LOCATION_CODE
   applies_to:
@@ -122,7 +44,8 @@
     - TBD
   severity: warning
   scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 626: Location where the unit takes place.'
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 626: Location where the unit takes
+    place.'
   status: active
 - id: WRB_LOCATIONNAME_CODE
   applies_to:
@@ -137,8 +60,9 @@
     code_attr: Location
   severity: warning
   scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 671: Location ENG Description (not code) from
-    Common Codes [description attribute, validated as ENG_Description, not code membership]'
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 671: Location ENG Description (not
+    code) from Common Codes [description attribute, validated as ENG_Description,
+    not code membership]'
   status: active
 - id: WRB_UNIT_CODE
   applies_to:
@@ -149,24 +73,15 @@
   attribute: Unit
   params:
     codeset: EVENT_UNIT
-    exclude_tags: [Precipitation, Pressure, Temperature, Wind]
+    exclude_tags:
+    - Precipitation
+    - Pressure
+    - Temperature
+    - Wind
   severity: warning
   scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 684: The full RSC of the unit where this competitor
-    came from. This'
-  status: active
-- id: WRB_ORGANISATION_CODE
-  applies_to:
-    disciplines:
-    - WRB
-  primitive: code_membership
-  target: .//*[@Organisation]
-  attribute: Organisation
-  params:
-    codeset: ORGANISATION
-  severity: warning
-  scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 708: Should be sent when known'
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 684: The full RSC of the unit where
+    this competitor came from. This'
   status: active
 - id: WRB_STATUS_CODE
   applies_to:
@@ -177,63 +92,12 @@
   attribute: Status
   params:
     codeset: PARTICIPANT_STATUS
-    exclude_tags: [Protest]
+    exclude_tags:
+    - Protest
   severity: warning
   scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 909: Participant''s accreditation status this
-    attribute is Mandatory in the'
-  status: active
-- id: WRB_COUNTRYOFBIRTH_CODE
-  applies_to:
-    disciplines:
-    - WRB
-  primitive: code_membership
-  target: .//*[@CountryofBirth]
-  attribute: CountryofBirth
-  params:
-    codeset: COUNTRY
-  severity: warning
-  scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 946: Country ID of Birth'
-  status: active
-- id: WRB_COUNTRYOFRESIDENCE_CODE
-  applies_to:
-    disciplines:
-    - WRB
-  primitive: code_membership
-  target: .//*[@CountryofResidence]
-  attribute: CountryofResidence
-  params:
-    codeset: COUNTRY
-  severity: warning
-  scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 950: Country ID of Residence'
-  status: active
-- id: WRB_NATIONALITY_CODE
-  applies_to:
-    disciplines:
-    - WRB
-  primitive: code_membership
-  target: .//*[@Nationality]
-  attribute: Nationality
-  params:
-    codeset: COUNTRY
-  severity: warning
-  scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 952: Participant''s nationality.'
-  status: active
-- id: WRB_MAINFUNCTIONID_CODE
-  applies_to:
-    disciplines:
-    - WRB
-  primitive: code_membership
-  target: .//*[@MainFunctionId]
-  attribute: MainFunctionId
-  params:
-    codeset: DISCIPLINE_FUNCTION
-  severity: warning
-  scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 957: Main function'
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 909: Participant''s accreditation
+    status this attribute is Mandatory in the'
   status: active
 - id: WRB_DISCIPLINENAME_CODE
   applies_to:
@@ -247,9 +111,9 @@
     field: ENG_Description
   severity: warning
   scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 1445: Discipline ENG Description (not code)
-    from Common Codes [description attribute, validated as ENG_Description, not code
-    membership]'
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 1445: Discipline ENG Description (not
+    code) from Common Codes [description attribute, validated as ENG_Description,
+    not code membership]'
   status: active
 - id: WRB_EVENTNAME_CODE
   applies_to:
@@ -264,8 +128,9 @@
     code_attr: Event
   severity: warning
   scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 1447: Event ENG Description (not code) from
-    Common Codes. [description attribute, validated as ENG_Description, not code membership]'
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 1447: Event ENG Description (not code)
+    from Common Codes. [description attribute, validated as ENG_Description, not code
+    membership]'
   status: active
 - id: WRB_SUBEVENTNAME_CODE
   applies_to:
@@ -280,8 +145,11 @@
     code_attr: Unit
   severity: warning
   scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 1451: EventUnit ENG Description (not code)
-    from Common Codes [the machine-readable DD column says CC@EVENT_UNIT ENG ShortDescription while the prose beside it says ENG Description; the column governs. All 24 discipline DDs specify ShortDescription, so all 13 discipline rules were corrected together.]'
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 1451: EventUnit ENG Description (not
+    code) from Common Codes [the machine-readable DD column says CC@EVENT_UNIT ENG
+    ShortDescription while the prose beside it says ENG Description; the column governs.
+    All 24 discipline DDs specify ShortDescription, so all 13 discipline rules were
+    corrected together.]'
   status: active
 - id: WRB_FUNCTION_CODE
   applies_to:
@@ -292,11 +160,143 @@
   attribute: Function
   params:
     codeset: DISCIPLINE_FUNCTION
-    exclude_tags: [Presenter]
+    exclude_tags:
+    - Presenter
   severity: warning
   scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 1475: Official''s function . [codeset corrected
-    from doc spelling ''DISCIPLINE_FUNCTI'']'
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 1475: Official''s function . [codeset
+    corrected from doc spelling ''DISCIPLINE_FUNCTI'']'
+  status: active
+- id: WRB_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - WRB
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 274: Version number (ascending) associated
+    to the message content.'
+  status: active
+- id: WRB_SESSIONTYPE_CODE
+  applies_to:
+    disciplines:
+    - WRB
+  primitive: code_membership
+  target: .//*[@SessionType]
+  attribute: SessionType
+  params:
+    codeset: SESSION_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 366: Id Session type of the Session.'
+  status: active
+- id: WRB_LANGUAGE_CODE
+  applies_to:
+    disciplines:
+    - WRB
+  primitive: code_membership
+  target: .//*[@Language]
+  attribute: Language
+  params:
+    codeset: LANGUAGE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 373: Id Language of the Session Description'
+  status: active
+- id: WRB_PHASETYPE_CODE
+  applies_to:
+    disciplines:
+    - WRB
+  primitive: code_membership
+  target: .//*[@PhaseType]
+  attribute: PhaseType
+  params:
+    codeset: PHASE_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 384: Id Phase type for the unit'
+  status: active
+- id: WRB_SCHEDULESTATUS_CODE
+  applies_to:
+    disciplines:
+    - WRB
+  primitive: code_membership
+  target: .//*[@ScheduleStatus]
+  attribute: ScheduleStatus
+  params:
+    codeset: SCHEDULESTATUS
+  severity: warning
+  scope: message
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 387: Id Unit Status'
+  status: active
+- id: WRB_ORGANISATION_CODE
+  applies_to:
+    disciplines:
+    - WRB
+  primitive: code_membership
+  target: .//*[@Organisation]
+  attribute: Organisation
+  params:
+    codeset: ORGANISATION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 461: Id Should be sent when known'
+  status: active
+- id: WRB_COUNTRYOFBIRTH_CODE
+  applies_to:
+    disciplines:
+    - WRB
+  primitive: code_membership
+  target: .//*[@CountryofBirth]
+  attribute: CountryofBirth
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 603: Id'
+  status: active
+- id: WRB_COUNTRYOFRESIDENCE_CODE
+  applies_to:
+    disciplines:
+    - WRB
+  primitive: code_membership
+  target: .//*[@CountryofResidence]
+  attribute: CountryofResidence
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 605: Id'
+  status: active
+- id: WRB_NATIONALITY_CODE
+  applies_to:
+    disciplines:
+    - WRB
+  primitive: code_membership
+  target: .//*[@Nationality]
+  attribute: Nationality
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 606: ID'
+  status: active
+- id: WRB_MAINFUNCTIONID_CODE
+  applies_to:
+    disciplines:
+    - WRB
+  primitive: code_membership
+  target: .//*[@MainFunctionId]
+  attribute: MainFunctionId
+  params:
+    codeset: DISCIPLINE_FUNCTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 607: Id'
   status: active
 - id: WRB_LASTUNIT_CODE
   applies_to:
@@ -309,8 +309,8 @@
     codeset: EVENT_UNIT
   severity: warning
   scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 1937: Send the full RSC of the most recently
-    unit made official for the'
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 1121: Code Send the full RSC of the
+    most recently unit made official for the pool included in this message.'
   status: active
 - id: WRB_WIND_DIRECTION_CODE
   applies_to:
@@ -323,6 +323,5 @@
     codeset: WIND_DIRECTION
   severity: warning
   scope: message
-  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 2921: Wind direction [codeset corrected from
-    doc spelling ''WINDDIRECTION'']'
+  source_ref: 'ODF_WRB_Data_Dictionary.pdf line 1755: Id Wind direction'
   status: active

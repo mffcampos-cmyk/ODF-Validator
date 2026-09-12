@@ -1,17 +1,3 @@
-- id: GAR_VERSION_POSINT
-  applies_to:
-    disciplines:
-    - GAR
-  primitive: value_format
-  target: .//*[@Version]
-  attribute: Version
-  params:
-    regex: ^[0-9]+$
-  severity: error
-  scope: message
-  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 354: Version number (ascending) associated to the message
-    content.'
-  status: active
 - id: GAR_STATUS_CODE
   applies_to:
     disciplines:
@@ -25,73 +11,8 @@
     - Protest
   severity: warning
   scope: message
-  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 465: Participant''s accreditation status this attribute
-    is Mandatory in'
-  status: active
-- id: GAR_ORGANISATION_CODE
-  applies_to:
-    disciplines:
-    - GAR
-  primitive: code_membership
-  target: .//*[@Organisation]
-  attribute: Organisation
-  params:
-    codeset: ORGANISATION
-  severity: warning
-  scope: message
-  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 501: Organisation ID'
-  status: active
-- id: GAR_COUNTRYOFBIRTH_CODE
-  applies_to:
-    disciplines:
-    - GAR
-  primitive: code_membership
-  target: .//*[@CountryofBirth]
-  attribute: CountryofBirth
-  params:
-    codeset: COUNTRY
-  severity: warning
-  scope: message
-  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 509: Country ID of Birth'
-  status: active
-- id: GAR_COUNTRYOFRESIDENCE_CODE
-  applies_to:
-    disciplines:
-    - GAR
-  primitive: code_membership
-  target: .//*[@CountryofResidence]
-  attribute: CountryofResidence
-  params:
-    codeset: COUNTRY
-  severity: warning
-  scope: message
-  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 513: Country ID of Residence'
-  status: active
-- id: GAR_NATIONALITY_CODE
-  applies_to:
-    disciplines:
-    - GAR
-  primitive: code_membership
-  target: .//*[@Nationality]
-  attribute: Nationality
-  params:
-    codeset: COUNTRY
-  severity: warning
-  scope: message
-  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 515: Participant''s nationality.'
-  status: active
-- id: GAR_MAINFUNCTIONID_CODE
-  applies_to:
-    disciplines:
-    - GAR
-  primitive: code_membership
-  target: .//*[@MainFunctionId]
-  attribute: MainFunctionId
-  params:
-    codeset: DISCIPLINE_FUNCTION
-  severity: warning
-  scope: message
-  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 521: Main function'
+  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 465: Participant''s accreditation
+    status this attribute is Mandatory in'
   status: active
 - id: GAR_VENUE_CODE
   applies_to:
@@ -136,7 +57,8 @@
     - Presenter
   severity: warning
   scope: message
-  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 1082: Official''s function (example: referee, etc.).'
+  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 1082: Official''s function (example:
+    referee, etc.).'
   status: active
 - id: GAR_POS_POSINT
   applies_to:
@@ -162,19 +84,104 @@
     - ROTATION
   severity: warning
   scope: message
-  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 1723: Number for ranks 1, 2, 3. PROVISIONAL, narrowed
-    a rules review: the evidence for how broadly @Pos is numeric is disputed and cannot be settled
-    without the real message corpus, so this error-severity rule is deliberately under-scoped rather than
-    over-scoped. Restricted via context_attr/context_values to the @Code values ODF_GAR_Data_Dictionary.md
-    documents as numeric for @Pos: ExtendedResult Code=STAGE ("Positive Integer", line 1062) and its nested
-    Extension Code=NEED ("Positive Integer, Number for ranks 1, 2, 3", line 1067); ExtendedResult Codes
-    SCORE/DIFFICULTY/EXECUTION/STICK_BONUS/ VAULT_BONUS/PENALTY/IRM/INQUIRY ("1, 2" -- vault number, lines
-    789-816, 1072-1097, 1246-1269); and EventUnitEntry Code=ROTATION ("Positive Integer", lines 852/889).
-    Any other @Code sharing the tag (e.g. a generic Extension the GAR DD never speaks to) is intentionally
-    left unchecked by this rule; do not read this list as a settled/complete enumeration. The basis is
-    disputed: the GAR DD''s numeric statement is scoped to Extension[Code=NEED] while the XSD types @Pos
-    as xs:string in 25 of 27 declarations. Downgraded error -> warning (owner decision): where
-    the documentation contradicts itself, report but do not fail.'
+  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 1723: Number for ranks 1, 2, 3. PROVISIONAL,
+    narrowed a rules review: the evidence for how broadly @Pos is numeric is disputed
+    and cannot be settled without the real message corpus, so this error-severity
+    rule is deliberately under-scoped rather than over-scoped. Restricted via context_attr/context_values
+    to the @Code values ODF_GAR_Data_Dictionary.md documents as numeric for @Pos:
+    ExtendedResult Code=STAGE ("Positive Integer", line 1062) and its nested Extension
+    Code=NEED ("Positive Integer, Number for ranks 1, 2, 3", line 1067); ExtendedResult
+    Codes SCORE/DIFFICULTY/EXECUTION/STICK_BONUS/ VAULT_BONUS/PENALTY/IRM/INQUIRY
+    ("1, 2" -- vault number, lines 789-816, 1072-1097, 1246-1269); and EventUnitEntry
+    Code=ROTATION ("Positive Integer", lines 852/889). Any other @Code sharing the
+    tag (e.g. a generic Extension the GAR DD never speaks to) is intentionally left
+    unchecked by this rule; do not read this list as a settled/complete enumeration.
+    The basis is disputed: the GAR DD''s numeric statement is scoped to Extension[Code=NEED]
+    while the XSD types @Pos as xs:string in 25 of 27 declarations. Downgraded error
+    -> warning (owner decision): where the documentation contradicts itself, report
+    but do not fail.'
+  status: active
+- id: GAR_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - GAR
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 288: Version number (ascending) associated
+    to the message content.'
+  status: active
+- id: GAR_ORGANISATION_CODE
+  applies_to:
+    disciplines:
+    - GAR
+  primitive: code_membership
+  target: .//*[@Organisation]
+  attribute: Organisation
+  params:
+    codeset: ORGANISATION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 359: Id Organisation ID'
+  status: active
+- id: GAR_COUNTRYOFBIRTH_CODE
+  applies_to:
+    disciplines:
+    - GAR
+  primitive: code_membership
+  target: .//*[@CountryofBirth]
+  attribute: CountryofBirth
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 362: Id Country ID of Birth'
+  status: active
+- id: GAR_COUNTRYOFRESIDENCE_CODE
+  applies_to:
+    disciplines:
+    - GAR
+  primitive: code_membership
+  target: .//*[@CountryofResidence]
+  attribute: CountryofResidence
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 364: Id Country ID of Residence'
+  status: active
+- id: GAR_NATIONALITY_CODE
+  applies_to:
+    disciplines:
+    - GAR
+  primitive: code_membership
+  target: .//*[@Nationality]
+  attribute: Nationality
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 365: ID Participant''s nationality.
+    Although this attribute is optional, in very exceptional situations it will not
+    be known, and for this reason not ready to be sent.'
+  status: active
+- id: GAR_MAINFUNCTIONID_CODE
+  applies_to:
+    disciplines:
+    - GAR
+  primitive: code_membership
+  target: .//*[@MainFunctionId]
+  attribute: MainFunctionId
+  params:
+    codeset: DISCIPLINE_FUNCTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 366: Id Main function In the Case
+    of Current="true" this attribute is Mandatory.'
   status: active
 - id: GAR_LASTUNIT_CODE
   applies_to:
@@ -187,8 +194,8 @@
     codeset: EVENT_UNIT
   severity: warning
   scope: message
-  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 1986: Send the full RSC of the most recently completed
-    unit or current'
+  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 1208: Code Send the full RSC of the
+    most recently completed unit or current unit if in progress included in the message.'
   status: active
 - id: GAR_UNIT_CODE
   applies_to:
@@ -201,10 +208,5 @@
     codeset: PHASE
   severity: warning
   scope: message
-  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 3038 (line reference predates a converter change): "Element:
-    Competition /Configs /Config (1,N) ... Unit | M | CC@PHASE Code | Full RSC of the Phase." governs
-    @Unit only on Competition/Configs/Config. The prior target .//*[@Unit] applied it to every @Unit in
-    the message, including Competitor/@Unit (a GEN EVENT_UNIT RSC per GEN DD line 1272), so only ~31%
-    of conforming unit codes passed. Narrowed to the Config element the DD actually describes (rule-content-fixes
-    audit).'
+  source_ref: 'ODF_GAR_Data_Dictionary.pdf line 1802: Code Full RSC of the Phase.'
   status: active

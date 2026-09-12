@@ -219,3 +219,41 @@ def test_approve_all_skips_the_lossy_draft_and_says_so(tmp_path, monkeypatch):
     assert live[0]["params"]["exclude_tags"] == ["Precipitation", "Wind"], \
         "approve-all must not discard a refinement"
     assert draft_file.exists(), "the skipped draft stays in the queue"
+
+
+# --------------------------------------------------------------- reject all ---
+
+def test_reject_all_empties_the_queue_without_activating_anything(tmp_path, monkeypatch):
+    dd = _setup_pending_draft(tmp_path, monkeypatch)
+    draft_file = dd.parent / ".drafts" / "ARC_DD.md.draft.yaml"
+    assert draft_file.exists()          # fixture sanity
+
+    r = client.post("/drafts/reject_all", data={"csrf_token": CSRF_TOKEN},
+                    follow_redirects=False)
+
+    assert r.status_code == 303
+    assert r.headers["location"] == "/drafts"
+    assert not draft_file.exists()
+    assert not (dd.parent / "rules" / "ARC_DD.md.yaml").exists(), (
+        "rejecting must never write an active rule file")
+
+
+def test_the_drafts_page_offers_reject_all_with_the_pending_count(tmp_path, monkeypatch):
+    _setup_pending_draft(tmp_path, monkeypatch)
+
+    page = client.get("/drafts").text
+
+    assert 'action="/drafts/reject_all"' in page
+    assert "Reject all 1" in page
+
+
+def test_reject_all_is_not_offered_when_the_queue_is_empty(tmp_path, monkeypatch):
+    rules_root = tmp_path / "Rules"
+    (rules_root / "TESTSET").mkdir(parents=True)
+    monkeypatch.setattr(app_module, "RULES_ROOT", rules_root)
+    monkeypatch.setattr(app_module, "PACKS", {})
+    app_module.discover_packs()
+
+    page = client.get("/drafts").text
+
+    assert 'action="/drafts/reject_all"' not in page

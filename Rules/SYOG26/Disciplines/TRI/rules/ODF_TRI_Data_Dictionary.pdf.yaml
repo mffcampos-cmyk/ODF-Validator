@@ -1,17 +1,3 @@
-- id: TRI_VERSION_POSINT
-  applies_to:
-    disciplines:
-    - TRI
-  primitive: value_format
-  target: .//*[@Version]
-  attribute: Version
-  params:
-    regex: ^[0-9]+$
-  severity: error
-  scope: message
-  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 287: Version number (ascending) associated
-    to the message content.'
-  status: active
 - id: TRI_STATUS_CODE
   applies_to:
     disciplines:
@@ -21,76 +7,12 @@
   attribute: Status
   params:
     codeset: PARTICIPANT_STATUS
-    exclude_tags: [Protest]
+    exclude_tags:
+    - Protest
   severity: warning
   scope: message
-  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 416: Participant''s accreditation status this
-    attribute is Mandatory in the'
-  status: active
-- id: TRI_ORGANISATION_CODE
-  applies_to:
-    disciplines:
-    - TRI
-  primitive: code_membership
-  target: .//*[@Organisation]
-  attribute: Organisation
-  params:
-    codeset: ORGANISATION
-  severity: warning
-  scope: message
-  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 445: Organisation ID'
-  status: active
-- id: TRI_COUNTRYOFBIRTH_CODE
-  applies_to:
-    disciplines:
-    - TRI
-  primitive: code_membership
-  target: .//*[@CountryofBirth]
-  attribute: CountryofBirth
-  params:
-    codeset: COUNTRY
-  severity: warning
-  scope: message
-  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 453: Country ID of Birth'
-  status: active
-- id: TRI_COUNTRYOFRESIDENCE_CODE
-  applies_to:
-    disciplines:
-    - TRI
-  primitive: code_membership
-  target: .//*[@CountryofResidence]
-  attribute: CountryofResidence
-  params:
-    codeset: COUNTRY
-  severity: warning
-  scope: message
-  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 457: Country ID of Residence'
-  status: active
-- id: TRI_NATIONALITY_CODE
-  applies_to:
-    disciplines:
-    - TRI
-  primitive: code_membership
-  target: .//*[@Nationality]
-  attribute: Nationality
-  params:
-    codeset: COUNTRY
-  severity: warning
-  scope: message
-  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 459: Participant''s nationality.'
-  status: active
-- id: TRI_MAINFUNCTIONID_CODE
-  applies_to:
-    disciplines:
-    - TRI
-  primitive: code_membership
-  target: .//*[@MainFunctionId]
-  attribute: MainFunctionId
-  params:
-    codeset: DISCIPLINE_FUNCTION
-  severity: warning
-  scope: message
-  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 469: Main function'
+  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 416: Participant''s accreditation
+    status this attribute is Mandatory in the'
   status: active
 - id: TRI_DISCIPLINENAME_CODE
   applies_to:
@@ -104,9 +26,9 @@
     field: ENG_Description
   severity: warning
   scope: message
-  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 950: Discipline ENG Description (not code)
-    from Common Codes [description attribute, validated as ENG_Description, not code
-    membership]'
+  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 950: Discipline ENG Description (not
+    code) from Common Codes [description attribute, validated as ENG_Description,
+    not code membership]'
   status: active
 - id: TRI_EVENTNAME_CODE
   applies_to:
@@ -121,8 +43,9 @@
     code_attr: Event
   severity: warning
   scope: message
-  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 952: Event ENG Description (not code) from
-    Common Codes. [description attribute, validated as ENG_Description, not code membership]'
+  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 952: Event ENG Description (not code)
+    from Common Codes. [description attribute, validated as ENG_Description, not code
+    membership]'
   status: active
 - id: TRI_SUBEVENTNAME_CODE
   applies_to:
@@ -137,8 +60,11 @@
     code_attr: Unit
   severity: warning
   scope: message
-  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 956: EventUnit ENG Description (not code)
-    from Common Codes [the machine-readable DD column says CC@EVENT_UNIT ENG ShortDescription while the prose beside it says ENG Description; the column governs. All 24 discipline DDs specify ShortDescription, so all 13 discipline rules were corrected together.]'
+  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 956: EventUnit ENG Description (not
+    code) from Common Codes [the machine-readable DD column says CC@EVENT_UNIT ENG
+    ShortDescription while the prose beside it says ENG Description; the column governs.
+    All 24 discipline DDs specify ShortDescription, so all 13 discipline rules were
+    corrected together.]'
   status: active
 - id: TRI_VENUE_CODE
   applies_to:
@@ -168,8 +94,9 @@
     code_attr: Venue
   severity: warning
   scope: message
-  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 963: Venue ENG Description (not code) from
-    Common Codes [description attribute, validated as ENG_Description, not code membership]'
+  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 963: Venue ENG Description (not code)
+    from Common Codes [description attribute, validated as ENG_Description, not code
+    membership]'
   status: active
 - id: TRI_LOCATION_CODE
   applies_to:
@@ -199,8 +126,107 @@
     code_attr: Location
   severity: warning
   scope: message
-  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 967: Location ENG Description (not code) from
-    Common Codes [description attribute, validated as ENG_Description, not code membership]'
+  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 967: Location ENG Description (not
+    code) from Common Codes [description attribute, validated as ENG_Description,
+    not code membership]'
+  status: active
+- id: TRI_UNIT_CODE
+  applies_to:
+    disciplines:
+    - TRI
+  primitive: code_membership
+  target: .//*[@Unit]
+  attribute: Unit
+  params:
+    codeset: EVENT_UNIT
+    exclude_tags:
+    - Precipitation
+    - Pressure
+    - Temperature
+    - Wind
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 2081: Full RSC of the Unit.'
+  status: active
+- id: TRI_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - TRI
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 251: Version number (ascending) associated
+    to the message content.'
+  status: active
+- id: TRI_ORGANISATION_CODE
+  applies_to:
+    disciplines:
+    - TRI
+  primitive: code_membership
+  target: .//*[@Organisation]
+  attribute: Organisation
+  params:
+    codeset: ORGANISATION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 331: Id'
+  status: active
+- id: TRI_COUNTRYOFBIRTH_CODE
+  applies_to:
+    disciplines:
+    - TRI
+  primitive: code_membership
+  target: .//*[@CountryofBirth]
+  attribute: CountryofBirth
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 334: Id'
+  status: active
+- id: TRI_COUNTRYOFRESIDENCE_CODE
+  applies_to:
+    disciplines:
+    - TRI
+  primitive: code_membership
+  target: .//*[@CountryofResidence]
+  attribute: CountryofResidence
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 336: Id'
+  status: active
+- id: TRI_NATIONALITY_CODE
+  applies_to:
+    disciplines:
+    - TRI
+  primitive: code_membership
+  target: .//*[@Nationality]
+  attribute: Nationality
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 337: ID'
+  status: active
+- id: TRI_MAINFUNCTIONID_CODE
+  applies_to:
+    disciplines:
+    - TRI
+  primitive: code_membership
+  target: .//*[@MainFunctionId]
+  attribute: MainFunctionId
+  params:
+    codeset: DISCIPLINE_FUNCTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 353: Id Main function In the Case
+    of Current="true" this attribute is Mandatory.'
   status: active
 - id: TRI_DOCUMENTSUBCODE_POSINT
   applies_to:
@@ -215,21 +241,11 @@
     regex: ^[0-9]+$
   severity: error
   scope: message
-  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 1678: Picture number'
-  status: active
-- id: TRI_UNIT_CODE
-  applies_to:
-    disciplines:
-    - TRI
-  primitive: code_membership
-  target: .//*[@Unit]
-  attribute: Unit
-  params:
-    codeset: EVENT_UNIT
-    exclude_tags: [Precipitation, Pressure, Temperature, Wind]
-  severity: warning
-  scope: message
-  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 2081: Full RSC of the Unit.'
+  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 1009: Picture number This value is
+    a sequential number for each picture provided in a unit (RSC). The value will
+    be 1, 2, 3 … Where there is only one image related to the DocumentCode then the
+    value 1 is sent. 2, 3 etc. are used if additional images (ranks to be resolved)
+    are sent for the same DocumentCode.'
   status: active
 - id: TRI_WIND_DIRECTION_CODE
   applies_to:
@@ -242,6 +258,5 @@
     codeset: WIND_DIRECTION
   severity: warning
   scope: message
-  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 2356: Wind direction [codeset corrected from
-    doc spelling ''WINDDIRECTION'']'
+  source_ref: 'ODF_TRI_Data_Dictionary.pdf line 1435: Id Wind direction'
   status: active

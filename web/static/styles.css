@@ -46,6 +46,15 @@
   --info-fill:    #5e9bdd;
   --info-tint:    #e5eefa;
 
+  /* A success green, and the one deliberate exception to the rule above.
+     The import popup has to report three outcomes at a glance — failed,
+     finished with warnings, clean — and the severity palette has no "all
+     well" hue: on paper --info reads as another remark to go and read. This
+     token is used ONLY by the import popup's OK tone, never decoratively.
+     5.6:1 on --ok-tint, 6.4:1 on --panel. */
+  --ok:           #1a6b3c;
+  --ok-tint:      #e2f1e7;
+
   /* --- type -------------------------------------------------------------- */
   /* Display: Bahnschrift is Windows' variable DIN — the type of timing gear,
      transport signage and instrument faces. Fallbacks keep the condensed,
@@ -552,6 +561,9 @@ select {
   color: var(--panel);
 }
 .btn-run:hover { background: #000; border-color: #000; color: #fff; }
+/* In flight, either variant: sources.js marks every button in the form
+   it submits, and the apply button is a plain .btn. */
+.btn[aria-busy="true"] { opacity: .6; cursor: progress; }
 .btn-run[aria-busy="true"] { opacity: .6; cursor: progress; }
 
 .hint {
@@ -891,4 +903,79 @@ select {
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
+}
+
+
+/* ===========================================================================
+   IMPORT POPUP  (Rulesets page — see web/static/sources.js)
+   ---------------------------------------------------------------------------
+   The fetch/apply buttons answer with JSON. Navigating to it lost the page,
+   so the answer is reported here instead: one panel, a tone for the outcome,
+   and the payload kept verbatim and pretty-printed for the operator who
+   wants the file list. Hidden via the [hidden] attribute, which beats the
+   display rule below — see tests/unit/test_hidden_attribute_css.py.
+   ========================================================================= */
+
+.popup {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s4);
+  background: rgba(16, 21, 28, .55);
+}
+
+.popup-card {
+  width: min(100%, 46rem);
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  padding: var(--s4) var(--s5) var(--s5);
+  background: var(--panel);
+  border: 1px solid var(--rule-strong);
+  border-top-width: 4px;
+  border-radius: var(--radius);
+  box-shadow: 0 1.5rem 3rem rgba(16, 21, 28, .25);
+}
+
+.popup-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: .01em;
+}
+
+.popup-body {
+  margin: 0;
+  overflow: auto;
+  padding: var(--s3);
+  background: var(--panel-sunk);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  font-family: var(--font-data);
+  font-size: .78rem;
+  line-height: var(--code-lh);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.popup-card .btn { align-self: flex-start; }
+
+/* The tone. Border and heading carry it; the body stays neutral so the JSON
+   is readable in all three states. */
+.popup-fail .popup-card { border-top-color: var(--error); background: var(--error-tint); }
+.popup-fail .popup-title { color: var(--error); }
+
+.popup-warn .popup-card { border-top-color: var(--warning); background: var(--warning-tint); }
+.popup-warn .popup-title { color: var(--warning); }
+
+.popup-ok .popup-card { border-top-color: var(--ok); background: var(--ok-tint); }
+.popup-ok .popup-title { color: var(--ok); }
+
+@media (max-width: 640px) {
+  .popup-card { padding: var(--s3) var(--s4) var(--s4); max-height: 88vh; }
 }

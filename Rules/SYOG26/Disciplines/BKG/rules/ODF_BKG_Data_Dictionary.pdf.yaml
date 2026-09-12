@@ -1,17 +1,3 @@
-- id: BKG_VERSION_POSINT
-  applies_to:
-    disciplines:
-    - BKG
-  primitive: value_format
-  target: .//*[@Version]
-  attribute: Version
-  params:
-    regex: ^[0-9]+$
-  severity: error
-  scope: message
-  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 346: Version number (ascending) associated
-    to the message content.'
-  status: active
 - id: BKG_VENUE_CODE
   applies_to:
     disciplines:
@@ -25,73 +11,8 @@
     - TBD
   severity: warning
   scope: message
-  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 501: Venue where the session takes place'
-  status: active
-- id: BKG_SESSIONSTATUS_CODE
-  applies_to:
-    disciplines:
-    - BKG
-  primitive: code_membership
-  target: .//*[@SessionStatus]
-  attribute: SessionStatus
-  params:
-    codeset: SCHEDULESTATUS
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 505: Only use CANCELLED if applicable. All
-    other sessions are [codeset corrected from doc spelling ''SHEDULESTATUS'']'
-  status: active
-- id: BKG_SESSIONTYPE_CODE
-  applies_to:
-    disciplines:
-    - BKG
-  primitive: code_membership
-  target: .//*[@SessionType]
-  attribute: SessionType
-  params:
-    codeset: SESSION_TYPE
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 508: Session type of the Session.'
-  status: active
-- id: BKG_LANGUAGE_CODE
-  applies_to:
-    disciplines:
-    - BKG
-  primitive: code_membership
-  target: .//*[@Language]
-  attribute: Language
-  params:
-    codeset: LANGUAGE
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 519: Language of the Session Description'
-  status: active
-- id: BKG_PHASETYPE_CODE
-  applies_to:
-    disciplines:
-    - BKG
-  primitive: code_membership
-  target: .//*[@PhaseType]
-  attribute: PhaseType
-  params:
-    codeset: PHASE_TYPE
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 535: Phase type for the unit'
-  status: active
-- id: BKG_SCHEDULESTATUS_CODE
-  applies_to:
-    disciplines:
-    - BKG
-  primitive: code_membership
-  target: .//*[@ScheduleStatus]
-  attribute: ScheduleStatus
-  params:
-    codeset: SCHEDULESTATUS
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 546: Unit Status'
+  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 501: Venue where the session takes
+    place'
   status: active
 - id: BKG_LOCATION_CODE
   applies_to:
@@ -106,7 +27,8 @@
     - TBD
   severity: warning
   scope: message
-  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 610: Location where the unit takes place.'
+  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 610: Location where the unit takes
+    place.'
   status: active
 - id: BKG_UNIT_CODE
   applies_to:
@@ -117,11 +39,112 @@
   attribute: Unit
   params:
     codeset: EVENT_UNIT
-    exclude_tags: [Precipitation, Pressure, Temperature, Wind]
+    exclude_tags:
+    - Precipitation
+    - Pressure
+    - Temperature
+    - Wind
   severity: warning
   scope: message
-  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 666: The full RSC of the unit where this competitor
-    came from. This'
+  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 666: The full RSC of the unit where
+    this competitor came from. This'
+  status: active
+- id: BKG_STATUS_CODE
+  applies_to:
+    disciplines:
+    - BKG
+  primitive: code_membership
+  target: .//*[@Status]
+  attribute: Status
+  params:
+    codeset: PARTICIPANT_STATUS
+    exclude_tags:
+    - Protest
+  severity: warning
+  scope: message
+  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 891: Participant''s accreditation
+    status this attribute is Mandatory in the'
+  status: active
+- id: BKG_FUNCTION_CODE
+  applies_to:
+    disciplines:
+    - BKG
+  primitive: code_membership
+  target: .//*[@Function]
+  attribute: Function
+  params:
+    codeset: DISCIPLINE_FUNCTION
+    exclude_tags:
+    - Presenter
+  severity: warning
+  scope: message
+  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 1413: Official''s function.'
+  status: active
+- id: BKG_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - BKG
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 305: Version number (ascending) associated
+    to the message content.'
+  status: active
+- id: BKG_SESSIONTYPE_CODE
+  applies_to:
+    disciplines:
+    - BKG
+  primitive: code_membership
+  target: .//*[@SessionType]
+  attribute: SessionType
+  params:
+    codeset: SESSION_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 380: Id Session type of the Session.'
+  status: active
+- id: BKG_LANGUAGE_CODE
+  applies_to:
+    disciplines:
+    - BKG
+  primitive: code_membership
+  target: .//*[@Language]
+  attribute: Language
+  params:
+    codeset: LANGUAGE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 387: Id Language of the Session Description'
+  status: active
+- id: BKG_PHASETYPE_CODE
+  applies_to:
+    disciplines:
+    - BKG
+  primitive: code_membership
+  target: .//*[@PhaseType]
+  attribute: PhaseType
+  params:
+    codeset: PHASE_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 398: Id Phase type for the unit'
+  status: active
+- id: BKG_SCHEDULESTATUS_CODE
+  applies_to:
+    disciplines:
+    - BKG
+  primitive: code_membership
+  target: .//*[@ScheduleStatus]
+  attribute: ScheduleStatus
+  params:
+    codeset: SCHEDULESTATUS
+  severity: warning
+  scope: message
+  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 405: Id Unit Status'
   status: active
 - id: BKG_ORGANISATION_CODE
   applies_to:
@@ -134,22 +157,7 @@
     codeset: ORGANISATION
   severity: warning
   scope: message
-  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 690: Should be sent when known'
-  status: active
-- id: BKG_STATUS_CODE
-  applies_to:
-    disciplines:
-    - BKG
-  primitive: code_membership
-  target: .//*[@Status]
-  attribute: Status
-  params:
-    codeset: PARTICIPANT_STATUS
-    exclude_tags: [Protest]
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 891: Participant''s accreditation status this
-    attribute is Mandatory in the'
+  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 466: Id Should be sent when known'
   status: active
 - id: BKG_COUNTRYOFBIRTH_CODE
   applies_to:
@@ -162,7 +170,7 @@
     codeset: COUNTRY
   severity: warning
   scope: message
-  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 928: Country ID of Birth'
+  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 609: Id'
   status: active
 - id: BKG_COUNTRYOFRESIDENCE_CODE
   applies_to:
@@ -175,7 +183,7 @@
     codeset: COUNTRY
   severity: warning
   scope: message
-  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 932: Country ID of Residence'
+  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 611: Id'
   status: active
 - id: BKG_NATIONALITY_CODE
   applies_to:
@@ -188,7 +196,7 @@
     codeset: COUNTRY
   severity: warning
   scope: message
-  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 934: Participant''s nationality.'
+  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 612: ID'
   status: active
 - id: BKG_MAINFUNCTIONID_CODE
   applies_to:
@@ -201,21 +209,7 @@
     codeset: DISCIPLINE_FUNCTION
   severity: warning
   scope: message
-  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 939: Main function'
-  status: active
-- id: BKG_FUNCTION_CODE
-  applies_to:
-    disciplines:
-    - BKG
-  primitive: code_membership
-  target: .//*[@Function]
-  attribute: Function
-  params:
-    codeset: DISCIPLINE_FUNCTION
-    exclude_tags: [Presenter]
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 1413: Official''s function.'
+  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 613: Id'
   status: active
 - id: BKG_LASTUNIT_CODE
   applies_to:
@@ -228,8 +222,8 @@
     codeset: EVENT_UNIT
   severity: warning
   scope: message
-  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 1787: Full RSC of the last unit completed
-    (or in progress if applicable)'
+  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 1075: Code Full RSC of the last unit
+    completed (or in progress if applicable) related to the message''s content'
   status: active
 - id: BKG_WIND_DIRECTION_CODE
   applies_to:
@@ -242,6 +236,5 @@
     codeset: WIND_DIRECTION
   severity: warning
   scope: message
-  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 2495: Wind direction [codeset corrected from
-    doc spelling ''WINDDIRECTION'']'
+  source_ref: 'ODF_BKG_Data_Dictionary.pdf line 1530: Id Wind direction'
   status: active

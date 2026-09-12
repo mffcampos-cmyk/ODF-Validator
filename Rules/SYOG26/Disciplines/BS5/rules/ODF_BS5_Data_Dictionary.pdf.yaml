@@ -1,17 +1,3 @@
-- id: BS5_VERSION_POSINT
-  applies_to:
-    disciplines:
-    - BS5
-  primitive: value_format
-  target: .//*[@Version]
-  attribute: Version
-  params:
-    regex: ^[0-9]+$
-  severity: error
-  scope: message
-  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 343: Version number (ascending) associated
-    to the message content.'
-  status: active
 - id: BS5_VENUE_CODE
   applies_to:
     disciplines:
@@ -25,73 +11,8 @@
     - TBD
   severity: warning
   scope: message
-  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 486: Venue where the session takes place'
-  status: active
-- id: BS5_SESSIONSTATUS_CODE
-  applies_to:
-    disciplines:
-    - BS5
-  primitive: code_membership
-  target: .//*[@SessionStatus]
-  attribute: SessionStatus
-  params:
-    codeset: SCHEDULESTATUS
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 492: Only use CANCELLED if applicable. All
-    other sessions are [codeset corrected from doc spelling ''SHEDULESTATUS'']'
-  status: active
-- id: BS5_SESSIONTYPE_CODE
-  applies_to:
-    disciplines:
-    - BS5
-  primitive: code_membership
-  target: .//*[@SessionType]
-  attribute: SessionType
-  params:
-    codeset: SESSION_TYPE
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 496: Session type of the Session.'
-  status: active
-- id: BS5_LANGUAGE_CODE
-  applies_to:
-    disciplines:
-    - BS5
-  primitive: code_membership
-  target: .//*[@Language]
-  attribute: Language
-  params:
-    codeset: LANGUAGE
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 513: Language of the Session Description'
-  status: active
-- id: BS5_PHASETYPE_CODE
-  applies_to:
-    disciplines:
-    - BS5
-  primitive: code_membership
-  target: .//*[@PhaseType]
-  attribute: PhaseType
-  params:
-    codeset: PHASE_TYPE
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 529: Phase type for the unit'
-  status: active
-- id: BS5_SCHEDULESTATUS_CODE
-  applies_to:
-    disciplines:
-    - BS5
-  primitive: code_membership
-  target: .//*[@ScheduleStatus]
-  attribute: ScheduleStatus
-  params:
-    codeset: SCHEDULESTATUS
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 535: Unit Status'
+  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 486: Venue where the session takes
+    place'
   status: active
 - id: BS5_LOCATION_CODE
   applies_to:
@@ -106,7 +27,8 @@
     - TBD
   severity: warning
   scope: message
-  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 598: Location where the unit takes place'
+  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 598: Location where the unit takes
+    place'
   status: active
 - id: BS5_UNIT_CODE
   applies_to:
@@ -117,11 +39,112 @@
   attribute: Unit
   params:
     codeset: EVENT_UNIT
-    exclude_tags: [Precipitation, Pressure, Temperature, Wind]
+    exclude_tags:
+    - Precipitation
+    - Pressure
+    - Temperature
+    - Wind
   severity: warning
   scope: message
-  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 679: The full RSC of the unit where this competitor
-    came from. This'
+  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 679: The full RSC of the unit where
+    this competitor came from. This'
+  status: active
+- id: BS5_STATUS_CODE
+  applies_to:
+    disciplines:
+    - BS5
+  primitive: code_membership
+  target: .//*[@Status]
+  attribute: Status
+  params:
+    codeset: PARTICIPANT_STATUS
+    exclude_tags:
+    - Protest
+  severity: warning
+  scope: message
+  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 894: Participant''s accreditation
+    status this attribute is Mandatory in'
+  status: active
+- id: BS5_FUNCTION_CODE
+  applies_to:
+    disciplines:
+    - BS5
+  primitive: code_membership
+  target: .//*[@Function]
+  attribute: Function
+  params:
+    codeset: DISCIPLINE_FUNCTION
+    exclude_tags:
+    - Presenter
+  severity: warning
+  scope: message
+  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 1327: Team Official function.'
+  status: active
+- id: BS5_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - BS5
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 264: Version number (ascending) associated
+    to the message content.'
+  status: active
+- id: BS5_SESSIONTYPE_CODE
+  applies_to:
+    disciplines:
+    - BS5
+  primitive: code_membership
+  target: .//*[@SessionType]
+  attribute: SessionType
+  params:
+    codeset: SESSION_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 349: Id Session type of the Session.'
+  status: active
+- id: BS5_LANGUAGE_CODE
+  applies_to:
+    disciplines:
+    - BS5
+  primitive: code_membership
+  target: .//*[@Language]
+  attribute: Language
+  params:
+    codeset: LANGUAGE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 354: Id Language of the Session Description'
+  status: active
+- id: BS5_PHASETYPE_CODE
+  applies_to:
+    disciplines:
+    - BS5
+  primitive: code_membership
+  target: .//*[@PhaseType]
+  attribute: PhaseType
+  params:
+    codeset: PHASE_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 370: Id Phase type for the unit'
+  status: active
+- id: BS5_SCHEDULESTATUS_CODE
+  applies_to:
+    disciplines:
+    - BS5
+  primitive: code_membership
+  target: .//*[@ScheduleStatus]
+  attribute: ScheduleStatus
+  params:
+    codeset: SCHEDULESTATUS
+  severity: warning
+  scope: message
+  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 373: Id Unit Status'
   status: active
 - id: BS5_ORGANISATION_CODE
   applies_to:
@@ -134,22 +157,7 @@
     codeset: ORGANISATION
   severity: warning
   scope: message
-  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 703: Should be sent when known'
-  status: active
-- id: BS5_STATUS_CODE
-  applies_to:
-    disciplines:
-    - BS5
-  primitive: code_membership
-  target: .//*[@Status]
-  attribute: Status
-  params:
-    codeset: PARTICIPANT_STATUS
-    exclude_tags: [Protest]
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 894: Participant''s accreditation status this
-    attribute is Mandatory in'
+  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 436: Id Should be sent when known'
   status: active
 - id: BS5_COUNTRYOFBIRTH_CODE
   applies_to:
@@ -162,7 +170,7 @@
     codeset: COUNTRY
   severity: warning
   scope: message
-  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 948: Country ID of Birth'
+  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 569: Id'
   status: active
 - id: BS5_COUNTRYOFRESIDENCE_CODE
   applies_to:
@@ -175,7 +183,7 @@
     codeset: COUNTRY
   severity: warning
   scope: message
-  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 952: Country ID of Residence'
+  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 571: Id'
   status: active
 - id: BS5_NATIONALITY_CODE
   applies_to:
@@ -188,7 +196,7 @@
     codeset: COUNTRY
   severity: warning
   scope: message
-  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 954: Participant''s nationality.'
+  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 572: ID'
   status: active
 - id: BS5_MAINFUNCTIONID_CODE
   applies_to:
@@ -201,21 +209,7 @@
     codeset: DISCIPLINE_FUNCTION
   severity: warning
   scope: message
-  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 959: Main function'
-  status: active
-- id: BS5_FUNCTION_CODE
-  applies_to:
-    disciplines:
-    - BS5
-  primitive: code_membership
-  target: .//*[@Function]
-  attribute: Function
-  params:
-    codeset: DISCIPLINE_FUNCTION
-    exclude_tags: [Presenter]
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 1327: Team Official function.'
+  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 573: Id'
   status: active
 - id: BS5_LASTUNIT_CODE
   applies_to:
@@ -228,6 +222,6 @@
     codeset: EVENT_UNIT
   severity: warning
   scope: message
-  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 2204: Send the full RSC of the most recently
-    unit made official for the'
+  source_ref: 'ODF_BS5_Data_Dictionary.pdf line 1230: Code Send the full RSC of the
+    most recently unit made official for the pool included in this message.'
   status: active

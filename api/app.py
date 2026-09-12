@@ -179,9 +179,35 @@ def _hostname(value: str) -> str:
     return value.rsplit(":", 1)[0] if ":" in value else value
 
 
+class RevalidatingStaticFiles(StaticFiles):
+    """Serve assets with `Cache-Control: no-cache`.
+
+    StaticFiles sends ETag and Last-Modified but no Cache-Control, and with no
+    Cache-Control a browser may apply heuristic freshness -- about a tenth of
+    the file's age when it was cached. styles.css had been unchanged for
+    weeks, so the copy Chrome took then stayed "fresh" for days: the import
+    popup shipped, the server served the new stylesheet, and the browser never
+    asked for it. The popup rendered as unstyled text in the page flow.
+
+    Worse than plainly not working: the same reload picked up rulesets.html
+    (rendered per request) and sources.js (a new URL, never cached), so the
+    feature half-arrived and looked broken rather than stale.
+
+    `no-cache` means revalidate, not re-download. The ETag above turns each
+    check into a 304 on loopback, for a single operator. Nothing here is worth
+    the risk of a stale asset.
+    """
+
+    def file_response(self, *args, **kwargs):
+        response = super().file_response(*args, **kwargs)
+        response.headers["Cache-Control"] = "no-cache"
+        return response
+
+
 app = FastAPI(title="ODF Validator", lifespan=lifespan)
 templates = Jinja2Templates(directory=str(PROJECT_ROOT / "web" / "templates"))
-app.mount("/static", StaticFiles(directory=str(PROJECT_ROOT / "web" / "static")),
+app.mount("/static",
+          RevalidatingStaticFiles(directory=str(PROJECT_ROOT / "web" / "static")),
           name="static")
 
 
@@ -242,6 +268,7 @@ def list_packs():
              "dd_unconvertible": p.report.dd_unconvertible,
              "converted_by_fallback": p.report.converted_by_fallback,
              "cache_warnings": p.report.cache_warnings,
+             "unmatched_codesets": p.report.unmatched_codesets,
              "rule_count": len(p.rules),
              "usable": bool(p.schema) or bool(p.rules)}
             for p in PACKS.values()]
@@ -470,6 +497,15 @@ def approve_all_drafts_route(_guard: None = Depends(guard_state_change)):
     # Clean URL when nothing was held back; the counter is a notice, not state.
     target = f"/drafts?skipped={len(skipped)}" if skipped else "/drafts"
     return RedirectResponse(url=target, status_code=303)
+
+
+@app.post("/drafts/reject_all")
+def reject_all_drafts_route(_guard: None = Depends(guard_state_change)):
+    # No skip list, unlike approve_all: rejecting writes to no active rule
+    # file, so there is no refinement to lose, and the drafts come back from
+    # the Data Dictionaries on the next ingestion run.
+    draft_store.reject_all_drafts(RULES_ROOT)
+    return RedirectResponse(url="/drafts", status_code=303)
 
 
 @app.post("/drafts/reject")

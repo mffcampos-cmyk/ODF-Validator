@@ -141,3 +141,47 @@ def test_approve_all_promotes_every_pending_draft_across_multiple_dds(tmp_path):
 def test_approve_all_with_no_pending_drafts_returns_empty_lists(tmp_path):
     tmp_path.mkdir(exist_ok=True)
     assert draft_store.approve_all_drafts(tmp_path) == ([], [])
+
+
+# --------------------------------------------------------------- reject all ---
+#
+# The counterpart to approve_all: empty the queue. Unlike approve_all this
+# cannot lose a hand-made refinement, because rejecting never touches an
+# active rule file -- and a rejected draft is re-derived from its Data
+# Dictionary on the next ingestion run, so nothing is permanently destroyed.
+
+def test_reject_all_empties_the_queue_across_multiple_dds(tmp_path):
+    dd_arc = _dd_path(tmp_path)
+    draft_store.write_drafts(dd_arc, [RULE_A, RULE_B])
+    disc_swm = tmp_path / "Disciplines" / "SWM"
+    disc_swm.mkdir(parents=True)
+    dd_swm = disc_swm / "SWM_DD.md"
+    dd_swm.write_text("stub")
+    draft_store.write_drafts(dd_swm, [dict(RULE_A, id="SWM_VENUE_CODE")])
+
+    rejected = draft_store.reject_all_drafts(tmp_path)
+
+    assert sorted(rejected) == ["ARC_VENUE_CODE", "ARC_VERSION_POSINT",
+                                "SWM_VENUE_CODE"]
+    assert draft_store.list_all_drafts(tmp_path) == []
+    assert not (dd_arc.parent / ".drafts" / "ARC_DD.md.draft.yaml").exists()
+    assert not (dd_swm.parent / ".drafts" / "SWM_DD.md.draft.yaml").exists()
+
+
+def test_reject_all_leaves_active_rules_untouched(tmp_path):
+    dd = _dd_path(tmp_path)
+    active_file = draft_store.active_path_for(dd)
+    active_file.parent.mkdir(parents=True, exist_ok=True)
+    active_file.write_text(yaml.safe_dump([dict(RULE_A, status="active")]),
+                           encoding="utf-8")
+    draft_store.write_drafts(dd, [dict(RULE_A, params={"codeset": "OTHER"})])
+
+    draft_store.reject_all_drafts(tmp_path)
+
+    live = yaml.safe_load(active_file.read_text(encoding="utf-8"))
+    assert live == [dict(RULE_A, status="active")]
+
+
+def test_reject_all_with_no_pending_drafts_returns_an_empty_list(tmp_path):
+    _dd_path(tmp_path)
+    assert draft_store.reject_all_drafts(tmp_path) == []

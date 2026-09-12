@@ -81,3 +81,42 @@ def test_dd_file_directly_in_disciplines_dir_has_no_discipline(tmp_path):
     result = scan_ruleset(root)
     by_name = {p.name: disc for p, disc in result.dd_files}
     assert by_name["stray.md"] is None
+
+
+# ------------------------------------------------------- app state files ---
+#
+# The scanner used to name the app's own state files one by one
+# (.ingestion_state.json, .dd_obligations.json). The sync feature then added a
+# third, .sources.json, and nobody came back here -- so the first import
+# greeted the operator with "30 rule(s) failed to load -- first: Unrecognized
+# file, skipped: .sources.json". Every one of these files is a dotfile, and no
+# IOC source document ever is, so the rule is the leading dot rather than a
+# list that has to be maintained in two places.
+
+def test_the_source_provenance_file_is_not_a_source_document(tmp_path):
+    root = tmp_path / "SYOG26"
+    root.mkdir()
+    (root / ".sources.json").write_text('{"entries": {}}', encoding="utf-8")
+
+    scan = scan_ruleset(root)
+
+    assert scan.unknown_files == [], (
+        ".sources.json is written by the app itself; typing it as an "
+        "unrecognised source document is what produced the load error")
+
+
+def test_any_app_dotfile_is_skipped_not_just_the_ones_named_today(tmp_path):
+    """The next state file the app invents must not reopen this bug."""
+    root = tmp_path / "SYOG26"
+    (root / "Disciplines" / "ARC").mkdir(parents=True)
+    for name in (".ingestion_state.json", ".dd_obligations.json",
+                 ".sources.json", ".some_future_cache.json"):
+        (root / name).write_text("{}", encoding="utf-8")
+    (root / "Disciplines" / "ARC" / ".per_discipline_state.json").write_text(
+        "{}", encoding="utf-8")
+
+    scan = scan_ruleset(root)
+
+    assert scan.unknown_files == []
+    assert scan.dd_files == []
+    assert scan.code_files == []

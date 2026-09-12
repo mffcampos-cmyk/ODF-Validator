@@ -35,6 +35,37 @@ def _note_fallback(report: LoadReport, dd_path: Path, backend: str) -> None:
         report.converted_by_fallback.append(note)
 
 
+def _drop_unmatched_codesets(drafts: list, registry: CodeRegistry,
+                             report: LoadReport) -> list:
+    """Refuse to offer a draft whose codeset the workbook cannot provide.
+
+    The load-time drop in load_rule_defs makes such a rule harmless, but it
+    treats the symptom once per startup while the cause -- the DD text --
+    reopens it on every import: derive, approve, drop, repeat. Refusing here
+    ends that loop, and the refusal is recorded so the operator can see what
+    the document asked for.
+
+    Only when the pack has tables to judge against, exactly as in
+    load_rule_defs: with no workbook loaded, an unknown name says nothing
+    about the rule, and hiding the DD's content from the reviewer for that
+    reason would be worse than offering it.
+    """
+    if not registry.names():
+        return drafts
+    kept = []
+    for d in drafts:
+        entry = d.to_yaml_dict()
+        cs = (entry.get("params") or {}).get("codeset")
+        if cs and registry.resolve(cs) is None:
+            report.unmatched_codesets.append(
+                f"{entry.get('source_ref')}: asks for codeset '{cs}', which "
+                f"the Common Codes do not provide under any spelling -- no "
+                f"draft rule was offered for @{entry.get('attribute')}.")
+            continue
+        kept.append(d)
+    return kept
+
+
 def build_ruleset_pack(ruleset_dir: Path, converter=None) -> RulePack:
     """Assemble a RulePack from a Rules\\<ruleset>\\ folder: ingest XSD/Common
     Codes directly (deterministic, machine-readable), heuristically draft
@@ -144,6 +175,7 @@ def build_ruleset_pack(ruleset_dir: Path, converter=None) -> RulePack:
             continue
         try:
             drafts = extract_draft_rules(markdown, discipline, dd_path.name)
+            drafts = _drop_unmatched_codesets(drafts, registry, report)
             if drafts:
                 write_drafts(dd_path, [d.to_yaml_dict() for d in drafts])
                 report.loaded_files.append(f"{dd_path.name} -> {len(drafts)} draft rule(s)")
@@ -171,24 +203,39 @@ def build_ruleset_pack(ruleset_dir: Path, converter=None) -> RulePack:
 
     rule_paths = sorted(ruleset_dir.rglob("rules/*.yaml"))
     (rules, rule_errors, rule_conflicts, rule_deduped,
-     rule_specialised) = load_rule_defs(rule_paths)
+     rule_specialised) = load_rule_defs(
+        rule_paths, resolve_codeset=registry.resolve,
+        # Only when there are tables to judge against: see the notice below.
+        drop_unresolvable_codesets=bool(registry.names()))
     report.errors += rule_errors
     report.conflicts += rule_conflicts
     report.deduped += rule_deduped
     report.specialised += rule_specialised
 
-    # A rule pointing at a codeset the pack doesn't provide can never fire:
-    # code_membership skips silently when the table is missing. That masked 24
-    # dead rules (documentation typos, e.g. SHEDULESTATUS for SCHEDULESTATUS).
-    # Surface it as a pack-load error so misspellings are caught immediately.
-    known_codesets = set(registry.names())
+    # Rules whose codeset resolves to nothing were already dropped by
+    # load_rule_defs, and reported through rule_errors -- deliberately there
+    # rather than here, so a dead rule cannot stand the GEN rule down for its
+    # discipline on the way out (see that function's docstring).
+    #
+    # A pack with no code tables at all is a different case: every codeset
+    # name is unknown for a reason that has nothing to do with the rules, so
+    # nothing is DROPPED. Each rule is still reported, because a rule that
+    # cannot fire is exactly what this list is for and a bare summary line
+    # would leave an operator hunting for which rules are affected; the
+    # summary goes first to say why they are all listed at once.
+    if not registry.names() and any(r.params.get("codeset") for r in rules):
+        report.errors.append(
+            "This ruleset has no code tables loaded, so no code_membership "
+            "rule can fire. Add the Common Codes workbook (or import it from "
+            "the publication page) and reload.")
+        for r in rules:
+            cs = r.params.get("codeset")
+            if cs:
+                report.errors.append(
+                    f"Rule {r.id}: codeset '{cs}' is not provided by this "
+                    f"pack's code tables; the rule will never fire.")
     for r in rules:
         cs = r.params.get("codeset")
-        if cs and cs not in known_codesets:
-            report.errors.append(
-                f"Rule {r.id}: codeset '{cs}' is not provided by this pack's "
-                f"code tables; the rule will never fire.")
-            continue
         # Same failure mode, one level down: `column` names which of a
         # table's code-shaped columns to match (see rules/primitives.py
         # code_membership), mirroring the Data Dictionary's own
@@ -203,6 +250,10 @@ def build_ruleset_pack(ruleset_dir: Path, converter=None) -> RulePack:
                 report.errors.append(
                     f"Rule {r.id}: column '{col}' is not a field of codeset "
                     f"'{cs}'; the rule will never fire.")
+    # An unknown column leaves the rule in place, unlike an unknown codeset.
+    # Deliberate, for now: it is the same silent-pass problem and wants the
+    # same treatment, but nothing in this pack is in that state, and a
+    # behaviour change nobody asked for does not belong in this fix.
 
     return RulePack(obligations=obligations, name=name, version=str(manifest.get("version", "") or ""), xsd_paths=xsd_paths, root_xsd=root_xsd,
                      schema=schema, codes=registry, rules=rules,

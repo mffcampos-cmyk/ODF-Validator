@@ -39,6 +39,15 @@ class LoadReport:
     # filename migration) would alarm on every single load with a remedy
     # that can never resolve it.
     cache_warnings: list[str] = field(default_factory=list)
+    # Data Dictionary lines that asked for a codeset the Common Codes do not
+    # provide under any spelling, so no draft rule was offered for them. Not
+    # a rule failure -- no rule exists to fail -- and not silent either: the
+    # document said something the workbook cannot support, and only a human
+    # can decide whether the document, the workbook or the attribute is at
+    # fault. Before this, such lines became drafts, were approved, and were
+    # then dropped at load on every start, with every import putting them
+    # back (17 of them after the 2026-09-11 import).
+    unmatched_codesets: list[str] = field(default_factory=list)
 
 
 @dataclass

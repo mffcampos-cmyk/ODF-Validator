@@ -1,17 +1,3 @@
-- id: SAL_VERSION_POSINT
-  applies_to:
-    disciplines:
-    - SAL
-  primitive: value_format
-  target: .//*[@Version]
-  attribute: Version
-  params:
-    regex: ^[0-9]+$
-  severity: error
-  scope: message
-  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 309: Version number (ascending) associated
-    to the message content.'
-  status: active
 - id: SAL_STATUS_CODE
   applies_to:
     disciplines:
@@ -21,80 +7,15 @@
   attribute: Status
   params:
     codeset: PARTICIPANT_STATUS
-    exclude_tags: [Protest]
+    exclude_tags:
+    - Protest
   severity: warning
   scope: message
-  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 438: Participant''s accreditation status this
-    attribute is Mandatory in the. Excludes Protest: Competition/Communication/
+  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 438: Participant''s accreditation
+    status this attribute is Mandatory in the. Excludes Protest: Competition/Communication/
     Protest/@Status is documented separately (ODF_SAL_Data_Dictionary.md line 1759)
-    as SC@ProtestStatus Code (CLS/OPN/PND/ROPN per
-    SYOG2026_ODF_Common_Codes_v_1_9_1.md lines 10898-10901), disjoint from
-    PARTICIPANT_STATUS (a rules review).'
-  status: active
-- id: SAL_ORGANISATION_CODE
-  applies_to:
-    disciplines:
-    - SAL
-  primitive: code_membership
-  target: .//*[@Organisation]
-  attribute: Organisation
-  params:
-    codeset: ORGANISATION
-  severity: warning
-  scope: message
-  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 467: Organisation ID'
-  status: active
-- id: SAL_COUNTRYOFBIRTH_CODE
-  applies_to:
-    disciplines:
-    - SAL
-  primitive: code_membership
-  target: .//*[@CountryofBirth]
-  attribute: CountryofBirth
-  params:
-    codeset: COUNTRY
-  severity: warning
-  scope: message
-  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 475: Country ID of Birth'
-  status: active
-- id: SAL_COUNTRYOFRESIDENCE_CODE
-  applies_to:
-    disciplines:
-    - SAL
-  primitive: code_membership
-  target: .//*[@CountryofResidence]
-  attribute: CountryofResidence
-  params:
-    codeset: COUNTRY
-  severity: warning
-  scope: message
-  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 479: Country ID of Residence'
-  status: active
-- id: SAL_NATIONALITY_CODE
-  applies_to:
-    disciplines:
-    - SAL
-  primitive: code_membership
-  target: .//*[@Nationality]
-  attribute: Nationality
-  params:
-    codeset: COUNTRY
-  severity: warning
-  scope: message
-  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 481: Participant''s nationality.'
-  status: active
-- id: SAL_MAINFUNCTIONID_CODE
-  applies_to:
-    disciplines:
-    - SAL
-  primitive: code_membership
-  target: .//*[@MainFunctionId]
-  attribute: MainFunctionId
-  params:
-    codeset: DISCIPLINE_FUNCTION
-  severity: warning
-  scope: message
-  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 491: Main function'
+    as SC@ProtestStatus Code (CLS/OPN/PND/ROPN per SYOG2026_ODF_Common_Codes_v_1_9_1.md
+    lines 10898-10901), disjoint from PARTICIPANT_STATUS (a rules review).'
   status: active
 - id: SAL_DISCIPLINENAME_CODE
   applies_to:
@@ -108,9 +29,9 @@
     field: ENG_Description
   severity: warning
   scope: message
-  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 1055: Discipline ENG Description (not code)
-    from Common Codes [description attribute, validated as ENG_Description, not code
-    membership]'
+  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 1055: Discipline ENG Description (not
+    code) from Common Codes [description attribute, validated as ENG_Description,
+    not code membership]'
   status: active
 - id: SAL_EVENTNAME_CODE
   applies_to:
@@ -125,8 +46,9 @@
     code_attr: Event
   severity: warning
   scope: message
-  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 1057: Event ENG Description (not code) from
-    Common Codes. [description attribute, validated as ENG_Description, not code membership]'
+  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 1057: Event ENG Description (not code)
+    from Common Codes. [description attribute, validated as ENG_Description, not code
+    membership]'
   status: active
 - id: SAL_SUBEVENTNAME_CODE
   applies_to:
@@ -141,8 +63,11 @@
     code_attr: Unit
   severity: warning
   scope: message
-  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 1061: EventUnit ENG Description (not code)
-    from Common Codes [the machine-readable DD column says CC@EVENT_UNIT ENG ShortDescription while the prose beside it says ENG Description; the column governs. All 24 discipline DDs specify ShortDescription, so all 13 discipline rules were corrected together.]'
+  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 1061: EventUnit ENG Description (not
+    code) from Common Codes [the machine-readable DD column says CC@EVENT_UNIT ENG
+    ShortDescription while the prose beside it says ENG Description; the column governs.
+    All 24 discipline DDs specify ShortDescription, so all 13 discipline rules were
+    corrected together.]'
   status: active
 - id: SAL_VENUE_CODE
   applies_to:
@@ -172,8 +97,9 @@
     code_attr: Venue
   severity: warning
   scope: message
-  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 1069: Venue ENG Description (not code) from
-    Common Codes [description attribute, validated as ENG_Description, not code membership]'
+  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 1069: Venue ENG Description (not code)
+    from Common Codes [description attribute, validated as ENG_Description, not code
+    membership]'
   status: active
 - id: SAL_LOCATION_CODE
   applies_to:
@@ -203,9 +129,148 @@
     code_attr: Location
   severity: warning
   scope: message
-  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 1073: Location ENG Description (not code)
-    from Common Codes [description attribute, validated as ENG_Description, not code
-    membership]'
+  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 1073: Location ENG Description (not
+    code) from Common Codes [description attribute, validated as ENG_Description,
+    not code membership]'
+  status: active
+- id: SAL_UNIT_CODE
+  applies_to:
+    disciplines:
+    - SAL
+  primitive: code_membership
+  target: .//*[@Unit]
+  attribute: Unit
+  params:
+    codeset: EVENT_UNIT
+    exclude_tags:
+    - Precipitation
+    - Pressure
+    - Temperature
+    - Wind
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 2079: The RSC of the item included
+    in the message.'
+  status: active
+- id: SAL_FUNCTION_CODE
+  applies_to:
+    disciplines:
+    - SAL
+  primitive: code_membership
+  target: .//*[@Function]
+  attribute: Function
+  params:
+    codeset: DISCIPLINE_FUNCTION
+    exclude_tags:
+    - Presenter
+    - SignedBy
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 3015: Function of the Signed person.
+    Excludes Presenter for the same reason as GEN_FUNCTION_CODE (SCGEN@Presenter,
+    not DISCIPLINE_FUNCTION). Excludes SignedBy tag-wide because SAL redefines Decision/SignedBy/@Function
+    as free-text S(30) (ODF_SAL_Data_Dictionary.md line 1710), unlike GEN which documents
+    it as CC@DISCIPLINE_FUNCTION Id; a tag-level exclusion cannot distinguish Decision/SignedBy
+    from Protest/SignedBy, which SAL still documents as CC@DISCIPLINE_FUNCTION Id
+    (line 1828), so that coverage is restored by SAL_PROTEST_SIGNEDBY_FUNCTION_CODE
+    (a rules review).'
+  status: active
+- id: SAL_PROTEST_SIGNEDBY_FUNCTION_CODE
+  applies_to:
+    disciplines:
+    - SAL
+  primitive: code_membership
+  target: .//Protest/SignedBy[@Function]
+  attribute: Function
+  params:
+    codeset: DISCIPLINE_FUNCTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SAL_Data_Dictionary.md line 1828: Competition/Communication/ Protest/SignedBy/@Function
+    is Function of the Signed person, CC@DISCIPLINE_ FUNCTION Id -- restores the coverage
+    SAL_FUNCTION_CODE''s tag-wide SignedBy exclusion drops, since Decision/SignedBy
+    (free-text S(30), line 1710) and Protest/SignedBy (CC@DISCIPLINE_FUNCTION Id,
+    line 1828) share a tag but not a format (a rules review).'
+  status: active
+- id: SAL_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - SAL
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 268: Version number (ascending) associated
+    to the message content.'
+  status: active
+- id: SAL_ORGANISATION_CODE
+  applies_to:
+    disciplines:
+    - SAL
+  primitive: code_membership
+  target: .//*[@Organisation]
+  attribute: Organisation
+  params:
+    codeset: ORGANISATION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 348: Id'
+  status: active
+- id: SAL_COUNTRYOFBIRTH_CODE
+  applies_to:
+    disciplines:
+    - SAL
+  primitive: code_membership
+  target: .//*[@CountryofBirth]
+  attribute: CountryofBirth
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 351: Id'
+  status: active
+- id: SAL_COUNTRYOFRESIDENCE_CODE
+  applies_to:
+    disciplines:
+    - SAL
+  primitive: code_membership
+  target: .//*[@CountryofResidence]
+  attribute: CountryofResidence
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 353: Id'
+  status: active
+- id: SAL_NATIONALITY_CODE
+  applies_to:
+    disciplines:
+    - SAL
+  primitive: code_membership
+  target: .//*[@Nationality]
+  attribute: Nationality
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 354: ID'
+  status: active
+- id: SAL_MAINFUNCTIONID_CODE
+  applies_to:
+    disciplines:
+    - SAL
+  primitive: code_membership
+  target: .//*[@MainFunctionId]
+  attribute: MainFunctionId
+  params:
+    codeset: DISCIPLINE_FUNCTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 370: Id Main function In the Case
+    of Current="true" this attribute is Mandatory.'
   status: active
 - id: SAL_LASTUNIT_CODE
   applies_to:
@@ -218,23 +283,8 @@
     codeset: EVENT_UNIT
   severity: warning
   scope: message
-  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 1994: Send the full RSC of the most recently
-    completed unit or current'
-  status: active
-- id: SAL_UNIT_CODE
-  applies_to:
-    disciplines:
-    - SAL
-  primitive: code_membership
-  target: .//*[@Unit]
-  attribute: Unit
-  params:
-    codeset: EVENT_UNIT
-    exclude_tags: [Precipitation, Pressure, Temperature, Wind]
-  severity: warning
-  scope: message
-  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 2079: The RSC of the item included in the
-    message.'
+  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 1181: Code Send the full RSC of the
+    most recently completed unit or current unit if in progress included in the message.'
   status: active
 - id: SAL_DOCUMENTSUBCODE_POSINT
   applies_to:
@@ -249,47 +299,11 @@
     regex: ^[0-9]+$
   severity: error
   scope: message
-  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 2643: This is the communication/document number.'
-  status: active
-- id: SAL_FUNCTION_CODE
-  applies_to:
-    disciplines:
-    - SAL
-  primitive: code_membership
-  target: .//*[@Function]
-  attribute: Function
-  params:
-    codeset: DISCIPLINE_FUNCTION
-    exclude_tags: [Presenter, SignedBy]
-  severity: warning
-  scope: message
-  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 3015: Function of the Signed person.
-    Excludes Presenter for the same reason as GEN_FUNCTION_CODE (SCGEN@Presenter,
-    not DISCIPLINE_FUNCTION). Excludes SignedBy tag-wide because SAL redefines
-    Decision/SignedBy/@Function as free-text S(30) (ODF_SAL_Data_Dictionary.md
-    line 1710), unlike GEN which documents it as CC@DISCIPLINE_FUNCTION Id; a
-    tag-level exclusion cannot distinguish Decision/SignedBy from
-    Protest/SignedBy, which SAL still documents as CC@DISCIPLINE_FUNCTION Id
-    (line 1828), so that coverage is restored by
-    SAL_PROTEST_SIGNEDBY_FUNCTION_CODE (a rules review).'
-  status: active
-- id: SAL_PROTEST_SIGNEDBY_FUNCTION_CODE
-  applies_to:
-    disciplines:
-    - SAL
-  primitive: code_membership
-  target: .//Protest/SignedBy[@Function]
-  attribute: Function
-  params:
-    codeset: DISCIPLINE_FUNCTION
-  severity: warning
-  scope: message
-  source_ref: 'ODF_SAL_Data_Dictionary.md line 1828: Competition/Communication/
-    Protest/SignedBy/@Function is Function of the Signed person, CC@DISCIPLINE_
-    FUNCTION Id -- restores the coverage SAL_FUNCTION_CODE''s tag-wide SignedBy
-    exclusion drops, since Decision/SignedBy (free-text S(30), line 1710) and
-    Protest/SignedBy (CC@DISCIPLINE_FUNCTION Id, line 1828) share a tag but not
-    a format (a rules review).'
+  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 1594: This is the communication/document
+    number. For each of NOTICE, SPORT_NOTICE, COMPETITOR_NOTICE the number is sequential
+    starting from one and unique for the discipline and DocumentSubtype (hence there
+    can be two with value 1 in a discipline with different Document Subtype). For
+    PROTEST this is the case number and is provided by sport.'
   status: active
 - id: SAL_WIND_DIRECTION_CODE
   applies_to:
@@ -302,6 +316,5 @@
     codeset: WIND_DIRECTION
   severity: warning
   scope: message
-  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 3132: Wind direction [codeset corrected from
-    doc spelling ''WINDDIRECTION'']'
+  source_ref: 'ODF_SAL_Data_Dictionary.pdf line 1924: Id Wind direction'
   status: active

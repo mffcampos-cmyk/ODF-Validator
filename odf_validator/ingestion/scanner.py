@@ -4,8 +4,6 @@ from pathlib import Path
 from .filetype import classify_file
 
 MANAGED_DIR_NAMES = {"rules", ".drafts", "_reference", ".incoming"}
-STATE_FILE_NAME = ".ingestion_state.json"
-OBLIGATIONS_FILE_NAME = ".dd_obligations.json"
 MANIFEST_FILE_NAME = "pack.yaml"
 
 
@@ -19,7 +17,14 @@ class ScanResult:
 
 
 def _is_managed(path: Path, ruleset_dir: Path) -> bool:
-    if path.name in (STATE_FILE_NAME, OBLIGATIONS_FILE_NAME):
+    # Any dotfile, rather than a list of the state files that exist today.
+    # This WAS such a list -- .ingestion_state.json and .dd_obligations.json
+    # by name -- the sync feature added .sources.json without touching it,
+    # and the next import reported the app's own provenance file as an
+    # unrecognised source document. No IOC document is ever a dotfile, so
+    # the leading dot is the durable rule and the next cache file the app
+    # invents cannot reopen this.
+    if path.name.startswith("."):
         return True
     if path.name == MANIFEST_FILE_NAME and path.parent == ruleset_dir:
         return True
@@ -38,8 +43,9 @@ def _discipline_for(path: Path, ruleset_dir: Path) -> str | None:
 
 def scan_ruleset(ruleset_dir: Path) -> ScanResult:
     """Recursively type every source file under a ruleset folder, skipping the
-    app-managed rules/, .drafts/, and .incoming/ subfolders, human-facing
-    _reference/ subfolders, and the ingestion state file."""
+    app-managed rules/, .drafts/ and .incoming/ subfolders, human-facing
+    _reference/ subfolders, and every dotfile (the app's own state and cache
+    files -- see _is_managed)."""
     result = ScanResult(ruleset_dir=ruleset_dir)
     for path in sorted(ruleset_dir.rglob("*")):
         if not path.is_file() or _is_managed(path, ruleset_dir):

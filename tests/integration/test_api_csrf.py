@@ -154,13 +154,20 @@ def test_the_apps_own_form_still_works(tmp_path, monkeypatch):
 
 
 def test_the_drafts_page_renders_the_token_into_every_form(tmp_path, monkeypatch):
-    """Three forms per page (approve, reject, approve_all). A form that renders
-    without the token would 422 for the operator on click."""
+    """A form that renders without the token would 422 for the operator on
+    click. Counted against the number of <form> elements actually on the page
+    rather than a literal, so adding a button cannot make this test wrong
+    while it still passes -- or, as happened with reject_all, fail for the
+    bookkeeping rather than for a missing token."""
     _pending_draft(tmp_path, monkeypatch)
 
     body = client.get("/drafts").text
 
-    assert body.count(f'name="csrf_token" value="{CSRF_TOKEN}"') == 3
+    forms = body.count("<form ")
+    assert forms >= 4, (
+        f"expected at least approve, reject, approve_all and reject_all; "
+        f"found {forms} forms")
+    assert body.count(f'name="csrf_token" value="{CSRF_TOKEN}"') == forms
 
 
 # --------------------------------------------------------------------------- #
@@ -187,3 +194,38 @@ def test_every_loopback_spelling_is_accepted(host):
     r = client.get("/packs", headers={"host": host})
 
     assert r.status_code == 200
+
+
+def test_reject_all_without_the_token_is_refused(tmp_path, monkeypatch):
+    """reject_all takes no parameters either, so it is as cheap a target as
+    approve_all: one parameterless POST would wipe the review queue."""
+    dd = _pending_draft(tmp_path, monkeypatch)
+    draft_file = dd.parent / ".drafts" / "ARC_DD.md.draft.yaml"
+
+    r = client.post("/drafts/reject_all")
+
+    assert r.status_code == 422
+    assert draft_file.exists()
+
+
+def test_reject_all_with_a_wrong_token_is_refused(tmp_path, monkeypatch):
+    dd = _pending_draft(tmp_path, monkeypatch)
+    draft_file = dd.parent / ".drafts" / "ARC_DD.md.draft.yaml"
+
+    r = client.post("/drafts/reject_all", data={"csrf_token": "nope"})
+
+    assert r.status_code == 403
+    assert draft_file.exists()
+
+
+def test_reject_all_from_a_foreign_origin_is_refused(tmp_path, monkeypatch):
+    """The token alone is the control, but an off-origin POST that somehow
+    carried it must still be refused -- same belt-and-braces as approve_all."""
+    dd = _pending_draft(tmp_path, monkeypatch)
+    draft_file = dd.parent / ".drafts" / "ARC_DD.md.draft.yaml"
+
+    r = client.post("/drafts/reject_all", data={"csrf_token": CSRF_TOKEN},
+                    headers={"Origin": EVIL})
+
+    assert r.status_code == 403
+    assert draft_file.exists()

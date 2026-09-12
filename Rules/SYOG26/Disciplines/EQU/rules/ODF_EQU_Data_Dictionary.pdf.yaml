@@ -1,30 +1,3 @@
-- id: EQU_VERSION_POSINT
-  applies_to:
-    disciplines:
-    - EQU
-  primitive: value_format
-  target: .//*[@Version]
-  attribute: Version
-  params:
-    regex: ^[0-9]+$
-  severity: error
-  scope: message
-  source_ref: 'ODF_EQU_Data_Dictionary.pdf line 525: Version number (ascending) associated
-    to the message content.'
-  status: active
-- id: EQU_ORGANISATION_CODE
-  applies_to:
-    disciplines:
-    - EQU
-  primitive: code_membership
-  target: .//*[@Organisation]
-  attribute: Organisation
-  params:
-    codeset: ORGANISATION
-  severity: warning
-  scope: message
-  source_ref: 'ODF_EQU_Data_Dictionary.pdf line 621: Competitor''s organisation'
-  status: active
 - id: EQU_STATUS_CODE
   applies_to:
     disciplines:
@@ -34,52 +7,11 @@
   attribute: Status
   params:
     codeset: PARTICIPANT_STATUS
-    exclude_tags: [Protest]
+    exclude_tags:
+    - Protest
   severity: warning
   scope: message
   source_ref: 'ODF_EQU_Data_Dictionary.pdf line 830: Horse’s entry status.'
-  status: active
-- id: EQU_SEX_CODE
-  applies_to:
-    disciplines:
-    - EQU
-  primitive: code_membership
-  target: .//*[@Sex]
-  attribute: Sex
-  params:
-    codeset: HORSE_GENDER
-  severity: warning
-  scope: message
-  source_ref: 'ODF_EQU_Data_Dictionary.pdf line 843: Horse''s sex. Send when information is
-    available'
-  status: active
-- id: EQU_COLOURCODE_CODE
-  applies_to:
-    disciplines:
-    - EQU
-  primitive: code_membership
-  target: .//*[@ColourCode]
-  attribute: ColourCode
-  params:
-    codeset: HORSE_COLOUR
-  severity: warning
-  scope: message
-  source_ref: 'ODF_EQU_Data_Dictionary.pdf line 848: Horse''s colour code. Send when information
-    is available'
-  status: active
-- id: EQU_BREEDCODE_CODE
-  applies_to:
-    disciplines:
-    - EQU
-  primitive: code_membership
-  target: .//*[@BreedCode]
-  attribute: BreedCode
-  params:
-    codeset: HORSE_BREED
-  severity: warning
-  scope: message
-  source_ref: 'ODF_EQU_Data_Dictionary.pdf line 850: Horse''s breed code. Send when information
-    is available'
   status: active
 - id: EQU_VENUE_CODE
   applies_to:
@@ -120,10 +52,12 @@
   attribute: Function
   params:
     codeset: DISCIPLINE_FUNCTION
-    exclude_tags: [Presenter]
+    exclude_tags:
+    - Presenter
   severity: warning
   scope: message
-  source_ref: 'ODF_EQU_Data_Dictionary.pdf line 1258: Official''s function for the event unit'
+  source_ref: 'ODF_EQU_Data_Dictionary.pdf line 1258: Official''s function for the
+    event unit'
   status: active
 - id: EQU_UNIT_CODE
   applies_to:
@@ -134,11 +68,84 @@
   attribute: Unit
   params:
     codeset: EVENT_UNIT
-    exclude_tags: [Precipitation, Pressure, Temperature, Wind]
+    exclude_tags:
+    - Precipitation
+    - Pressure
+    - Temperature
+    - Wind
   severity: warning
   scope: message
   source_ref: 'ODF_EQU_Data_Dictionary.pdf line 1942: Full unit RSC of each unit included
     in the cumulative result.'
+  status: active
+- id: EQU_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - EQU
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_EQU_Data_Dictionary.pdf line 298: Version number (ascending) associated
+    to the message content.'
+  status: active
+- id: EQU_ORGANISATION_CODE
+  applies_to:
+    disciplines:
+    - EQU
+  primitive: code_membership
+  target: .//*[@Organisation]
+  attribute: Organisation
+  params:
+    codeset: ORGANISATION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_EQU_Data_Dictionary.pdf line 342: Competitor''s organisation'
+  status: active
+- id: EQU_SEX_CODE
+  applies_to:
+    disciplines:
+    - EQU
+  primitive: code_membership
+  target: .//*[@Sex]
+  attribute: Sex
+  params:
+    codeset: HORSE_GENDER
+  severity: warning
+  scope: message
+  source_ref: 'ODF_EQU_Data_Dictionary.pdf line 455: Id Horse''s sex. Send when information
+    is available'
+  status: active
+- id: EQU_COLOURCODE_CODE
+  applies_to:
+    disciplines:
+    - EQU
+  primitive: code_membership
+  target: .//*[@ColourCode]
+  attribute: ColourCode
+  params:
+    codeset: HORSE_COLOUR
+  severity: warning
+  scope: message
+  source_ref: 'ODF_EQU_Data_Dictionary.pdf line 459: Id Horse''s colour code. Send
+    when information is available'
+  status: active
+- id: EQU_BREEDCODE_CODE
+  applies_to:
+    disciplines:
+    - EQU
+  primitive: code_membership
+  target: .//*[@BreedCode]
+  attribute: BreedCode
+  params:
+    codeset: HORSE_BREED
+  severity: warning
+  scope: message
+  source_ref: 'ODF_EQU_Data_Dictionary.pdf line 460: Id Horse''s breed code. Send
+    when information is available'
   status: active
 - id: EQU_WIND_DIRECTION_CODE
   applies_to:
@@ -151,6 +158,5 @@
     codeset: WIND_DIRECTION
   severity: warning
   scope: message
-  source_ref: 'ODF_EQU_Data_Dictionary.pdf line 2688: Wind direction [codeset corrected from
-    doc spelling ''WINDDIRECTION'']'
+  source_ref: 'ODF_EQU_Data_Dictionary.pdf line 1428: Id Wind direction'
   status: active

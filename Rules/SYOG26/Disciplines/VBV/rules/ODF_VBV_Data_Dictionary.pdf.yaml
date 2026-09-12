@@ -1,17 +1,3 @@
-- id: VBV_VERSION_POSINT
-  applies_to:
-    disciplines:
-    - VBV
-  primitive: value_format
-  target: .//*[@Version]
-  attribute: Version
-  params:
-    regex: ^[0-9]+$
-  severity: error
-  scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 381: Version number (ascending) associated
-    to the message content.'
-  status: active
 - id: VBV_VENUE_CODE
   applies_to:
     disciplines:
@@ -25,7 +11,8 @@
     - TBD
   severity: warning
   scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 522: Venue where the session takes place'
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 522: Venue where the session takes
+    place'
   status: active
 - id: VBV_VENUENAME_CODE
   applies_to:
@@ -40,74 +27,9 @@
     code_attr: Venue
   severity: warning
   scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 525: Venue ENG Description (not code) from
-    Common Codes [description attribute, validated as ENG_Description, not code membership]'
-  status: active
-- id: VBV_SESSIONSTATUS_CODE
-  applies_to:
-    disciplines:
-    - VBV
-  primitive: code_membership
-  target: .//*[@SessionStatus]
-  attribute: SessionStatus
-  params:
-    codeset: SCHEDULESTATUS
-  severity: warning
-  scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 533: Only use CANCELLED if applicable. All
-    other sessions are [codeset corrected from doc spelling ''SHEDULESTATUS'']'
-  status: active
-- id: VBV_SESSIONTYPE_CODE
-  applies_to:
-    disciplines:
-    - VBV
-  primitive: code_membership
-  target: .//*[@SessionType]
-  attribute: SessionType
-  params:
-    codeset: SESSION_TYPE
-  severity: warning
-  scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 536: Session type of the Session.'
-  status: active
-- id: VBV_LANGUAGE_CODE
-  applies_to:
-    disciplines:
-    - VBV
-  primitive: code_membership
-  target: .//*[@Language]
-  attribute: Language
-  params:
-    codeset: LANGUAGE
-  severity: warning
-  scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 547: Language of the Session Description'
-  status: active
-- id: VBV_PHASETYPE_CODE
-  applies_to:
-    disciplines:
-    - VBV
-  primitive: code_membership
-  target: .//*[@PhaseType]
-  attribute: PhaseType
-  params:
-    codeset: PHASE_TYPE
-  severity: warning
-  scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 563: Phase type for the unit'
-  status: active
-- id: VBV_SCHEDULESTATUS_CODE
-  applies_to:
-    disciplines:
-    - VBV
-  primitive: code_membership
-  target: .//*[@ScheduleStatus]
-  attribute: ScheduleStatus
-  params:
-    codeset: SCHEDULESTATUS
-  severity: warning
-  scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 569: Unit Status'
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 525: Venue ENG Description (not code)
+    from Common Codes [description attribute, validated as ENG_Description, not code
+    membership]'
   status: active
 - id: VBV_LOCATION_CODE
   applies_to:
@@ -122,7 +44,8 @@
     - TBD
   severity: warning
   scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 628: Location where the unit takes place.'
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 628: Location where the unit takes
+    place.'
   status: active
 - id: VBV_LOCATIONNAME_CODE
   applies_to:
@@ -137,8 +60,9 @@
     code_attr: Location
   severity: warning
   scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 684: Location ENG Description (not code) from
-    Common Codes [description attribute, validated as ENG_Description, not code membership]'
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 684: Location ENG Description (not
+    code) from Common Codes [description attribute, validated as ENG_Description,
+    not code membership]'
   status: active
 - id: VBV_UNIT_CODE
   applies_to:
@@ -149,24 +73,15 @@
   attribute: Unit
   params:
     codeset: EVENT_UNIT
-    exclude_tags: [Precipitation, Pressure, Temperature, Wind]
+    exclude_tags:
+    - Precipitation
+    - Pressure
+    - Temperature
+    - Wind
   severity: warning
   scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 704: The full RSC of the unit where this competitor
-    came from. This'
-  status: active
-- id: VBV_ORGANISATION_CODE
-  applies_to:
-    disciplines:
-    - VBV
-  primitive: code_membership
-  target: .//*[@Organisation]
-  attribute: Organisation
-  params:
-    codeset: ORGANISATION
-  severity: warning
-  scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 728: Should be sent when known'
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 704: The full RSC of the unit where
+    this competitor came from. This'
   status: active
 - id: VBV_STATUS_CODE
   applies_to:
@@ -177,62 +92,11 @@
   attribute: Status
   params:
     codeset: PARTICIPANT_STATUS
-    exclude_tags: [Protest]
+    exclude_tags:
+    - Protest
   severity: warning
   scope: message
   source_ref: 'ODF_VBV_Data_Dictionary.pdf line 904: Participant''s sport entry status.'
-  status: active
-- id: VBV_COUNTRYOFBIRTH_CODE
-  applies_to:
-    disciplines:
-    - VBV
-  primitive: code_membership
-  target: .//*[@CountryofBirth]
-  attribute: CountryofBirth
-  params:
-    codeset: COUNTRY
-  severity: warning
-  scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 944: Country ID of Birth'
-  status: active
-- id: VBV_COUNTRYOFRESIDENCE_CODE
-  applies_to:
-    disciplines:
-    - VBV
-  primitive: code_membership
-  target: .//*[@CountryofResidence]
-  attribute: CountryofResidence
-  params:
-    codeset: COUNTRY
-  severity: warning
-  scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 948: Country ID of Residence'
-  status: active
-- id: VBV_NATIONALITY_CODE
-  applies_to:
-    disciplines:
-    - VBV
-  primitive: code_membership
-  target: .//*[@Nationality]
-  attribute: Nationality
-  params:
-    codeset: COUNTRY
-  severity: warning
-  scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 950: Participant''s nationality.'
-  status: active
-- id: VBV_MAINFUNCTIONID_CODE
-  applies_to:
-    disciplines:
-    - VBV
-  primitive: code_membership
-  target: .//*[@MainFunctionId]
-  attribute: MainFunctionId
-  params:
-    codeset: DISCIPLINE_FUNCTION
-  severity: warning
-  scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 955: Main function'
   status: active
 - id: VBV_FUNCTION_CODE
   applies_to:
@@ -243,7 +107,8 @@
   attribute: Function
   params:
     codeset: DISCIPLINE_FUNCTION
-    exclude_tags: [Presenter]
+    exclude_tags:
+    - Presenter
   severity: warning
   scope: message
   source_ref: 'ODF_VBV_Data_Dictionary.pdf line 1339: Team Official function.'
@@ -260,9 +125,9 @@
     field: ENG_Description
   severity: warning
   scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 1773: Discipline ENG Description (not code)
-    from Common Codes [description attribute, validated as ENG_Description, not code
-    membership]'
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 1773: Discipline ENG Description (not
+    code) from Common Codes [description attribute, validated as ENG_Description,
+    not code membership]'
   status: active
 - id: VBV_EVENTNAME_CODE
   applies_to:
@@ -277,8 +142,9 @@
     code_attr: Event
   severity: warning
   scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 1775: Event ENG Description (not code) from
-    Common Codes. [description attribute, validated as ENG_Description, not code membership]'
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 1775: Event ENG Description (not code)
+    from Common Codes. [description attribute, validated as ENG_Description, not code
+    membership]'
   status: active
 - id: VBV_SUBEVENTNAME_CODE
   applies_to:
@@ -293,8 +159,145 @@
     code_attr: Unit
   severity: warning
   scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 1779: EventUnit ENG Description (not code)
-    from Common Codes [the machine-readable DD column says CC@EVENT_UNIT ENG ShortDescription while the prose beside it says ENG Description; the column governs. All 24 discipline DDs specify ShortDescription, so all 13 discipline rules were corrected together.]'
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 1779: EventUnit ENG Description (not
+    code) from Common Codes [the machine-readable DD column says CC@EVENT_UNIT ENG
+    ShortDescription while the prose beside it says ENG Description; the column governs.
+    All 24 discipline DDs specify ShortDescription, so all 13 discipline rules were
+    corrected together.]'
+  status: active
+- id: VBV_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - VBV
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 341: Version number (ascending) associated
+    to the message content.'
+  status: active
+- id: VBV_SESSIONTYPE_CODE
+  applies_to:
+    disciplines:
+    - VBV
+  primitive: code_membership
+  target: .//*[@SessionType]
+  attribute: SessionType
+  params:
+    codeset: SESSION_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 409: Id Session type of the Session.'
+  status: active
+- id: VBV_LANGUAGE_CODE
+  applies_to:
+    disciplines:
+    - VBV
+  primitive: code_membership
+  target: .//*[@Language]
+  attribute: Language
+  params:
+    codeset: LANGUAGE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 416: Id Language of the Session Description'
+  status: active
+- id: VBV_PHASETYPE_CODE
+  applies_to:
+    disciplines:
+    - VBV
+  primitive: code_membership
+  target: .//*[@PhaseType]
+  attribute: PhaseType
+  params:
+    codeset: PHASE_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 427: Id Phase type for the unit'
+  status: active
+- id: VBV_SCHEDULESTATUS_CODE
+  applies_to:
+    disciplines:
+    - VBV
+  primitive: code_membership
+  target: .//*[@ScheduleStatus]
+  attribute: ScheduleStatus
+  params:
+    codeset: SCHEDULESTATUS
+  severity: warning
+  scope: message
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 430: Id Unit Status'
+  status: active
+- id: VBV_ORGANISATION_CODE
+  applies_to:
+    disciplines:
+    - VBV
+  primitive: code_membership
+  target: .//*[@Organisation]
+  attribute: Organisation
+  params:
+    codeset: ORGANISATION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 499: Id Should be sent when known'
+  status: active
+- id: VBV_COUNTRYOFBIRTH_CODE
+  applies_to:
+    disciplines:
+    - VBV
+  primitive: code_membership
+  target: .//*[@CountryofBirth]
+  attribute: CountryofBirth
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 619: Id Country ID of Birth'
+  status: active
+- id: VBV_COUNTRYOFRESIDENCE_CODE
+  applies_to:
+    disciplines:
+    - VBV
+  primitive: code_membership
+  target: .//*[@CountryofResidence]
+  attribute: CountryofResidence
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 621: Id Country ID of Residence'
+  status: active
+- id: VBV_NATIONALITY_CODE
+  applies_to:
+    disciplines:
+    - VBV
+  primitive: code_membership
+  target: .//*[@Nationality]
+  attribute: Nationality
+  params:
+    codeset: COUNTRY
+  severity: warning
+  scope: message
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 622: ID Participant''s nationality.
+    Although this attribute is optional, in very exceptional situations it will not
+    be known, and for this reason not ready to be sent.'
+  status: active
+- id: VBV_MAINFUNCTIONID_CODE
+  applies_to:
+    disciplines:
+    - VBV
+  primitive: code_membership
+  target: .//*[@MainFunctionId]
+  attribute: MainFunctionId
+  params:
+    codeset: DISCIPLINE_FUNCTION
+  severity: warning
+  scope: message
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 623: Id Main function In the Case
+    of Current="true" this attribute is Mandatory.'
   status: active
 - id: VBV_LASTUNIT_CODE
   applies_to:
@@ -307,8 +310,8 @@
     codeset: EVENT_UNIT
   severity: warning
   scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 2963: Send the full RSC of the most recently
-    unit made official for the'
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 1771: Code Send the full RSC of the
+    most recently unit made official for the pool included in this message.'
   status: active
 - id: VBV_WIND_DIRECTION_CODE
   applies_to:
@@ -321,6 +324,5 @@
     codeset: WIND_DIRECTION
   severity: warning
   scope: message
-  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 4158: Wind direction [codeset corrected from
-    doc spelling ''WINDDIRECTION'']'
+  source_ref: 'ODF_VBV_Data_Dictionary.pdf line 2475: Id Wind direction'
   status: active

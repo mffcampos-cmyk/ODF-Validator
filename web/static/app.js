@@ -85,6 +85,16 @@ function showPackReport() {
     bits.push(`${cur.cache_warnings.length} obligation cache warning(s) — ` +
               `first: ${cur.cache_warnings[0]}`);
   }
+  if (cur && cur.unmatched_codesets && cur.unmatched_codesets.length) {
+    // Deliberately not "failed to load": no rule exists to have failed. A
+    // Data Dictionary asked for a codeset the Common Codes do not have, so
+    // no draft was offered. Silence would leave the attribute unchecked with
+    // nothing on screen ever saying so -- which is how @Class ended up
+    // validated by nothing at all.
+    bits.push(`${cur.unmatched_codesets.length} Data Dictionary line(s) ` +
+              `name a codeset the Common Codes do not have, so no rule ` +
+              `covers those attributes — first: ${cur.unmatched_codesets[0]}`);
+  }
   el.textContent = bits.join('  ·  ');
   el.hidden = bits.length === 0;
 

@@ -195,9 +195,30 @@ def _specialise_by_discipline(
 
 
 def load_rule_defs(
-    paths: list[Path], allow_core: bool = False
+    paths: list[Path], allow_core: bool = False, resolve_codeset=None,
+    drop_unresolvable_codesets: bool = False
 ) -> tuple[list[RuleDef], list[str], list[str], list[str]]:
     """Returns (rules, errors, conflicts, deduped, specialised).
+
+    `resolve_codeset`, when given, maps a codeset name as the Data Dictionary
+    cites it to the name the pack's code tables actually use (see
+    CodeRegistry.resolve). It is applied HERE, before the dedup below, and not
+    by the caller afterwards: _semantic_key freezes the whole params dict, so
+    a GEN rule reading WIND_DIRECTION and its discipline copy reading
+    WINDDIRECTION are two different checks to the dedup and both survive --
+    two warnings for one bad value, which is the double-firing the dedup
+    exists to prevent.
+
+    `drop_unresolvable_codesets` removes rules whose codeset does not resolve
+    at all, and it has to happen here too, for a second ordering reason:
+    _specialisation_key is (primitive, target, attribute) with params
+    EXCLUDED, so a discipline rule with a dead codeset still counts as
+    specialising the GEN rule and stands it down for that discipline. Drop it
+    in the caller afterwards and the discipline is left with no check at all
+    -- neither the dropped rule nor the GEN rule it displaced. That is what
+    13 SHEDULESTATUS rules did to @SessionStatus across 13 disciplines.
+    Pass it only when the pack actually has code tables to judge against; a
+    pack with none cannot tell a dead codeset from an unloaded workbook.
 
     `conflicts` are collisions a human must resolve (two files claiming
     one rule id). `deduped` is routine, lossless housekeeping: a rule
@@ -238,10 +259,30 @@ def load_rule_defs(
                         f"{Path(p).name} (first-wins) -- kept the one from {seen[rule.id]}."
                     )
                     continue
+                if resolve_codeset is not None:
+                    cs = rule.params.get("codeset")
+                    if cs:
+                        real = resolve_codeset(cs)
+                        if real:
+                            rule.params["codeset"] = real
                 seen[rule.id] = Path(p).name
                 rules.append(rule)
         except Exception as e:
             errors.append(f"Failed to read rule file {Path(p).name}: {e}")
+    # Dead rules go first, before either dedup or specialisation can treat one
+    # as standing in for a rule that works. See the docstring.
+    if resolve_codeset is not None and drop_unresolvable_codesets:
+        alive: list[RuleDef] = []
+        for rule in rules:
+            cs = rule.params.get("codeset")
+            if cs and resolve_codeset(cs) is None:
+                errors.append(
+                    f"Rule {rule.id}: codeset '{cs}' is not provided by this "
+                    f"pack's code tables under any spelling; the rule was "
+                    f"dropped rather than left active and permanently silent.")
+                continue
+            alive.append(rule)
+        rules = alive
     # Cross-pack deduplication: discipline rulesets re-declare the global GEN
     # code-membership checks almost verbatim (a rules review found 408 of 457
     # discipline rules were exact GEN duplicates). Both copies load with

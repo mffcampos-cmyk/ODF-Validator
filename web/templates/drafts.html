@@ -35,8 +35,14 @@
           <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
           <button type="submit" class="btn btn-run">Approve all {{ drafts|length }}</button>
         </form>
+        <form method="post" action="/drafts/reject_all"
+              onsubmit="return confirm('Reject all {{ drafts|length }} draft rule(s)? Every draft is deleted. Active rules are untouched, and the drafts are derived again from the Data Dictionaries on the next import.');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <button type="submit" class="btn">Reject all {{ drafts|length }}</button>
+        </form>
         <p class="hint">Approved rules join their ruleset and run on the next validation.
-        Drafts that would drop a hand-set parameter are skipped here.</p>
+        Drafts that would drop a hand-set parameter are skipped here.
+        Rejecting deletes drafts only — no active rule changes.</p>
       </div>
 
       <ul class="stack">

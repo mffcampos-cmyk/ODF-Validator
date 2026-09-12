@@ -9,8 +9,8 @@
     regex: ^[0-9]+$
   severity: error
   scope: message
-  source_ref: 'ODF_ARC_Data_Dictionary.md line 352: Version number associated to the
-    message''s content. Ascending number'
+  source_ref: 'ODF_ARC_Data_Dictionary.pdf line 311: Version number associated to
+    the message''s content. Ascending number'
   status: active
 - id: ARC_VENUE_CODE
   applies_to:
@@ -25,7 +25,7 @@
     - TBD
   severity: warning
   scope: message
-  source_ref: 'ODF_ARC_Data_Dictionary.md line 515: Venue where the session takes
+  source_ref: 'ODF_ARC_Data_Dictionary.pdf line 372: Id Venue where the session takes
     place'
   status: active
 - id: ARC_SESSIONSTATUS_CODE
@@ -39,8 +39,9 @@
     codeset: SCHEDULESTATUS
   severity: warning
   scope: message
-  source_ref: 'ODF_ARC_Data_Dictionary.md line 519: Only use CANCELLED if applicable.
-    All other sessions are'
+  source_ref: 'ODF_ARC_Data_Dictionary.pdf line 374: Id Only use CANCELLED if applicable.
+    All other sessions are assumed to be scheduled. There is no change to running
+    or finished.'
   status: active
 - id: ARC_SESSIONTYPE_CODE
   applies_to:
@@ -53,7 +54,7 @@
     codeset: SESSION_TYPE
   severity: warning
   scope: message
-  source_ref: 'ODF_ARC_Data_Dictionary.md line 522: Session type of the Session.'
+  source_ref: 'ODF_ARC_Data_Dictionary.pdf line 375: Id Session type of the Session.'
   status: active
 - id: ARC_LANGUAGE_CODE
   applies_to:
@@ -66,7 +67,7 @@
     codeset: LANGUAGE
   severity: warning
   scope: message
-  source_ref: 'ODF_ARC_Data_Dictionary.md line 533: Language of the Session Description'
+  source_ref: 'ODF_ARC_Data_Dictionary.pdf line 382: Id Language of the Session Description'
   status: active
 - id: ARC_PHASETYPE_CODE
   applies_to:
@@ -79,7 +80,7 @@
     codeset: PHASE_TYPE
   severity: warning
   scope: message
-  source_ref: 'ODF_ARC_Data_Dictionary.md line 549: Phase type for the unit'
+  source_ref: 'ODF_ARC_Data_Dictionary.pdf line 393: Phase type for the unit'
   status: active
 - id: ARC_SCHEDULESTATUS_CODE
   applies_to:
@@ -92,7 +93,7 @@
     codeset: SCHEDULESTATUS
   severity: warning
   scope: message
-  source_ref: 'ODF_ARC_Data_Dictionary.md line 560: Unit Status'
+  source_ref: 'ODF_ARC_Data_Dictionary.pdf line 401: Id Unit Status'
   status: active
 - id: ARC_LOCATION_CODE
   applies_to:
@@ -107,8 +108,9 @@
     - TBD
   severity: warning
   scope: message
-  source_ref: 'ODF_ARC_Data_Dictionary.md line 624: Location where the unit takes
-    place.'
+  source_ref: 'ODF_ARC_Data_Dictionary.pdf line 416: Id Location where the unit takes
+    place. Mandatory unless UNSCHEDULED. Can use TBD if the Location is not known
+    yet or a generic code for the discipline (see CC).'
   status: active
 - id: ARC_UNIT_CODE
   applies_to:
@@ -119,11 +121,18 @@
   attribute: Unit
   params:
     codeset: EVENT_UNIT
-    exclude_tags: [Precipitation, Pressure, Temperature, Wind]
+    exclude_tags:
+    - Precipitation
+    - Pressure
+    - Temperature
+    - Wind
   severity: warning
   scope: message
-  source_ref: 'ODF_ARC_Data_Dictionary.md line 685: The full RSC of the unit where
-    this competitor came from. This'
+  source_ref: 'ODF_ARC_Data_Dictionary.pdf line 460: Code The full RSC of the unit
+    where this competitor came from. This attribute is only filled if the progression
+    of the competitors are 100% confirmed as participating at this time and not subject
+    to change depending on TV times etc. Further, the data is removed when the real
+    competitors are known.'
   status: active
 - id: ARC_ORGANISATION_CODE
   applies_to:
@@ -136,7 +145,7 @@
     codeset: ORGANISATION
   severity: warning
   scope: message
-  source_ref: 'ODF_ARC_Data_Dictionary.md line 709: Should be sent when known'
+  source_ref: 'ODF_ARC_Data_Dictionary.pdf line 469: Should be sent when known'
   status: active
 - id: ARC_STATUS_CODE
   applies_to:
@@ -147,11 +156,14 @@
   attribute: Status
   params:
     codeset: PARTICIPANT_STATUS
-    exclude_tags: [Protest]
+    exclude_tags:
+    - Protest
   severity: warning
   scope: message
-  source_ref: 'ODF_ARC_Data_Dictionary.md line 921: Participant''s accreditation status
-    this attribute is Mandatory in'
+  source_ref: 'ODF_ARC_Data_Dictionary.pdf line 600: Id Participant''s accreditation
+    status this attribute is Mandatory in the case of @Current="true" and it is optional
+    in the case that @Current="false". To delete a participant, a specific value of
+    the Status attribute is used.'
   status: active
 - id: ARC_COUNTRYOFBIRTH_CODE
   applies_to:
@@ -164,7 +176,7 @@
     codeset: COUNTRY
   severity: warning
   scope: message
-  source_ref: 'ODF_ARC_Data_Dictionary.md line 955: Country ID of Birth'
+  source_ref: 'ODF_ARC_Data_Dictionary.pdf line 616: Id Country ID of Birth'
   status: active
 - id: ARC_COUNTRYOFRESIDENCE_CODE
   applies_to:
@@ -177,7 +189,7 @@
     codeset: COUNTRY
   severity: warning
   scope: message
-  source_ref: 'ODF_ARC_Data_Dictionary.md line 959: Country ID of Residence'
+  source_ref: 'ODF_ARC_Data_Dictionary.pdf line 618: Id Country ID of Residence'
   status: active
 - id: ARC_NATIONALITY_CODE
   applies_to:
@@ -190,7 +202,7 @@
     codeset: COUNTRY
   severity: warning
   scope: message
-  source_ref: 'ODF_ARC_Data_Dictionary.md line 961: Participant''s nationality.'
+  source_ref: 'ODF_ARC_Data_Dictionary.pdf line 619: ID Participant''s nationality.'
   status: active
 - id: ARC_MAINFUNCTIONID_CODE
   applies_to:
@@ -203,7 +215,8 @@
     codeset: DISCIPLINE_FUNCTION
   severity: warning
   scope: message
-  source_ref: 'ODF_ARC_Data_Dictionary.md line 972: Main function'
+  source_ref: 'ODF_ARC_Data_Dictionary.pdf line 625: N Id Main function In the Case
+    of Current="true" this attribute is Mandatory.'
   status: active
 - id: ARC_FUNCTION_CODE
   applies_to:
@@ -214,10 +227,11 @@
   attribute: Function
   params:
     codeset: DISCIPLINE_FUNCTION
-    exclude_tags: [Presenter]
+    exclude_tags:
+    - Presenter
   severity: warning
   scope: message
-  source_ref: 'ODF_ARC_Data_Dictionary.md line 1271: Team Official function.'
+  source_ref: 'ODF_ARC_Data_Dictionary.pdf line 822: Id Team Official function.'
   status: active
 - id: ARC_WIND_DIRECTION_CODE
   applies_to:
@@ -230,5 +244,5 @@
     codeset: WIND_DIRECTION
   severity: warning
   scope: message
-  source_ref: 'ODF_ARC_Data_Dictionary.md line 3343: Wind direction'
+  source_ref: 'ODF_ARC_Data_Dictionary.pdf line 1931: Id Wind direction'
   status: active

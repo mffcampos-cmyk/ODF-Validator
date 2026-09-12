@@ -201,6 +201,20 @@ def approve_all_drafts(rules_root: Path, *,
     return approved_ids, skipped
 
 
+def reject_all_drafts(rules_root: Path) -> list[str]:
+    """Discard every pending draft, returning the ids that were rejected.
+
+    Safe in the way approve_all is not: rejecting never writes to an active
+    rule file, so no hand-made refinement can be lost (see RefinementLoss),
+    and every discarded draft is re-derived from its Data Dictionary on the
+    next ingestion run. Nothing here needs a skip list.
+    """
+    rejected = [entry["id"] for entry in list_all_drafts(rules_root)]
+    for draft_file in sorted(rules_root.rglob(".drafts/*.draft.yaml")):
+        draft_file.unlink()
+    return rejected
+
+
 def reject_draft(draft_file: Path, rule_id: str, *,
                  rules_root: Path | None = None) -> None:
     draft_file = _require_inside(draft_file, rules_root)

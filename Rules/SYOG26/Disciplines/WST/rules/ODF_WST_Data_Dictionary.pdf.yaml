@@ -10,8 +10,9 @@
     field: ENG_Description
   severity: warning
   scope: message
-  source_ref: 'ODF_WST_Data_Dictionary.pdf line 888: Discipline ENG Description (not code) from Common
-    Codes [description attribute, validated as ENG_Description, not code membership]'
+  source_ref: 'ODF_WST_Data_Dictionary.pdf line 888: Discipline ENG Description (not
+    code) from Common Codes [description attribute, validated as ENG_Description,
+    not code membership]'
   status: active
 - id: WST_EVENTNAME_CODE
   applies_to:
@@ -26,8 +27,9 @@
     code_attr: Event
   severity: warning
   scope: message
-  source_ref: 'ODF_WST_Data_Dictionary.pdf line 890: Event ENG Description (not code) from Common Codes.
-    [description attribute, validated as ENG_Description, not code membership]'
+  source_ref: 'ODF_WST_Data_Dictionary.pdf line 890: Event ENG Description (not code)
+    from Common Codes. [description attribute, validated as ENG_Description, not code
+    membership]'
   status: active
 - id: WST_SUBEVENTNAME_CODE
   applies_to:
@@ -42,10 +44,11 @@
     code_attr: Unit
   severity: warning
   scope: message
-  source_ref: 'ODF_WST_Data_Dictionary.pdf line 894: EventUnit ENG Description (not code) from Common
-    Codes [the machine-readable DD column says CC@EVENT_UNIT ENG ShortDescription while
-    the prose beside it says ENG Description; the column governs. All 24 discipline DDs specify ShortDescription,
-    so all 13 discipline rules were corrected together.]'
+  source_ref: 'ODF_WST_Data_Dictionary.pdf line 894: EventUnit ENG Description (not
+    code) from Common Codes [the machine-readable DD column says CC@EVENT_UNIT ENG
+    ShortDescription while the prose beside it says ENG Description; the column governs.
+    All 24 discipline DDs specify ShortDescription, so all 13 discipline rules were
+    corrected together.]'
   status: active
 - id: WST_VENUENAME_CODE
   applies_to:
@@ -60,8 +63,9 @@
     code_attr: Venue
   severity: warning
   scope: message
-  source_ref: 'ODF_WST_Data_Dictionary.pdf line 902: Venue ENG Description (not code) from Common Codes
-    [description attribute, validated as ENG_Description, not code membership]'
+  source_ref: 'ODF_WST_Data_Dictionary.pdf line 902: Venue ENG Description (not code)
+    from Common Codes [description attribute, validated as ENG_Description, not code
+    membership]'
   status: active
 - id: WST_LOCATIONNAME_CODE
   applies_to:
@@ -76,22 +80,9 @@
     code_attr: Location
   severity: warning
   scope: message
-  source_ref: 'ODF_WST_Data_Dictionary.pdf line 906: Location ENG Description (not code) from Common Codes
-    [description attribute, validated as ENG_Description, not code membership]'
-  status: active
-- id: WST_VERSION_POSINT
-  applies_to:
-    disciplines:
-    - WST
-  primitive: value_format
-  target: .//*[@Version]
-  attribute: Version
-  params:
-    regex: ^[0-9]+$
-  severity: error
-  scope: message
-  source_ref: 'ODF_WST_Data_Dictionary.pdf line 239: Version number associated to the message''s content.
-    Ascending number'
+  source_ref: 'ODF_WST_Data_Dictionary.pdf line 906: Location ENG Description (not
+    code) from Common Codes [description attribute, validated as ENG_Description,
+    not code membership]'
   status: active
 - id: WST_STATUS_CODE
   applies_to:
@@ -106,9 +97,88 @@
     - Protest
   severity: warning
   scope: message
-  source_ref: 'ODF_WST_Data_Dictionary.pdf line 306: Id Participant''s accreditation status this attribute
-    is Mandatory in the case of @Current="true" and it is optional in the case that @Current="false".
-    To delete a participant, a specific value of the Status attribute is used.'
+  source_ref: 'ODF_WST_Data_Dictionary.pdf line 306: Id Participant''s accreditation
+    status this attribute is Mandatory in the case of @Current="true" and it is optional
+    in the case that @Current="false". To delete a participant, a specific value of
+    the Status attribute is used.'
+  status: active
+- id: WST_VENUE_CODE
+  applies_to:
+    disciplines:
+    - WST
+  primitive: code_membership
+  target: .//*[@Venue]
+  attribute: Venue
+  params:
+    codeset: VENUE
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_WST_Data_Dictionary.pdf line 570: Id Venue Code'
+  status: active
+- id: WST_LOCATION_CODE
+  applies_to:
+    disciplines:
+    - WST
+  primitive: code_membership
+  target: .//*[@Location]
+  attribute: Location
+  params:
+    codeset: LOCATION
+    allow:
+    - TBD
+  severity: warning
+  scope: message
+  source_ref: 'ODF_WST_Data_Dictionary.pdf line 572: Id Location code'
+  status: active
+- id: WST_FUNCTION_CODE
+  applies_to:
+    disciplines:
+    - WST
+  primitive: code_membership
+  target: .//*[@Function]
+  attribute: Function
+  params:
+    codeset: DISCIPLINE_FUNCTION
+    exclude_tags:
+    - Presenter
+  severity: warning
+  scope: message
+  source_ref: 'ODF_WST_Data_Dictionary.pdf line 579: Id Official''s function (example:
+    referee, etc.). Can be different from the function sent in the DT_PARTIC message.'
+  status: active
+- id: WST_UNIT_CODE
+  applies_to:
+    disciplines:
+    - WST
+  primitive: code_membership
+  target: .//*[@Unit]
+  attribute: Unit
+  params:
+    codeset: EVENT_UNIT
+    exclude_tags:
+    - Precipitation
+    - Pressure
+    - Temperature
+    - Wind
+  severity: warning
+  scope: message
+  source_ref: 'ODF_WST_Data_Dictionary.pdf line 792: Code Full RSC of the unit.'
+  status: active
+- id: WST_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - WST
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_WST_Data_Dictionary.pdf line 239: Version number associated to
+    the message''s content. Ascending number'
   status: active
 - id: WST_ORGANISATION_CODE
   applies_to:
@@ -160,9 +230,9 @@
     codeset: COUNTRY
   severity: warning
   scope: message
-  source_ref: 'ODF_WST_Data_Dictionary.pdf line 333: ID Participant''s nationality.Although this attribute
-    is optional, in very exceptional situations it will not be known, and for this reason not ready to
-    be sent.'
+  source_ref: 'ODF_WST_Data_Dictionary.pdf line 333: ID Participant''s nationality.Although
+    this attribute is optional, in very exceptional situations it will not be known,
+    and for this reason not ready to be sent.'
   status: active
 - id: WST_MAINFUNCTIONID_CODE
   applies_to:
@@ -175,54 +245,8 @@
     codeset: DISCIPLINE_FUNCTION
   severity: warning
   scope: message
-  source_ref: 'ODF_WST_Data_Dictionary.pdf line 334: Id Main function. In the Case of Current="true" this
-    attribute is Mandatory.'
-  status: active
-- id: WST_VENUE_CODE
-  applies_to:
-    disciplines:
-    - WST
-  primitive: code_membership
-  target: .//*[@Venue]
-  attribute: Venue
-  params:
-    codeset: VENUE
-    allow:
-    - TBD
-  severity: warning
-  scope: message
-  source_ref: 'ODF_WST_Data_Dictionary.pdf line 570: Id Venue Code'
-  status: active
-- id: WST_LOCATION_CODE
-  applies_to:
-    disciplines:
-    - WST
-  primitive: code_membership
-  target: .//*[@Location]
-  attribute: Location
-  params:
-    codeset: LOCATION
-    allow:
-    - TBD
-  severity: warning
-  scope: message
-  source_ref: 'ODF_WST_Data_Dictionary.pdf line 572: Id Location code'
-  status: active
-- id: WST_FUNCTION_CODE
-  applies_to:
-    disciplines:
-    - WST
-  primitive: code_membership
-  target: .//*[@Function]
-  attribute: Function
-  params:
-    codeset: DISCIPLINE_FUNCTION
-    exclude_tags:
-    - Presenter
-  severity: warning
-  scope: message
-  source_ref: 'ODF_WST_Data_Dictionary.pdf line 579: Id Official''s function (example: referee, etc.).
-    Can be different from the function sent in the DT_PARTIC message.'
+  source_ref: 'ODF_WST_Data_Dictionary.pdf line 334: Id Main function. In the Case
+    of Current="true" this attribute is Mandatory.'
   status: active
 - id: WST_LASTUNIT_CODE
   applies_to:
@@ -235,24 +259,6 @@
     codeset: EVENT_UNIT
   severity: warning
   scope: message
-  source_ref: 'ODF_WST_Data_Dictionary.pdf line 723: Code Send the full RSC of the most recently completed
-    unit included in the message.'
-  status: active
-- id: WST_UNIT_CODE
-  applies_to:
-    disciplines:
-    - WST
-  primitive: code_membership
-  target: .//*[@Unit]
-  attribute: Unit
-  params:
-    codeset: EVENT_UNIT
-    exclude_tags:
-    - Precipitation
-    - Pressure
-    - Temperature
-    - Wind
-  severity: warning
-  scope: message
-  source_ref: 'ODF_WST_Data_Dictionary.pdf line 792: Code Full RSC of the unit.'
+  source_ref: 'ODF_WST_Data_Dictionary.pdf line 723: Code Send the full RSC of the
+    most recently completed unit included in the message.'
   status: active

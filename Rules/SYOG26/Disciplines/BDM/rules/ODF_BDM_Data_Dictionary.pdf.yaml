@@ -1,17 +1,3 @@
-- id: BDM_VERSION_POSINT
-  applies_to:
-    disciplines:
-    - BDM
-  primitive: value_format
-  target: .//*[@Version]
-  attribute: Version
-  params:
-    regex: ^[0-9]+$
-  severity: error
-  scope: message
-  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 365: Version number (ascending) associated
-    to the message content.'
-  status: active
 - id: BDM_VENUE_CODE
   applies_to:
     disciplines:
@@ -27,72 +13,6 @@
   scope: message
   source_ref: 'ODF_BDM_Data_Dictionary.pdf line 525: Venue where the session takes
     place'
-  status: active
-- id: BDM_SESSIONSTATUS_CODE
-  applies_to:
-    disciplines:
-    - BDM
-  primitive: code_membership
-  target: .//*[@SessionStatus]
-  attribute: SessionStatus
-  params:
-    codeset: SCHEDULESTATUS
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 529: Only use CANCELLED if applicable.
-    All other sessions are'
-  status: active
-- id: BDM_SESSIONTYPE_CODE
-  applies_to:
-    disciplines:
-    - BDM
-  primitive: code_membership
-  target: .//*[@SessionType]
-  attribute: SessionType
-  params:
-    codeset: SESSION_TYPE
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 532: Session type of the Session.'
-  status: active
-- id: BDM_LANGUAGE_CODE
-  applies_to:
-    disciplines:
-    - BDM
-  primitive: code_membership
-  target: .//*[@Language]
-  attribute: Language
-  params:
-    codeset: LANGUAGE
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 543: Language of the Session Description'
-  status: active
-- id: BDM_PHASETYPE_CODE
-  applies_to:
-    disciplines:
-    - BDM
-  primitive: code_membership
-  target: .//*[@PhaseType]
-  attribute: PhaseType
-  params:
-    codeset: PHASE_TYPE
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 559: Phase type for the unit'
-  status: active
-- id: BDM_SCHEDULESTATUS_CODE
-  applies_to:
-    disciplines:
-    - BDM
-  primitive: code_membership
-  target: .//*[@ScheduleStatus]
-  attribute: ScheduleStatus
-  params:
-    codeset: SCHEDULESTATUS
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 565: Unit Status'
   status: active
 - id: BDM_LOCATION_CODE
   applies_to:
@@ -119,11 +39,112 @@
   attribute: Unit
   params:
     codeset: EVENT_UNIT
-    exclude_tags: [Precipitation, Pressure, Temperature, Wind]
+    exclude_tags:
+    - Precipitation
+    - Pressure
+    - Temperature
+    - Wind
   severity: warning
   scope: message
   source_ref: 'ODF_BDM_Data_Dictionary.pdf line 692: The full RSC of the unit where
     this competitor came from. This'
+  status: active
+- id: BDM_STATUS_CODE
+  applies_to:
+    disciplines:
+    - BDM
+  primitive: code_membership
+  target: .//*[@Status]
+  attribute: Status
+  params:
+    codeset: PARTICIPANT_STATUS
+    exclude_tags:
+    - Protest
+  severity: warning
+  scope: message
+  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 917: Participant''s accreditation
+    status this attribute is Mandatory in the'
+  status: active
+- id: BDM_FUNCTION_CODE
+  applies_to:
+    disciplines:
+    - BDM
+  primitive: code_membership
+  target: .//*[@Function]
+  attribute: Function
+  params:
+    codeset: DISCIPLINE_FUNCTION
+    exclude_tags:
+    - Presenter
+  severity: warning
+  scope: message
+  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 1603: Send the umpires.'
+  status: active
+- id: BDM_VERSION_POSINT
+  applies_to:
+    disciplines:
+    - BDM
+  primitive: value_format
+  target: .//*[@Version]
+  attribute: Version
+  params:
+    regex: ^[0-9]+$
+  severity: error
+  scope: message
+  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 321: Version number (ascending) associated
+    to the message content.'
+  status: active
+- id: BDM_SESSIONTYPE_CODE
+  applies_to:
+    disciplines:
+    - BDM
+  primitive: code_membership
+  target: .//*[@SessionType]
+  attribute: SessionType
+  params:
+    codeset: SESSION_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 413: Id Session type of the Session.'
+  status: active
+- id: BDM_LANGUAGE_CODE
+  applies_to:
+    disciplines:
+    - BDM
+  primitive: code_membership
+  target: .//*[@Language]
+  attribute: Language
+  params:
+    codeset: LANGUAGE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 420: Id Language of the Session Description'
+  status: active
+- id: BDM_PHASETYPE_CODE
+  applies_to:
+    disciplines:
+    - BDM
+  primitive: code_membership
+  target: .//*[@PhaseType]
+  attribute: PhaseType
+  params:
+    codeset: PHASE_TYPE
+  severity: warning
+  scope: message
+  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 431: Id Phase type for the unit'
+  status: active
+- id: BDM_SCHEDULESTATUS_CODE
+  applies_to:
+    disciplines:
+    - BDM
+  primitive: code_membership
+  target: .//*[@ScheduleStatus]
+  attribute: ScheduleStatus
+  params:
+    codeset: SCHEDULESTATUS
+  severity: warning
+  scope: message
+  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 434: Id Unit Status'
   status: active
 - id: BDM_ORGANISATION_CODE
   applies_to:
@@ -136,22 +157,7 @@
     codeset: ORGANISATION
   severity: warning
   scope: message
-  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 716: Should be sent when known'
-  status: active
-- id: BDM_STATUS_CODE
-  applies_to:
-    disciplines:
-    - BDM
-  primitive: code_membership
-  target: .//*[@Status]
-  attribute: Status
-  params:
-    codeset: PARTICIPANT_STATUS
-    exclude_tags: [Protest]
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 917: Participant''s accreditation
-    status this attribute is Mandatory in the'
+  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 508: Id Should be sent when known'
   status: active
 - id: BDM_COUNTRYOFBIRTH_CODE
   applies_to:
@@ -164,7 +170,7 @@
     codeset: COUNTRY
   severity: warning
   scope: message
-  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 954: Country ID of Birth'
+  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 650: Id'
   status: active
 - id: BDM_COUNTRYOFRESIDENCE_CODE
   applies_to:
@@ -177,7 +183,7 @@
     codeset: COUNTRY
   severity: warning
   scope: message
-  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 958: Country ID of Residence'
+  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 652: Id'
   status: active
 - id: BDM_NATIONALITY_CODE
   applies_to:
@@ -190,7 +196,7 @@
     codeset: COUNTRY
   severity: warning
   scope: message
-  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 960: Participant''s nationality.'
+  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 653: ID'
   status: active
 - id: BDM_MAINFUNCTIONID_CODE
   applies_to:
@@ -203,21 +209,7 @@
     codeset: DISCIPLINE_FUNCTION
   severity: warning
   scope: message
-  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 965: Main function'
-  status: active
-- id: BDM_FUNCTION_CODE
-  applies_to:
-    disciplines:
-    - BDM
-  primitive: code_membership
-  target: .//*[@Function]
-  attribute: Function
-  params:
-    codeset: DISCIPLINE_FUNCTION
-    exclude_tags: [Presenter]
-  severity: warning
-  scope: message
-  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 1603: Send the umpires.'
+  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 654: Id'
   status: active
 - id: BDM_LASTUNIT_CODE
   applies_to:
@@ -230,6 +222,6 @@
     codeset: EVENT_UNIT
   severity: warning
   scope: message
-  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 2444: Send the full RSC of the most
-    recently unit made official for the'
+  source_ref: 'ODF_BDM_Data_Dictionary.pdf line 1386: Code Send the full RSC of the
+    most recently unit made official for the pool included in this message.'
   status: active

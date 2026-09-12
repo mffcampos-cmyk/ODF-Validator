@@ -87,8 +87,29 @@ class CodeRegistry:
         self._tables[table.name] = table
         return msgs
 
+    def resolve(self, name: str) -> str | None:
+        """The workbook's real name for a codeset the Data Dictionary cites.
+
+        Exact match first, then a squash_name match -- the same
+        case/separator-insensitive comparison CodeTable.resolve_field already
+        applies to a table's COLUMN names. The DDs write CC@WINDDIRECTION and
+        CC@DISCIPLINEFUNCTION where the workbook sheets are WIND_DIRECTION and
+        DISCIPLINE_FUNCTION, and matching those exactly left 27 rules loaded,
+        active, and permanently silent (2026-09-12).
+
+        Returns None when nothing matches, and also when two tables squash to
+        the same key: which codes a rule enforces is not something to settle
+        by coin toss. The caller reports it; nothing guesses.
+        """
+        if name in self._tables:
+            return name
+        target = squash_name(name)
+        matches = [n for n in self._tables if squash_name(n) == target]
+        return matches[0] if len(matches) == 1 else None
+
     def table(self, name: str) -> CodeTable | None:
-        return self._tables.get(name)
+        resolved = self.resolve(name)
+        return self._tables.get(resolved) if resolved else None
 
     def names(self) -> list[str]:
         return sorted(self._tables)

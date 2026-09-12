@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Rulesets — ODF Validator</title>
   <link rel="stylesheet" href="/static/styles.css">
+  <!-- defer: sources.js wires the forms as soon as it runs, so it must not
+       run before they are parsed. -->
+  <script src="/static/sources.js" defer></script>
 </head>
 <body>
   <header class="rig">
@@ -54,17 +57,25 @@
     </ul>
 
     {% for pack in source_packs %}
-    <form method="post" action="/sources/fetch" class="row-actions">
-      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-      <input type="hidden" name="pack" value="{{ pack }}">
-      <button type="submit">Check and download updates &middot; {{ pack }}</button>
-    </form>
-    <form method="post" action="/sources/apply" class="row-actions">
-      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-      <input type="hidden" name="pack" value="{{ pack }}">
-      <button type="submit">Apply downloaded &middot; {{ pack }}</button>
-    </form>
+    <div class="bar-actions">
+      <form method="post" action="/sources/fetch"
+            data-async-source data-action-label="Check and download updates">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input type="hidden" name="pack" value="{{ pack }}">
+        <button type="submit" class="btn btn-run">Check and download updates &middot; {{ pack }}</button>
+      </form>
+      <form method="post" action="/sources/apply"
+            data-async-source data-action-label="Apply downloaded">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input type="hidden" name="pack" value="{{ pack }}">
+        <button type="submit" class="btn">Apply downloaded &middot; {{ pack }}</button>
+      </form>
+    </div>
     {% endfor %}
+
+    <!-- The import result lands here rather than replacing the page. Empty
+         and hidden until a button is pressed. -->
+    <div id="source-popup" hidden></div>
 
     <script>
     (function () {
@@ -127,15 +138,23 @@
         nodes.forEach(function (n) { host.appendChild(n); });
       }
 
-      fetch("/sources").then(function (r) { return r.json(); })
-        .then(function (rows) {
-          replace(rows.length
-                  ? rows.map(row)
-                  : [el("li", null, "No rulesets.")]);
-        })
-        .catch(function () {
-          replace([el("li", null, "Source status unavailable.")]);
-        });
+      function load() {
+        return fetch("/sources").then(function (r) { return r.json(); })
+          .then(function (rows) {
+            replace(rows.length
+                    ? rows.map(row)
+                    : [el("li", null, "No rulesets.")]);
+          })
+          .catch(function () {
+            replace([el("li", null, "Source status unavailable.")]);
+          });
+      }
+
+      // sources.js calls this after an import, because the operator now stays
+      // on this page and these rows would otherwise still describe the state
+      // from before the download.
+      window.refreshSourceRows = load;
+      load();
     })();
     </script>
   </main>

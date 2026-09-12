@@ -278,3 +278,57 @@ def test_fetch_for_an_unconfigured_pack_says_so(tmp_path, monkeypatch):
         "200 with staged=[] reads as 'checked, nothing newer' -- the same "
         "answer a healthy, up-to-date pack gives")
     assert "index_url" in response.json()["detail"]
+
+
+# ------------------------------------------------ the page keeps the operator ---
+#
+# Clicking either button used to replace the Rulesets page with the endpoint's
+# raw JSON. The forms stay real <form> POSTs so the page still works without
+# JavaScript; sources.js upgrades them to fetch() + a popup.
+
+def test_the_rulesets_page_wires_the_source_forms_for_a_popup(tmp_path, monkeypatch):
+    _two_packs_unconfigured_sorting_first(tmp_path, monkeypatch)
+
+    page = client.get("/rulesets").text
+
+    assert 'src="/static/sources.js"' in page, "the popup script must be loaded"
+    assert "defer" in page, (
+        "sources.js wires the forms on load, so it must not run before the "
+        "forms are parsed")
+    assert 'id="source-popup"' in page, "the popup needs a host element"
+    assert page.count("data-async-source") == 2, (
+        "both the fetch and the apply form must be upgraded")
+    assert 'data-action-label="Check and download updates"' in page
+    assert 'data-action-label="Apply downloaded"' in page
+    assert "refreshSourceRows" in page, (
+        "the status rows must be refreshable in place, since the operator "
+        "no longer leaves the page")
+
+
+def test_the_source_buttons_are_styled_like_every_other_button(tmp_path, monkeypatch):
+    """These two rendered as bare browser buttons, the only unstyled controls
+    in the app. `btn` is the shared control class; `btn-run` marks the primary
+    action, and its [aria-busy] rule is what greys the button out while
+    sources.js has the request in flight."""
+    _two_packs_unconfigured_sorting_first(tmp_path, monkeypatch)
+
+    page = client.get("/rulesets").text
+
+    assert 'class="btn btn-run"' in page, "the fetch button is the primary action"
+    assert page.count('class="btn') == 2, (
+        "both the fetch and the apply button must carry the control class")
+
+
+def test_the_source_buttons_sit_in_an_action_bar(tmp_path, monkeypatch):
+    """`row-actions` is the wrapper class (see drafts.html) -- it was on the
+    forms themselves here, so the two buttons stacked with no spacing. The
+    page-level equivalent is `bar-actions`, which is what the Approve all bar
+    on /drafts uses."""
+    _two_packs_unconfigured_sorting_first(tmp_path, monkeypatch)
+
+    page = client.get("/rulesets").text
+
+    assert 'class="bar-actions"' in page
+    assert 'class="row-actions"' not in page, (
+        "row-actions on a <form> makes the form the flex container, not the "
+        "row")
