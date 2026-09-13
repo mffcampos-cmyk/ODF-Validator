@@ -53,7 +53,7 @@
             <span class="item-name">{{ d.id }}</span>
             <span class="item-meta">{{ d.primitive }} &middot; {{ d.severity }}</span>
             {% if delta.new %}<span class="flag">New rule</span>
-            {% elif delta.dropped %}<span class="flag bad">Would discard {{ delta.dropped|length }} hand-set parameter(s)</span>
+            {% elif delta.dropped %}<span class="flag bad">Would discard {{ delta.dropped|length }} hand-set refinement(s)</span>
             {% elif delta.changed or delta.fields or delta.added %}<span class="flag">Changes an active rule</span>
             {% else %}<span class="flag">Identical to the active rule</span>{% endif %}
           </div>
@@ -83,7 +83,7 @@
 
           <div class="row-actions">
             <form method="post" action="/drafts/approve"
-                  {% if delta.dropped %}onsubmit="return confirm('This discards {{ delta.dropped|length }} hand-set parameter(s) from {{ d.id }}: {{ delta.dropped.keys()|join(', ') }}. Approve anyway?');"{% endif %}>
+                  {% if delta.dropped %}onsubmit="return confirm('This discards {{ delta.dropped|length }} hand-set refinement(s) from {{ d.id }}: {{ delta.dropped.keys()|join(', ') }}. Approve anyway?');"{% endif %}>
               <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
               <input type="hidden" name="draft_file" value="{{ d._draft_file }}">
               <input type="hidden" name="rule_id" value="{{ d.id }}">

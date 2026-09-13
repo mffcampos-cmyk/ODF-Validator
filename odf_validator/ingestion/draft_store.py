@@ -19,8 +19,8 @@ class RefinementLoss(Exception):
 
     Drafts are re-derived from the Data Dictionary every time the DD changes,
     and approving one overwrites the active rule of the same id wholesale. Any
-    parameter added by hand after the last derivation is therefore dropped
-    without a word.
+    parameter -- or scope -- added by hand after the last derivation is
+    therefore dropped without a word.
 
     That is not hypothetical. Refreshing the WST DD on 2026-09-01 regenerated
     its drafts, and approving them reverted every fix made that month:
@@ -43,7 +43,7 @@ class RefinementLoss(Exception):
         self.delta = delta
         lost = ", ".join(f"{k}={v!r}" for k, v in delta["dropped"].items())
         super().__init__(
-            f"Approving '{rule_id}' would drop parameters set by hand on the "
+            f"Approving '{rule_id}' would drop refinements set by hand on the "
             f"active rule: {lost}. Approve with confirmation to proceed.")
 
 
@@ -56,19 +56,36 @@ _COMPARED_FIELDS = ("primitive", "target", "attribute", "severity", "scope",
 def rule_delta(active: dict | None, draft: dict) -> dict:
     """What approving `draft` would change about `active`.
 
-    `dropped` is the dangerous set: parameters the active rule carries that the
-    draft does not mention at all. Those are almost always deliberate
-    refinements, because the derivation that produced the draft cannot invent
-    them -- it only ever emits what the DD literally states.
+    `dropped` is the dangerous set: params keys, and `applies_to` scope keys
+    (prefixed `applies_to.`), that the active rule carries and the draft does
+    not mention at all. Those are almost always deliberate refinements,
+    because the derivation that produced the draft cannot invent them -- it
+    only ever emits what the DD literally states.
     """
     if active is None:
         return {"new": True, "dropped": {}, "changed": {}, "added": {}, "fields": {}}
 
     a_params = active.get("params") or {}
     d_params = draft.get("params") or {}
+    # Scope is a refinement too, and it is where this rule set does most of
+    # its hand work. The argument in RefinementLoss carries over unchanged: a
+    # derivation emits what the Data Dictionary literally states, and the DD
+    # does not say which document types a discipline's attribute is confined
+    # to -- so a `doc_types` key can only have been put there by hand.
+    #
+    # Left out, `applies_to` landed in `fields` below, which is reported and
+    # never blocks. A fresh public clone following the documented first-launch
+    # flow on 2026-09-13 silently reverted ATH_DOCUMENTSUBCODE_POSINT from
+    # {doc_types: [DT_IMAGE], disciplines: [ATH]} to {disciplines: [ATH]},
+    # taking the active count 89 -> 87 -- the same trace the WST refresh left
+    # when it moved 88 -> 93.
+    a_scope = active.get("applies_to") or {}
+    d_scope = draft.get("applies_to") or {}
     return {
         "new": False,
-        "dropped": {k: v for k, v in a_params.items() if k not in d_params},
+        "dropped": {k: v for k, v in a_params.items() if k not in d_params}
+                   | {f"applies_to.{k}": v for k, v in a_scope.items()
+                      if k not in d_scope},
         "changed": {k: (a_params[k], d_params[k]) for k in a_params
                     if k in d_params and a_params[k] != d_params[k]},
         "added": {k: v for k, v in d_params.items() if k not in a_params},
@@ -141,9 +158,9 @@ def approve_draft(draft_file: Path, rule_id: str, *,
                   allow_loss: bool = False) -> dict:
     """Promote a draft to an active rule. Returns the delta that was applied.
 
-    Refuses with RefinementLoss when the draft would drop a parameter the
-    active rule carries, unless `allow_loss` says the caller has seen the
-    delta and accepts it. See RefinementLoss for why.
+    Refuses with RefinementLoss when the draft would drop a parameter or a
+    scope key the active rule carries, unless `allow_loss` says the caller has
+    seen the delta and accepts it. See RefinementLoss for why.
     """
     draft_file = _require_inside(draft_file, rules_root)
     entries = yaml.safe_load(draft_file.read_text(encoding="utf-8")) or []

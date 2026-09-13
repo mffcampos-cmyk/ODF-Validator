@@ -195,3 +195,83 @@ def test_active_rule_finds_the_live_definition(tmp_path):
 
     assert draft_store.active_rule(draft_file, "WST_UNIT_CODE") == REFINED
     assert draft_store.active_rule(draft_file, "NO_SUCH_RULE") is None
+
+
+# --- scope is a refinement too -----------------------------------------------
+#
+# The guard above catches a dropped PARAMETER. It did not catch a dropped
+# SCOPE, and `applies_to` is where this rule set does most of its hand
+# refinement. Observed on a fresh public clone on 2026-09-13, following the
+# documented first-launch flow (download -> check and download updates ->
+# apply -> approve drafts):
+#
+#   ATH_DOCUMENTSUBCODE_POSINT
+#     target      '.'                                -> './/*[@DocumentSubcode]'
+#     applies_to  {doc_types: [DT_IMAGE], disciplines: [ATH]}
+#                                                    -> {disciplines: [ATH]}
+#
+# The DT_IMAGE confinement is the whole point of that rule -- GEN 9176/13433
+# are the document types that define DocumentSubcode as a positive integer,
+# and test_documentsubcode_posint_scoped_to_defining_doc_types exists to pin
+# it. Approving the draft reverted it in silence, and the active rule count
+# moved 89 -> 87 for the same reason the WST refresh moved 88 -> 93: rules
+# that stop matching their GEN counterparts stop being deduped.
+#
+# The reasoning in RefinementLoss applies unchanged: a derivation emits what
+# the Data Dictionary literally states, and the DD does not state which
+# document types a discipline's attribute is confined to. It cannot invent a
+# `doc_types` key, so a `doc_types` key can only have been put there by hand.
+
+SCOPED = {
+    "id": "ATH_DOCUMENTSUBCODE_POSINT", "primitive": "value_format",
+    "target": ".", "attribute": "DocumentSubcode",
+    "params": {"regex": "^[0-9]+$"},
+    "applies_to": {"doc_types": ["DT_IMAGE"], "disciplines": ["ATH"]},
+    "severity": "error", "scope": "message", "source_ref": "hand-refined",
+}
+REDERIVED_UNSCOPED = {
+    "id": "ATH_DOCUMENTSUBCODE_POSINT", "primitive": "value_format",
+    "target": ".//*[@DocumentSubcode]", "attribute": "DocumentSubcode",
+    "params": {"regex": "^[0-9]+$"},
+    "applies_to": {"disciplines": ["ATH"]},
+    "severity": "error", "scope": "message",
+    "source_ref": "ODF_ATH_Data_Dictionary.pdf line 411: DocumentSubcode",
+}
+
+
+def test_a_dropped_scope_key_is_reported_as_a_loss():
+    delta = rule_delta(SCOPED, REDERIVED_UNSCOPED)
+    assert "applies_to.doc_types" in delta["dropped"], delta
+    assert delta["dropped"]["applies_to.doc_types"] == ["DT_IMAGE"]
+
+
+def test_approving_an_unscoped_redraft_is_refused(tmp_path):
+    draft_file = _pack(tmp_path, [SCOPED], [REDERIVED_UNSCOPED])
+    with pytest.raises(RefinementLoss) as caught:
+        draft_store.approve_draft(draft_file, "ATH_DOCUMENTSUBCODE_POSINT")
+    assert "doc_types" in str(caught.value)
+
+
+def test_the_unscoped_redraft_can_still_be_approved_with_confirmation(tmp_path):
+    """Refusing is not forbidding. The operator who has read the delta and
+    decided the DD is right can still take it -- the same escape the
+    parameter guard already offers."""
+    draft_file = _pack(tmp_path, [SCOPED], [REDERIVED_UNSCOPED])
+    draft_store.approve_draft(draft_file, "ATH_DOCUMENTSUBCODE_POSINT",
+                              allow_loss=True)
+    active = yaml.safe_load(
+        (draft_file.parent.parent / "rules"
+         / "ODF_WST_Data_Dictionary.pdf.yaml").read_text(encoding="utf-8"))
+    kept = [r for r in active if r["id"] == "ATH_DOCUMENTSUBCODE_POSINT"]
+    assert kept and kept[0]["applies_to"] == {"disciplines": ["ATH"]}
+
+
+def test_a_draft_that_keeps_the_scope_still_approves_cleanly(tmp_path):
+    """The narrowness of the rule. A re-derivation that preserves
+    `applies_to` is an ordinary update, not a loss."""
+    same_scope = dict(REDERIVED_UNSCOPED,
+                      applies_to={"doc_types": ["DT_IMAGE"],
+                                  "disciplines": ["ATH"]})
+    assert rule_delta(SCOPED, same_scope)["dropped"] == {}
+    draft_file = _pack(tmp_path, [SCOPED], [same_scope])
+    draft_store.approve_draft(draft_file, "ATH_DOCUMENTSUBCODE_POSINT")
