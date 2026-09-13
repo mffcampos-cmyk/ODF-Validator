@@ -8,7 +8,9 @@ import httpx
 import pytest
 
 from odf_validator.sources.catalogue import CatalogueEntry
-from odf_validator.sources.sync import fetch_targets
+from odf_validator.sources.provenance import (Provenance, SourceRecord,
+                                              hash_bytes)
+from odf_validator.sources.sync import apply_targets, fetch_targets
 
 DD = CatalogueEntry(reference="YOG-2026-SWM", title="ODF Swimming Data Dictionary",
                     published=None, kind="dd",
@@ -1234,3 +1236,66 @@ def test_the_superseded_codes_file_is_still_retired_despite_the_suffix_guard(tmp
     assert not old.exists(), (
         "same-suffix retirement must still happen or the loader ingests "
         "both code tables")
+
+
+def test_every_member_of_a_multi_file_archive_survives_the_apply(tmp_path):
+    """Applying the schema archive left one file of three on disk.
+
+    `_retire_superseded` deletes every recorded target sharing this entry's
+    url and suffix except the one just written. That is right for the Common
+    Codes archive, which has exactly ONE member -- v2.1 must go when v2.2
+    lands, or the loader ingests two conflicting code tables. The schema
+    archive has three members that are all needed at once, and they share a
+    url and a suffix with each other, so each promotion retired the two
+    before it:
+
+        promote odf2-structure.xsd  -> retires nothing yet
+        promote odf2-values.xsd     -> deletes odf2-structure.xsd
+        promote odf2.xsd            -> deletes odf2-values.xsd
+
+    leaving odf2.xsd alone on disk, whose first line includes
+    odf2-structure.xsd. Observed on a fresh public clone:
+
+        The schema did not compile (odf2.xsd: Element 'include': Failed to
+        load the document '.../xsd/odf2-structure.xsd' for inclusion.)
+
+    Retirement is about SUPERSEDED versions, not about siblings of the same
+    publication.
+    """
+    root = tmp_path / "SYOG26"
+    root.mkdir()
+    body = zip_bytes_named(PUBLISHED_SCHEMA_MEMBERS)
+    with client_serving({".zip": (body, "application/zip")}) as c:
+        fetch_targets(root, [SCHEMA], client=c)
+    applied = apply_targets(root, [SCHEMA])
+
+    assert sorted(applied) == ["xsd/odf2-structure.xsd",
+                               "xsd/odf2-values.xsd",
+                               "xsd/odf2.xsd"], applied
+    assert sorted(p.name for p in (root / "xsd").iterdir()) == [
+        "odf2-structure.xsd", "odf2-values.xsd", "odf2.xsd"]
+
+
+def test_a_superseded_archive_member_is_still_retired(tmp_path):
+    """The half that must not break. The Common Codes workbook carries its
+    version in its filename, so v2.2 landing has to take v2.1 with it --
+    keeping both means the loader reads two conflicting code tables. That is
+    what retirement is for, and it still happens."""
+    root = tmp_path / "SYOG26"
+    (root / "codes").mkdir(parents=True)
+    old = root / "codes" / "SYOG2026_ODF_Common_Codes_v_2_1.xlsx"
+    old.write_bytes(b"old-workbook")
+    prov = Provenance.load(root / ".sources.json")
+    prov.put("codes/SYOG2026_ODF_Common_Codes_v_2_1.xlsx",
+             SourceRecord(url=CODES.url, reference="YOG-2026-2.1",
+                          published=None, sha256=hash_bytes(b"old-workbook")))
+    prov.save()
+
+    body = zip_bytes(["SYOG2026_ODF_Common_Codes_v_2_2.xlsx"])
+    with client_serving({".zip": (body, "application/zip")}) as c:
+        fetch_targets(root, [CODES], client=c)
+    apply_targets(root, [CODES])
+
+    assert not old.exists(), "the superseded workbook must not survive"
+    assert sorted(p.name for p in (root / "codes").iterdir()) == [
+        "SYOG2026_ODF_Common_Codes_v_2_2.xlsx"]

@@ -976,14 +976,24 @@ def apply_targets(ruleset_dir: Path, entries: list[CatalogueEntry]) -> list[str]
 
     applied: list[str] = []
     for entry in entries:
-        for staged in _staged_for(incoming, entry, manifest):
+        staged_files = _staged_for(incoming, entry, manifest)
+        # Every target this entry is landing in THIS run, computed before the
+        # first one is written. An archive's members all share one url and
+        # one suffix, so without the full set each promotion would retire the
+        # siblings promoted just before it -- which is exactly how applying
+        # the three-file schema archive left odf2.xsd alone on disk, with an
+        # <include> pointing at an odf2-structure.xsd that had been deleted
+        # moments earlier. Retirement is about SUPERSEDED versions, not about
+        # siblings of the same publication.
+        landing = {p.relative_to(incoming).as_posix() for p in staged_files}
+        for staged in staged_files:
             rel = staged.relative_to(incoming).as_posix()
             destination = ruleset_dir / rel
             try:
                 body = staged.read_bytes()
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 destination.write_bytes(body)
-                _retire_superseded(ruleset_dir, entry, prov, keep=rel)
+                _retire_superseded(ruleset_dir, entry, prov, keep=landing)
                 prov.put(rel, SourceRecord(url=entry.url,
                                            reference=entry.reference,
                                            published=entry.published,
@@ -1197,9 +1207,16 @@ def _confined(ruleset_dir: Path, target: str) -> Path | None:
 
 
 def _retire_superseded(ruleset_dir: Path, entry: CatalogueEntry,
-                       prov: Provenance, keep: str) -> None:
+                       prov: Provenance, keep: set[str]) -> None:
     """Delete the file this entry previously occupied, when the new one has
     landed under a different name (Common Codes v2.1 -> v2.2).
+
+    `keep` is every target this entry is landing in the current run, not just
+    the one written a moment ago. A single document contributes one; an
+    archive contributes all of its members, which share a url and a suffix
+    with each other and so would otherwise retire one another. The Common
+    Codes archive has exactly one member, which is why that never showed
+    until the schema archive's three arrived.
 
     THE THING THIS FUNCTION EXISTS TO GUARANTEE: only ever touches a path
     that provenance recorded for THIS entry's own url. A path recorded under
@@ -1229,11 +1246,11 @@ def _retire_superseded(ruleset_dir: Path, entry: CatalogueEntry,
     last time), `is_file()` is false, nothing is unlinked, and the stale
     record is still dropped -- there is nothing left to protect.
     """
-    keep_suffix = Path(keep).suffix.lower()
+    keep_suffixes = {Path(k).suffix.lower() for k in keep}
     for target, record in list(prov.records.items()):
-        if target == keep or record.url != entry.url:
+        if target in keep or record.url != entry.url:
             continue
-        if Path(target).suffix.lower() != keep_suffix:
+        if Path(target).suffix.lower() not in keep_suffixes:
             # IMPORTANT (final whole-branch review): a suffix mismatch means
             # this is a hand-converted stand-in -- e.g. a hand-converted
             # ODF_GEN_R-OWG2026-GEN.md sitting in for the .pdf the site
