@@ -1,0 +1,1819 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:include schemaLocation="odf2-values.xsd"/>
+  <xs:complexType name="competitionType">
+    <xs:annotation>
+      <xs:documentation>Competition element</xs:documentation>
+    </xs:annotation>
+    <xs:choice>
+      <xs:sequence>
+        <xs:element name="ExtendedInfos" type="extendedInfosType" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="Session" type="SessionType" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="Clock" type="clockType" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="StatsItems" type="resultStatsType" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="Officials" type="officialsType" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="Periods" type="periodsType" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="Actions" type="unitActionsType" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="Categories" type="ICMSCategoryType" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="RightsInfo" type="RightsInfoType" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="ContentInfo" type="ContentInfoType" minOccurs="0" maxOccurs="1"/>
+        <xs:choice>
+          <xs:element name="Result" type="resultType" minOccurs="1" maxOccurs="unbounded"/>
+          <xs:element name="Unit" type="scheduleUnitType" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="PDFData" type="messageType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="Bracket" type="bracketType" minOccurs="1" maxOccurs="unbounded"/>
+          <xs:element name="Stats" type="messageStatsType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="Medal" type="medalType" minOccurs="1" maxOccurs="unbounded"/>
+          <xs:element name="Discipline" type="medallistsDisciplineType" minOccurs="1" maxOccurs="unbounded"/>
+          <xs:element name="Communication" type="officialCommunicationType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="Participant" type="participantType" minOccurs="1" maxOccurs="unbounded"/>
+          <xs:element name="Team" type="teamType" minOccurs="1" maxOccurs="unbounded"/>
+          <xs:element name="Horse" type="horseType" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="Config" type="confType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="Configs" type="configsType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="Competitor" type="competitorAchievementDataType" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="Weather" type="weatherType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="Record" type="brokenRecordType" minOccurs="1" maxOccurs="unbounded"/>
+          <xs:element name="Image" type="imageType" minOccurs="1" maxOccurs="unbounded"/>
+          <xs:element name="PhotoFinish" type="photoFinishType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="DirectLink" type="notificationType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="Picture" type="pictureType" minOccurs="1" maxOccurs="unbounded"/>
+          <xs:element name="File" type="mediaType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="MedalStandings" type="medalStandingsType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="Document" type="ICMSDocumentType" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="ParticipantBiography" type="participantBIOType" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="TeamBiography" type="teamBIOType" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="HorseBiography" type="horseBIOType" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="Organisation" type="NOCBIOType" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="CodeSet" type="codeSetType" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="Place" type="WeatherPlaceType" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="Venue" type="WeatherConditionsVenueType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="Presentation" type="presentationType" minOccurs="1" maxOccurs="unbounded"/>
+          <xs:element name="Ceremony" type="flagBearerType" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="Entry" type="EntriesEntry" minOccurs="1" maxOccurs="unbounded"/>
+          <xs:element name="Audio" type="audioType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:choice>
+      </xs:sequence>
+    </xs:choice>
+    <xs:attribute name="Gen" type="xs:string" use="required"/>
+    <xs:attribute name="Sport" type="xs:string" use="optional"/>
+    <xs:attribute name="Codes" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="extendedInfosType">
+    <xs:sequence>
+      <xs:element name="DateTime" type="dateTimeType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="UnitDateTime" type="unitDateTimeType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ExtendedInfo" type="extendedDataType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Progress" type="progressDataType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="SportDescription" type="sportDescriptionDataType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="VenueDescription" type="venueDescriptionDataType" minOccurs="0" maxOccurs="1"/>
+      <xs:choice>
+        <xs:element name="ListComp" type="ListCompDataType" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="dateTimeType">
+    <xs:attribute name="Update" type="odfDateType" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="unitDateTimeType">
+    <xs:attribute name="StartDate" type="xs:dateTime" use="optional"/>
+    <xs:attribute name="EndDate" type="xs:dateTime" use="optional"/>
+    <xs:attribute name="Duration" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="extendedDataType">
+    <xs:sequence>
+      <xs:element name="Extension" type="extensionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="extensionType">
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="progressDataType">
+    <xs:sequence>
+      <xs:element name="Extension" type="extensionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="LastUnit" type="xs:string" use="optional"/>
+    <xs:attribute name="UnitsTotal" type="xs:int" use="optional"/>
+    <xs:attribute name="UnitsComplete" type="xs:int" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="sportDescriptionDataType">
+    <xs:attribute name="DisciplineName" type="xs:string" use="required"/>
+    <xs:attribute name="EventName" type="xs:string" use="optional"/>
+    <xs:attribute name="SubEventName" type="xs:string" use="optional"/>
+    <xs:attribute name="Gender" type="disciplinegenderCodeType" use="optional"/>
+    <xs:attribute name="UnitNum" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="venueDescriptionDataType">
+    <xs:attribute name="Venue" type="code3Type" use="required"/>
+    <xs:attribute name="VenueName" type="xs:string" use="required"/>
+    <xs:attribute name="Location" type="code3Type" use="optional"/>
+    <xs:attribute name="LocationName" type="xs:string" use="optional"/>
+    <xs:attribute name="Attendance" type="xs:int" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="ListCompDataType">
+    <xs:attribute name="Date" type="odfDateType" use="required"/>
+    <xs:attribute name="Place" type="xs:string" use="optional"/>
+    <xs:attribute name="Country" type="xs:string" use="optional"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="AddInfo" type="xs:string" use="optional"/>
+    <xs:attribute name="ScheduleStatus" type="scheduleStatusType" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="SessionType">
+    <xs:sequence>
+      <xs:element name="SessionName" type="sessionNameType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Leadin" type="xs:string" use="optional"/>
+    <xs:attribute name="Venue" type="xs:string" use="required"/>
+    <xs:attribute name="VenueName" type="xs:string" use="required"/>
+    <xs:attribute name="SessionStatus" type="scheduleStatusType" use="optional"/>
+    <xs:attribute name="SessionType" type="xs:string" use="optional"/>
+    <xs:attribute name="Medal" type="xs:int" use="optional"/>
+    <xs:attribute name="FOP" type="xs:int" use="optional"/>
+    <xs:attribute name="HideStartDate" type="xs:string" use="optional"/>
+    <xs:attribute name="HideEndDate" type="xs:string" use="optional"/>
+    <xs:attribute name="SessionCode" type="xs:string" use="required"/>
+    <xs:attribute name="StartDate" type="xs:dateTime" use="required"/>
+    <xs:attribute name="EndDate" type="xs:dateTime" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="sessionNameType">
+    <xs:attribute name="Language" type="xs:string" use="required"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="clockType">
+    <xs:attribute name="Period" type="xs:string" use="optional"/>
+    <xs:attribute name="Running" type="clockRunningType" use="required"/>
+    <xs:attribute name="Time" type="string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="resultStatsType">
+    <xs:sequence>
+      <xs:element name="StatsItem" type="resultStatType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="resultStatType">
+    <xs:sequence>
+      <xs:element name="ExtendedStat" type="resultExtendedStatType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+    <xs:attribute name="Attempt" type="xs:string" use="optional"/>
+    <xs:attribute name="Avg" type="xs:string" use="optional"/>
+    <xs:attribute name="Percent" type="xs:string" use="optional"/>
+    <xs:attribute name="Rank" type="xs:string" use="optional"/>
+    <xs:attribute name="RankEqual" type="rankEqualType" use="optional"/>
+    <xs:attribute name="SortOrder" type="xs:integer" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="resultExtendedStatType">
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="officialsType">
+    <xs:sequence>
+      <xs:element name="Official" type="officialResultsType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="officialResultsType">
+    <xs:sequence>
+      <xs:element name="Description" type="officialResultsDescriptionType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="ExtOfficial" type="extOfficialType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Function" type="xs:string" use="optional"/>
+    <xs:attribute name="Order" type="xs:string" use="optional"/>
+    <xs:attribute name="Bib" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="officialResultsDescriptionType">
+    <xs:sequence>
+      <xs:element name="ExtendedDescription" type="extendedDescriptionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="GivenName" type="xs:string" use="optional"/>
+    <xs:attribute name="FamilyName" type="xs:string" use="required"/>
+    <xs:attribute name="Gender" type="genderCodeType" use="required"/>
+    <xs:attribute name="Organisation" type="xs:string" use="required"/>
+    <xs:attribute name="IFId" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="extendedDescriptionType">
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="extOfficialType">
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="periodsType">
+    <xs:sequence>
+      <xs:element name="Period" type="periodType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Home" type="xs:string" use="optional"/>
+    <xs:attribute name="Away" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="periodType">
+    <xs:sequence>
+      <xs:element name="ExtendedPeriods" type="extendedPeriodsType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="HomeScore" type="xs:string" use="optional"/>
+    <xs:attribute name="AwayScore" type="xs:string" use="optional"/>
+    <xs:attribute name="HomePeriodScore" type="xs:string" use="optional"/>
+    <xs:attribute name="AwayPeriodScore" type="xs:string" use="optional"/>
+    <xs:attribute name="Duration" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="extendedPeriodsType">
+    <xs:sequence>
+      <xs:element name="ExtendedPeriod" type="extendedPeriodType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="extendedPeriodType">
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="unitActionsType">
+    <xs:choice>
+      <xs:element name="Action" type="unitActionType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:choice>
+    <xs:attribute name="Home" type="xs:string" use="optional"/>
+    <xs:attribute name="Away" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="unitActionType">
+    <xs:sequence>
+      <xs:element name="ExtendedAction" type="extendedActionType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Competitor" type="competitorUnitActionType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Officials" type="officialsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ImageData" type="pictureType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Id" type="xs:string" use="required"/>
+    <xs:attribute name="PId" type="xs:string" use="optional"/>
+    <xs:attribute name="Period" type="xs:string" use="optional"/>
+    <xs:attribute name="Order" type="xs:integer" use="optional"/>
+    <xs:attribute name="Action" type="xs:string" use="optional"/>
+    <xs:attribute name="ActionAdd" type="xs:string" use="optional"/>
+    <xs:attribute name="ActionDesc" type="xs:string" use="optional"/>
+    <xs:attribute name="Comment" type="xs:string" use="optional"/>
+    <xs:attribute name="When" type="xs:string" use="optional"/>
+    <xs:attribute name="Result" type="xs:string" use="optional"/>
+    <xs:attribute name="ScoreH" type="xs:string" use="optional"/>
+    <xs:attribute name="ScoreA" type="xs:string" use="optional"/>
+    <xs:attribute name="LeadH" type="xs:string" use="optional"/>
+    <xs:attribute name="LeadA" type="xs:string" use="optional"/>
+    <xs:attribute name="SO_H" type="xs:string" use="optional"/>
+    <xs:attribute name="SO_A" type="xs:string" use="optional"/>
+    <xs:attribute name="Rally" type="xs:string" use="optional"/>
+    <xs:attribute name="Win" type="xs:string" use="optional"/>
+    <xs:attribute name="Speed" type="xs:string" use="optional"/>
+    <xs:attribute name="Loc" type="xs:string" use="optional"/>
+    <xs:attribute name="X" type="xs:string" use="optional"/>
+    <xs:attribute name="Y" type="xs:string" use="optional"/>
+    <xs:attribute name="Z" type="xs:string" use="optional"/>
+    <xs:attribute name="Line" type="xs:string" use="optional"/>
+    <xs:attribute name="TimeStamp" type="xs:dateTime" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="extendedActionType">
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="competitorUnitActionType">
+    <xs:sequence>
+      <xs:element name="Composition" type="compositionResultsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Coaches" type="coachesType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Type" type="competitorTypeType" use="required"/>
+    <xs:attribute name="Organisation" type="xs:string" use="required"/>
+    <xs:attribute name="Role" type="xs:string" use="optional"/>
+    <xs:attribute name="Order" type="xs:integer" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="compositionResultsType">
+    <xs:sequence>
+      <xs:element name="Athlete" type="athleteResultsType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Team" type="teamofteamscompositionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="athleteResultsType">
+    <xs:sequence>
+      <xs:element name="Description" type="athleteDescriptionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ExtCompetitor" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ExtResults" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Club" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Coach" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="EventUnitEntry" type="eventUnitEntryType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="ExtendedResults" type="extendedResultsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ExtBracketAths" type="extBracketAthsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="StatsItems" type="resultStatsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ExtAthMedals" type="extAthMedalsType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="Guide" type="guideType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="ExtendedEntry" type="EntryExtendedEntry" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Order" type="xs:string" use="optional"/>
+    <xs:attribute name="StartSortOrder" type="xs:integer" use="optional"/>
+    <xs:attribute name="StartOrder" type="xs:string" use="optional"/>
+    <xs:attribute name="Bib" type="xs:string" use="optional"/>
+    <xs:attribute name="Role" type="xs:string" use="optional"/>
+    <xs:attribute name="EntryStatus" type="xs:string" use="optional"/>
+    <xs:attribute name="Substitute" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="athleteDescriptionType">
+    <xs:sequence>
+      <xs:element name="ExtendedDescription" type="extendedDescriptionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="GivenName" type="xs:string" use="optional"/>
+    <xs:attribute name="FamilyName" type="xs:string" use="required"/>
+    <xs:attribute name="Gender" type="genderCodeType" use="required"/>
+    <xs:attribute name="Organisation" type="xs:string" use="required"/>
+    <xs:attribute name="BirthDate" type="odfDateType" use="optional"/>
+    <xs:attribute name="IFId" type="xs:string" use="optional"/>
+    <xs:attribute name="Class" type="xs:string" use="optional"/>
+    <xs:attribute name="Horse" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="eventUnitEntryType">
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="extendedResultsType">
+    <xs:sequence>
+      <xs:element name="ExtendedResult" type="extendedResultsDataType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="extendedResultsDataType">
+    <xs:sequence>
+      <xs:element name="Extension" type="extensionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+    <xs:attribute name="Value2" type="xs:string" use="optional"/>
+    <xs:attribute name="ValueType" type="xs:string" use="optional"/>
+    <xs:attribute name="IRM" type="xs:string" use="optional"/>
+    <xs:attribute name="Rank" type="xs:string" use="optional"/>
+    <xs:attribute name="RankEqual" type="rankEqualType" use="optional"/>
+    <xs:attribute name="SortOrder" type="xs:integer" use="optional"/>
+    <xs:attribute name="Diff" type="xs:string" use="optional"/>
+    <xs:attribute name="Speed" type="xs:string" use="optional"/>
+    <xs:attribute name="Move" type="xs:string" use="optional"/>
+    <xs:attribute name="Pty" type="xs:string" use="optional"/>
+    <xs:attribute name="Discard" type="xs:string" use="optional"/>
+    <xs:attribute name="Arrive" type="xs:string" use="optional"/>
+    <xs:attribute name="Unchecked" type="UncheckedType" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="extBracketAthsType">
+    <xs:sequence>
+      <xs:element name="ExtBracketAth" type="extCompPlaceType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="extCompPlaceType">
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="extAthMedalsType">
+    <xs:sequence>
+      <xs:element name="ExtAthMedal" type="extendedDataType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="guideType">
+    <xs:attribute name="GuideID" type="xs:string" use="required"/>
+    <xs:attribute name="GuideFamilyName" type="xs:string" use="required"/>
+    <xs:attribute name="GuideGivenName" type="xs:string" use="optional"/>
+    <xs:attribute name="Order" type="xs:integer" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="EntryExtendedEntry">
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="teamofteamscompositionType">
+    <xs:sequence>
+      <xs:element name="Description" type="competitorDescriptionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ExtCompMedals" type="extCompMedalsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="EventUnitEntry" type="eventUnitEntryType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="ExtendedResults" type="extendedResultsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Composition" type="teamofteamsathleteType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ExtendedEntry" type="EntryExtendedEntry" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="ExtRecords" type="extRecordsBrokenType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Name" type="xs:string" use="optional"/>
+    <xs:attribute name="IFId" type="xs:string" use="optional"/>
+    <xs:attribute name="Order" type="xs:integer" use="optional"/>
+    <xs:attribute name="Bib" type="xs:string" use="optional"/>
+    <xs:attribute name="EntryStatus" type="xs:string" use="optional"/>
+    <xs:attribute name="Substitute" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="competitorDescriptionType">
+    <xs:sequence>
+      <xs:element name="ExtendedDescription" type="extendedDescriptionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="TeamName" type="xs:string" use="required"/>
+    <xs:attribute name="IFId" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="extCompMedalsType">
+    <xs:sequence>
+      <xs:element name="ExtCompMedal" type="extendedDataType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="teamofteamsathleteType">
+    <xs:sequence>
+      <xs:element name="Athlete" type="teamofteamsathleteResultsType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="teamofteamsathleteResultsType">
+    <xs:sequence>
+      <xs:element name="Description" type="athleteDescriptionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="EventUnitEntry" type="eventUnitEntryType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="ExtendedResults" type="extendedResultsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ExtAthMedals" type="extAthMedalsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ExtendedEntry" type="EntryExtendedEntry" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Order" type="xs:string" use="optional"/>
+    <xs:attribute name="StartSortOrder" type="xs:integer" use="optional"/>
+    <xs:attribute name="StartOrder" type="xs:string" use="optional"/>
+    <xs:attribute name="Bib" type="xs:string" use="optional"/>
+    <xs:attribute name="EntryStatus" type="xs:string" use="optional"/>
+    <xs:attribute name="Substitute" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="extRecordsBrokenType">
+    <xs:sequence>
+      <xs:element name="ExtRecord" type="extRecordBrokenType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="extRecordBrokenType">
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="coachesType">
+    <xs:sequence>
+      <xs:element name="Coach" type="coachType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="coachType">
+    <xs:sequence>
+      <xs:element name="Description" type="coachDescriptionType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="ExtCoach" type="extCoachType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Function" type="xs:string" use="optional"/>
+    <xs:attribute name="Order" type="xs:string" use="optional"/>
+    <xs:attribute name="Bib" type="xs:string" use="optional"/>
+    <xs:attribute name="Code" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="coachDescriptionType">
+    <xs:sequence>
+      <xs:element name="ExtendedDescription" type="extendedDescriptionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="GivenName" type="xs:string" use="optional"/>
+    <xs:attribute name="FamilyName" type="xs:string" use="required"/>
+    <xs:attribute name="Gender" type="genderCodeType" use="required"/>
+    <xs:attribute name="Nationality" type="xs:string" use="optional"/>
+    <xs:attribute name="Bib" type="xs:string" use="optional"/>
+    <xs:attribute name="IFId" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="extCoachType">
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+    <xs:attribute name="Code" type="xs:string" use="optional"/>
+    <xs:attribute name="Type" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="pictureType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string"/>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="ICMSCategoryType">
+    <xs:sequence>
+      <xs:element name="Category" type="categoryType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="categoryType">
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="CategoryName" type="xs:string" use="optional"/>
+    <xs:attribute name="Main" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="RightsInfoType">
+    <xs:sequence>
+      <xs:element name="Extension" type="extensionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="CopyrightHolder" type="xs:string" use="optional"/>
+    <xs:attribute name="Notice" type="xs:string" use="optional"/>
+    <xs:attribute name="Usage" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="ContentInfoType">
+    <xs:sequence>
+      <xs:element name="Extension" type="extensionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Title" type="xs:string" use="optional"/>
+    <xs:attribute name="Description" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="resultType">
+    <xs:sequence>
+      <xs:element name="ExtendedResults" type="extendedResultsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="RecordIndicators" type="recordIndicatorsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ResultItems" type="resultItemsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Competitor" type="competitorResultsType" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Rank" type="xs:string" use="optional"/>
+    <xs:attribute name="RankEqual" type="rankEqualType" use="optional"/>
+    <xs:attribute name="ResultType" type="xs:string" use="optional"/>
+    <xs:attribute name="Result" type="xs:string" use="optional"/>
+    <xs:attribute name="Unchecked" type="UncheckedType" use="optional"/>
+    <xs:attribute name="IRM" type="xs:string" use="optional"/>
+    <xs:attribute name="QualificationMark" type="xs:string" use="optional"/>
+    <xs:attribute name="WLT" type="xs:string" use="optional"/>
+    <xs:attribute name="SortOrder" type="xs:integer" use="optional"/>
+    <xs:attribute name="StartOrder" type="xs:string" use="optional"/>
+    <xs:attribute name="StartSortOrder" type="xs:integer" use="optional"/>
+    <xs:attribute name="Diff" type="xs:string" use="optional"/>
+    <xs:attribute name="Pty" type="xs:string" use="optional"/>
+    <xs:attribute name="Won" type="xs:integer" use="optional"/>
+    <xs:attribute name="Lost" type="xs:integer" use="optional"/>
+    <xs:attribute name="Tied" type="xs:integer" use="optional"/>
+    <xs:attribute name="Played" type="xs:integer" use="optional"/>
+    <xs:attribute name="For" type="xs:integer" use="optional"/>
+    <xs:attribute name="Against" type="xs:integer" use="optional"/>
+    <xs:attribute name="Ratio" type="xs:string" use="optional"/>
+    <xs:attribute name="PhotoFinish" type="evaluatedPendingType" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="recordIndicatorsType">
+    <xs:sequence>
+      <xs:element name="RecordIndicator" type="recordIndicatorType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="recordIndicatorType">
+    <xs:attribute name="Order" type="xs:integer" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="RecordType" type="xs:string" use="required"/>
+    <xs:attribute name="Equalled" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="resultItemsType">
+    <xs:sequence>
+      <xs:element name="ResultItem" type="resultItemType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="resultItemType">
+    <xs:sequence>
+      <xs:element name="Result" type="resultItemResultType" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Unit" type="xs:string" use="optional"/>
+    <xs:attribute name="Order" type="xs:integer" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="resultItemResultType">
+    <xs:sequence>
+      <xs:element name="ExtendedResults" type="extendedResultsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="RecordIndicators" type="recordIndicatorsType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Rank" type="xs:string" use="optional"/>
+    <xs:attribute name="RankEqual" type="rankEqualType" use="optional"/>
+    <xs:attribute name="ResultType" type="xs:string" use="optional"/>
+    <xs:attribute name="Unchecked" type="UncheckedType" use="optional"/>
+    <xs:attribute name="Result" type="xs:string" use="optional"/>
+    <xs:attribute name="Played" type="xs:integer" use="optional"/>
+    <xs:attribute name="Won" type="xs:integer" use="optional"/>
+    <xs:attribute name="Lost" type="xs:integer" use="optional"/>
+    <xs:attribute name="Tied" type="xs:integer" use="optional"/>
+    <xs:attribute name="ResultPoints" type="xs:string" use="optional"/>
+    <xs:attribute name="IRM" type="xs:string" use="optional"/>
+    <xs:attribute name="QualificationMark" type="xs:string" use="optional"/>
+    <xs:attribute name="Diff" type="xs:string" use="optional"/>
+    <xs:attribute name="WLT" type="xs:string" use="optional"/>
+    <xs:attribute name="SortOrder" type="xs:integer" use="optional"/>
+    <xs:attribute name="StartOrder" type="xs:string" use="optional"/>
+    <xs:attribute name="StartSortOrder" type="xs:string" use="optional"/>
+    <xs:attribute name="Pty" type="xs:string" use="optional"/>
+    <xs:attribute name="PhotoFinish" type="evaluatedPendingType" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="competitorResultsType">
+    <xs:sequence>
+      <xs:element name="Description" type="competitorDescriptionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ExtCompetitor" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ExtResults" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Coaches" type="coachesType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="EventUnitEntry" type="eventUnitEntryType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="StatsItems" type="resultStatsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Composition" type="compositionResultsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Opponent" type="opponentResultsType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Type" type="competitorTypeType" use="required"/>
+    <xs:attribute name="Bib" type="xs:string" use="optional"/>
+    <xs:attribute name="Organisation" type="xs:string" use="optional"/>
+    <xs:attribute name="Current" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="opponentResultsType">
+    <xs:sequence>
+      <xs:element name="ExtendedResults" type="extendedResultsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Description" type="competitorDescriptionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Composition" type="compositionResultsType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Type" type="competitorTypeType" use="required"/>
+    <xs:attribute name="Organisation" type="xs:string" use="required"/>
+    <xs:attribute name="Date" type="odfDateType" use="optional"/>
+    <xs:attribute name="Time" type="xs:string" use="optional"/>
+    <xs:attribute name="Unit" type="xs:string" use="optional"/>
+    <xs:attribute name="HomeAway" type="xs:string" use="optional"/>
+    <xs:attribute name="Result" type="xs:string" use="optional"/>
+    <xs:attribute name="TimeStamp" type="xs:dateTime" use="optional"/>
+    <xs:attribute name="Pos" type="xs:int" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="scheduleUnitType">
+    <xs:sequence>
+      <xs:element name="StartText" type="estimatedStartTextType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="ItemName" type="itemNameType" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element name="ItemDescription" type="itemDescriptionType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="VenueDescription" type="venueDescriptionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="StartList" type="scheduleStartListType" minOccurs="0" maxOccurs="1"/>
+      <xs:choice>
+        <xs:element name="Result" type="resultType" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute name="Code" type="rscType" use="required"/>
+    <xs:attribute name="PhaseType" type="xs:string" use="required"/>
+    <xs:attribute name="UnitNum" type="xs:string" use="optional"/>
+    <xs:attribute name="ScheduleStatus" type="scheduleStatusType" use="required"/>
+    <xs:attribute name="StartDate" type="xs:dateTime" use="optional"/>
+    <xs:attribute name="HideStartDate" type="xs:string" use="optional"/>
+    <xs:attribute name="EndDate" type="xs:dateTime" use="optional"/>
+    <xs:attribute name="HideEndDate" type="xs:string" use="optional"/>
+    <xs:attribute name="ActualStartDate" type="xs:dateTime" use="optional"/>
+    <xs:attribute name="ActualEndDate" type="xs:dateTime" use="optional"/>
+    <xs:attribute name="Order" type="xs:integer" use="optional"/>
+    <xs:attribute name="Medal" type="unitMedalType" use="optional"/>
+    <xs:attribute name="Venue" type="xs:string" use="optional"/>
+    <xs:attribute name="Location" type="xs:string" use="optional"/>
+    <xs:attribute name="SessionCode" type="xs:string" use="optional"/>
+    <xs:attribute name="HideUnitNum" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="estimatedStartTextType">
+    <xs:attribute name="Language" type="xs:string" use="required"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="itemNameType">
+    <xs:attribute name="Language" type="xs:string" use="required"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="itemDescriptionType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="Language" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="venueDescriptionType">
+    <xs:attribute name="VenueName" type="xs:string" use="required"/>
+    <xs:attribute name="LocationName" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="scheduleStartListType">
+    <xs:sequence>
+      <xs:element name="Start" type="scheduleStartType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="scheduleStartType">
+    <xs:sequence>
+      <xs:element name="PreviousUnit" type="bracketPreviousUnitType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Competitor" type="competitorResultsType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="SortOrder" type="xs:integer" use="required"/>
+    <xs:attribute name="StartOrder" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="bracketPreviousUnitType">
+    <xs:attribute name="Unit" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+    <xs:attribute name="WLT" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="bracketType">
+    <xs:sequence>
+      <xs:element name="BracketItems" type="bracketItemsType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="bracketItemsType">
+    <xs:sequence>
+      <xs:element name="BracketItem" type="bracketItemType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="bracketItemType">
+    <xs:sequence>
+      <xs:element name="ExtBracketItems" type="extBracketItemsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="CompetitorPlace" type="bracketCompetitorPlaceType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="optional"/>
+    <xs:attribute name="Position" type="xs:int" use="required"/>
+    <xs:attribute name="Date" type="odfDateType" use="optional"/>
+    <xs:attribute name="Time" type="xs:string" use="optional"/>
+    <xs:attribute name="Result" type="xs:string" use="optional"/>
+    <xs:attribute name="Unit" type="xs:string" use="optional"/>
+    <xs:attribute name="TimeStamp" type="xs:dateTime" use="optional"/>
+    <xs:attribute name="Order" type="xs:integer" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="extBracketItemsType">
+    <xs:sequence>
+      <xs:element name="ExtBracketItem" type="extBracketItemType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="extBracketItemType">
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="bracketCompetitorPlaceType">
+    <xs:sequence>
+      <xs:element name="ExtCompPlaces" type="extCompPlacesType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="PreviousUnit" type="bracketPreviousUnitType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Competitor" type="bracketCompetitorType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="WLT" type="xs:string" use="optional"/>
+    <xs:attribute name="Rank" type="xs:string" use="optional"/>
+    <xs:attribute name="Result" type="xs:string" use="optional"/>
+    <xs:attribute name="ResultType" type="xs:string" use="optional"/>
+    <xs:attribute name="Diff" type="xs:string" use="optional"/>
+    <xs:attribute name="IRM" type="xs:string" use="optional"/>
+    <xs:attribute name="QualificationMark" type="xs:string" use="optional"/>
+    <xs:attribute name="StrikeOut" type="xs:string" use="optional"/>
+    <xs:attribute name="StartOrder" type="xs:string" use="optional"/>
+    <xs:attribute name="PhotoFinish" type="evaluatedPendingType" use="optional"/>
+    <xs:attribute name="Code" type="xs:string" use="optional"/>
+    <xs:attribute name="Pos" type="xs:int" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="extCompPlacesType">
+    <xs:sequence>
+      <xs:element name="ExtCompPlace" type="extCompPlaceType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="bracketCompetitorType">
+    <xs:sequence>
+      <xs:element name="Description" type="competitorDescriptionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ExtBracketComps" type="extBracketCompsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Composition" type="compositionResultsType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Type" type="competitorTypeType" use="required"/>
+    <xs:attribute name="Seed" type="xs:string" use="optional"/>
+    <xs:attribute name="Bib" type="xs:string" use="optional"/>
+    <xs:attribute name="Organisation" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="extBracketCompsType">
+    <xs:sequence>
+      <xs:element name="ExtBracketComp" type="extCompPlaceType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="messageStatsType">
+    <xs:sequence>
+      <xs:element name="StatsItems" type="globalStatsItemsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Competitor" type="competitorStatsType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="globalStatsItemsType">
+    <xs:sequence>
+      <xs:element name="StatsItem" type="globalStatsItemType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="globalStatsItemType">
+    <xs:sequence>
+      <xs:element name="ExtendedStat" type="extendedStatType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+    <xs:attribute name="Attempt" type="xs:string" use="optional"/>
+    <xs:attribute name="Avg" type="xs:string" use="optional"/>
+    <xs:attribute name="Percent" type="xs:string" use="optional"/>
+    <xs:attribute name="Rank" type="xs:string" use="optional"/>
+    <xs:attribute name="RankEqual" type="rankEqualType" use="optional"/>
+    <xs:attribute name="SortOrder" type="xs:integer" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="extendedStatType">
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="competitorStatsType">
+    <xs:sequence>
+      <xs:element name="Description" type="competitorDescriptionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Coaches" type="coachesType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="StatsItems" type="statsItemsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Composition" type="compositionResultsType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Type" type="competitorTypeType" use="required"/>
+    <xs:attribute name="Order" type="xs:integer" use="required"/>
+    <xs:attribute name="Organisation" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="statsItemsType">
+    <xs:sequence>
+      <xs:element name="StatsItem" type="statsItemType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="statsItemType">
+    <xs:sequence>
+      <xs:element name="ExtendedStat" type="extendedStatType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+    <xs:attribute name="Attempt" type="xs:string" use="optional"/>
+    <xs:attribute name="Avg" type="xs:string" use="optional"/>
+    <xs:attribute name="Percent" type="xs:string" use="optional"/>
+    <xs:attribute name="Rank" type="xs:string" use="optional"/>
+    <xs:attribute name="RankEqual" type="rankEqualType" use="optional"/>
+    <xs:attribute name="SortOrder" type="xs:integer" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="medalType">
+    <xs:sequence>
+      <xs:element name="Competitor" type="competitorMedalType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="simpleMedalType" use="required"/>
+    <xs:attribute name="Date" type="odfDateType" use="required"/>
+    <xs:attribute name="Unit" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="competitorMedalType">
+    <xs:sequence>
+      <xs:element name="Description" type="competitorDescriptionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Officials" type="officialsMedalType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ExtCompMedals" type="extCompMedalsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Composition" type="compositionResultsType" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Type" type="competitorTypeType" use="required"/>
+    <xs:attribute name="Bib" type="xs:string" use="optional"/>
+    <xs:attribute name="Organisation" type="xs:string" use="required"/>
+    <xs:attribute name="Order" type="xs:integer" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="officialsMedalType">
+    <xs:sequence>
+      <xs:element name="Official" type="officialMedalType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="officialMedalType">
+    <xs:sequence>
+      <xs:element name="Description" type="officialMedalDescriptionType" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Function" type="xs:string" use="optional"/>
+    <xs:attribute name="Order" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="officialMedalDescriptionType">
+    <xs:sequence>
+      <xs:element name="ExtendedDescription" type="extendedDescriptionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="GivenName" type="xs:string" use="optional"/>
+    <xs:attribute name="FamilyName" type="xs:string" use="required"/>
+    <xs:attribute name="Gender" type="genderCodeType" use="required"/>
+    <xs:attribute name="Nationality" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="medallistsDisciplineType">
+    <xs:sequence>
+      <xs:element name="Event" type="medalseventType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="TotalEvents" type="xs:int" use="optional"/>
+    <xs:attribute name="FinishedEvents" type="xs:int" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="medalseventType">
+    <xs:sequence>
+      <xs:element name="Medal" type="medalsType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="EventName" type="xs:string" use="optional"/>
+    <xs:attribute name="Date" type="odfDateType" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="medalsType">
+    <xs:sequence>
+      <xs:element name="Competitor" type="competitorMedalType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="simpleMedalType" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="officialCommunicationType">
+    <xs:sequence>
+      <xs:element name="Decision" type="offComJuryDecisionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Protest" type="offComProtestType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ImageData" type="pictureType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="PublishTime" type="xs:dateTime" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="offComJuryDecisionType">
+    <xs:sequence>
+      <xs:element name="Subtitle" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Summary" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Details" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="IssuedBy" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="SignedBy" type="offComSignedByJuryDecissionType" minOccurs="0" maxOccurs="2"/>
+      <xs:element name="ExtendedComms" type="offComExtendedCommsType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="ItemNum" type="xs:string" use="optional"/>
+    <xs:attribute name="IssuedTime" type="xs:dateTime" use="optional"/>
+    <xs:attribute name="AffectsSCH" type="yesNoType" use="optional"/>
+    <xs:attribute name="AffectsRES" type="yesNoType" use="optional"/>
+    <xs:attribute name="AffectsOTH" type="yesNoType" use="optional"/>
+    <xs:attribute name="Unit" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="offComSignedByJuryDecissionType">
+    <xs:attribute name="FamilyName" type="xs:string" use="required"/>
+    <xs:attribute name="GivenName" type="xs:string" use="optional"/>
+    <xs:attribute name="Function" type="xs:string" use="optional"/>
+    <xs:attribute name="Code" type="xs:string" use="optional"/>
+    <xs:attribute name="Order" type="xs:integer" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="offComExtendedCommsType">
+    <xs:sequence>
+      <xs:element name="ExtendedComm" type="offComExtendedCommType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="offComExtendedCommType">
+    <xs:sequence>
+      <xs:element name="Extension" type="extensionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="offComProtestType">
+    <xs:sequence>
+      <xs:element name="Type" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Details" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="DecisionShort" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="DecisionLong" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Description" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="FactsFound" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Conclusion" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Jury" type="offComJuryType" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element name="SignedBy" type="offComSignedByType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Status" type="xs:string" use="required"/>
+    <xs:attribute name="Procedure" type="xs:string" use="optional"/>
+    <xs:attribute name="HearingTime" type="xs:dateTime" use="optional"/>
+    <xs:attribute name="DecisionTime" type="xs:dateTime" use="optional"/>
+    <xs:attribute name="Informed" type="xs:dateTime" use="optional"/>
+    <xs:attribute name="Initiator" type="xs:string" use="optional"/>
+    <xs:attribute name="Respondent" type="xs:string" use="optional"/>
+    <xs:attribute name="Witness" type="xs:string" use="optional"/>
+    <xs:attribute name="Interpreter" type="yesNoType" use="required"/>
+    <xs:attribute name="Rule" type="xs:string" use="required"/>
+    <xs:attribute name="Unit" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="offComJuryType">
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="FamilyName" type="xs:string" use="required"/>
+    <xs:attribute name="GivenName" type="xs:string" use="optional"/>
+    <xs:attribute name="Order" type="xs:integer" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="offComSignedByType">
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="FamilyName" type="xs:string" use="required"/>
+    <xs:attribute name="GivenName" type="xs:string" use="optional"/>
+    <xs:attribute name="Function" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="participantType">
+    <xs:sequence>
+      <xs:element name="Discipline" type="registeredDisciplineType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="OfficialFunction" type="officialFunctionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Parent" type="xs:string" use="required"/>
+    <xs:attribute name="Status" type="xs:string" use="required"/>
+    <xs:attribute name="GivenName" type="xs:string" use="optional"/>
+    <xs:attribute name="FamilyName" type="xs:string" use="required"/>
+    <xs:attribute name="PassportGivenName" type="xs:string" use="optional"/>
+    <xs:attribute name="PassportFamilyName" type="xs:string" use="optional"/>
+    <xs:attribute name="PrintName" type="xs:string" use="required"/>
+    <xs:attribute name="PrintInitialName" type="xs:string" use="required"/>
+    <xs:attribute name="TVName" type="xs:string" use="required"/>
+    <xs:attribute name="TVInitialName" type="xs:string" use="required"/>
+    <xs:attribute name="TVFamilyName" type="xs:string" use="required"/>
+    <xs:attribute name="SCBLName" type="xs:string" use="optional"/>
+    <xs:attribute name="SCBMName" type="xs:string" use="optional"/>
+    <xs:attribute name="SCBSName" type="xs:string" use="optional"/>
+    <xs:attribute name="LocalGivenName" type="xs:string" use="optional"/>
+    <xs:attribute name="LocalFamilyName" type="xs:string" use="optional"/>
+    <xs:attribute name="Gender" type="genderCodeType" use="required"/>
+    <xs:attribute name="Organisation" type="xs:string" use="required"/>
+    <xs:attribute name="BirthDate" type="odfDateType" use="optional"/>
+    <xs:attribute name="Height" type="xs:string" use="optional"/>
+    <xs:attribute name="Weight" type="xs:string" use="optional"/>
+    <xs:attribute name="PlaceofBirth" type="xs:string" use="optional"/>
+    <xs:attribute name="CountryofBirth" type="xs:string" use="optional"/>
+    <xs:attribute name="PlaceofResidence" type="xs:string" use="optional"/>
+    <xs:attribute name="CountryofResidence" type="xs:string" use="optional"/>
+    <xs:attribute name="Nationality" type="xs:string" use="optional"/>
+    <xs:attribute name="MainFunctionId" type="xs:string" use="optional"/>
+    <xs:attribute name="OlympicSolidarity" type="code1Type" use="optional"/>
+    <xs:attribute name="PSCBName" type="xs:string" use="optional"/>
+    <xs:attribute name="PSCBShortName" type="xs:string" use="optional"/>
+    <xs:attribute name="PSCBLongName" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="registeredDisciplineType">
+    <xs:sequence>
+      <xs:element name="DisciplineEntry" type="extendedDataType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="IFId" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="officialFunctionType">
+    <xs:attribute name="FunctionId" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="teamType">
+    <xs:sequence>
+      <xs:element name="Composition" type="teamcompositionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Discipline" type="registeredDisciplineType" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Status" type="xs:string" use="required"/>
+    <xs:attribute name="Organisation" type="xs:string" use="required"/>
+    <xs:attribute name="Name" type="xs:string" use="optional"/>
+    <xs:attribute name="ShortName" type="xs:string" use="required"/>
+    <xs:attribute name="TVTeamName" type="xs:string" use="required"/>
+    <xs:attribute name="PSCBName" type="xs:string" use="optional"/>
+    <xs:attribute name="PSCBShortName" type="xs:string" use="optional"/>
+    <xs:attribute name="PSCBLongName" type="xs:string" use="optional"/>
+    <xs:attribute name="Gender" type="disciplinegenderCodeType" use="required"/>
+    <xs:attribute name="TeamType" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="teamcompositionType">
+    <xs:sequence>
+      <xs:element name="Team" type="teamofteamscompositionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="horseType">
+    <xs:sequence>
+      <xs:element name="Entry" type="extendedDataType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Name" type="xs:string" use="optional"/>
+    <xs:attribute name="Organisation" type="xs:string" use="required"/>
+    <xs:attribute name="Sex" type="xs:string" use="optional"/>
+    <xs:attribute name="YearBirth" type="xs:string" use="optional"/>
+    <xs:attribute name="Passport" type="xs:string" use="optional"/>
+    <xs:attribute name="ColourCode" type="xs:string" use="optional"/>
+    <xs:attribute name="BreedCode" type="xs:string" use="optional"/>
+    <xs:attribute name="Sire" type="xs:string" use="optional"/>
+    <xs:attribute name="Owner" type="xs:string" use="optional"/>
+    <xs:attribute name="SecondOwner" type="xs:string" use="optional"/>
+    <xs:attribute name="Groom" type="xs:string" use="optional"/>
+    <xs:attribute name="Status" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="confType">
+    <xs:attribute name="KADelay" type="xs:int" use="required"/>
+    <xs:attribute name="DelayOffSet" type="xs:int" use="required"/>
+    <xs:attribute name="CompetitionDay" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="configsType">
+    <xs:sequence>
+      <xs:element name="Config" type="configType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="configType">
+    <xs:sequence>
+      <xs:element name="ExtendedConfig" type="extendedConfigType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Unit" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="extendedConfigType">
+    <xs:sequence>
+      <xs:element name="ExtendedConfigItem" type="extensionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="competitorAchievementDataType">
+    <xs:sequence>
+      <xs:element name="Achievement" type="achievementDataType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Organisation" type="xs:string" use="required"/>
+    <xs:attribute name="IFId" type="xs:string" use="optional"/>
+    <xs:attribute name="Name" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="achievementDataType">
+    <xs:attribute name="Highlight" type="xs:string" use="required"/>
+    <xs:attribute name="Order" type="xs:integer" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="weatherType">
+    <xs:sequence>
+      <xs:element name="Conditions" type="conditionsType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Date" type="xs:dateTime" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="conditionsType">
+    <xs:sequence>
+      <xs:element name="Condition" type="conditionType" minOccurs="0" maxOccurs="3"/>
+      <xs:element name="Precipitation" type="precipitationType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Pressure" type="pressureType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Temperature" type="weatherTemperatureType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Wind" type="weatherWindType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="ExtendedConditions" type="extConditionsType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Humidity" type="xs:string" use="optional"/>
+    <xs:attribute name="Wind_Direction" type="xs:string" use="optional"/>
+    <xs:attribute name="Prec_Type" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="conditionType">
+    <xs:attribute name="Code" type="weatherConditionsType" use="required"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="precipitationType">
+    <xs:attribute name="Unit" type="xs:string" use="required"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="pressureType">
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+    <xs:attribute name="Unit" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="weatherTemperatureType">
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+    <xs:attribute name="Unit" type="xs:string" use="required"/>
+    <xs:attribute name="Type" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="weatherWindType">
+    <xs:attribute name="Code" type="windType" use="required"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+    <xs:attribute name="Unit" type="xs:string" use="required"/>
+    <xs:attribute name="Type" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="extConditionsType">
+    <xs:sequence>
+      <xs:element name="ExtendedCondition" type="extConditionType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="extConditionType">
+    <xs:sequence>
+      <xs:element name="Extension" type="extensionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="brokenRecordType">
+    <xs:sequence>
+      <xs:element name="Description" type="brokenRecordDescriptionType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="RecordType" type="brokenRecordTypeType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="brokenRecordDescriptionType">
+    <xs:attribute name="Name" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="brokenRecordTypeType">
+    <xs:sequence>
+      <xs:element name="RecordData" type="recordBrokenDataType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Order" type="xs:integer" use="required"/>
+    <xs:attribute name="RecordType" type="xs:string" use="required"/>
+    <xs:attribute name="Subcode" type="xs:string" use="optional"/>
+    <xs:attribute name="Shared" type="xs:string" use="required"/>
+    <xs:attribute name="NotEstablished" type="xs:string" use="optional"/>
+    <xs:attribute name="NotEstablishedLabel" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="recordBrokenDataType">
+    <xs:sequence>
+      <xs:element name="Extension" type="extendedDataType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Competitor" type="competitorRecordBrokenType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Order" type="xs:integer" use="required"/>
+    <xs:attribute name="ResultType" type="xs:string" use="optional"/>
+    <xs:attribute name="Result" type="xs:string" use="optional"/>
+    <xs:attribute name="Unit" type="xs:string" use="optional"/>
+    <xs:attribute name="Country" type="xs:string" use="optional"/>
+    <xs:attribute name="Place" type="xs:string" use="optional"/>
+    <xs:attribute name="Date" type="odfDateType" use="optional"/>
+    <xs:attribute name="TimeStamp" type="xs:dateTime" use="optional"/>
+    <xs:attribute name="Equalled" type="xs:string" use="optional"/>
+    <xs:attribute name="Unconfirmed" type="xs:string" use="optional"/>
+    <xs:attribute name="Competition" type="xs:string" use="optional"/>
+    <xs:attribute name="Historical" type="xs:string" use="required"/>
+    <xs:attribute name="Current" type="xs:string" use="optional"/>
+    <xs:attribute name="Reinstated" type="xs:string" use="optional"/>
+    <xs:attribute name="Time" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="competitorRecordBrokenType">
+    <xs:sequence>
+      <xs:element name="Description" type="competitorDescriptionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Composition" type="compositionRecordBrokenType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Organisation" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="compositionRecordBrokenType">
+    <xs:sequence>
+      <xs:element name="Athlete" type="athleteRecordBrokenType" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element name="Team" type="teamofteamscompositionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="athleteRecordBrokenType">
+    <xs:sequence>
+      <xs:element name="Description" type="athleteDescriptionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ExtRecords" type="extRecordsBrokenType" minOccurs="0" maxOccurs="1"/>
+      <xs:choice>
+        <xs:element name="Guide" type="guideType" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Order" type="xs:integer" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="imageType">
+		<xs:sequence>  
+			<xs:element name="Result" type="resultType" minOccurs="0" maxOccurs="unbounded" /> 
+			<xs:element name="ImageTitle" type="messageType" minOccurs="0" maxOccurs="1" /> 
+			<xs:element name="ImageDescription" type="messageType" minOccurs="0" maxOccurs="1" /> 
+			<xs:element name="ImageData" type="messageType" minOccurs="1" maxOccurs="1" />  
+		</xs:sequence> 
+		<xs:attribute name="Pos" type="xs:string" use="required" />  
+		<xs:attribute name="Version" type="xs:int" use="required" /> 
+		<xs:attribute name="Revision" type="xs:int" use="required" /> 
+		<xs:attribute name="ImageType" type="xs:string" use="required" /> 
+	</xs:complexType> 
+  <xs:complexType name="photoFinishType">
+    <xs:attribute name="Version" type="xs:int" use="required"/>
+    <xs:attribute name="Revision" type="xs:int" use="required"/>
+    <xs:attribute name="Link" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="notificationType">
+    <xs:attribute name="Link" type="xs:int" use="required"/>
+    <xs:attribute name="DocumentType" type="xs:int" use="required"/>
+    <xs:attribute name="DocumentSubtype" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="mediaType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="AudioType" type="xs:string" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="medalStandingsType">
+    <xs:sequence>
+      <xs:element name="MedalSummary" type="medalSummaryType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="MedalsTable" type="medalTableType" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="DateTime" type="xs:dateTime" use="required"/>
+    <xs:attribute name="LastEvent" type="rscType" use="required"/>
+    <xs:attribute name="TotalEvents" type="xs:integer" use="required"/>
+    <xs:attribute name="FinishedEvents" type="xs:integer" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="medalSummaryType">
+    <xs:sequence>
+      <xs:element name="MedalNumber" type="medalNumberType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="medalNumberType">
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Gold" type="xs:integer" use="optional"/>
+    <xs:attribute name="Silver" type="xs:integer" use="optional"/>
+    <xs:attribute name="Bronze" type="xs:integer" use="optional"/>
+    <xs:attribute name="Total" type="xs:integer" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="medalTableType">
+    <xs:sequence>
+      <xs:element name="MedalLine" type="medalLineType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="medalLineType">
+    <xs:sequence>
+      <xs:element name="Description" type="medalNumberDescriptionType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="MedalNumber" type="medalNumberType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Rank" type="xs:integer" use="required"/>
+    <xs:attribute name="RankTotal" type="xs:integer" use="required"/>
+    <xs:attribute name="SortRank" type="xs:integer" use="required"/>
+    <xs:attribute name="SortRankTotal" type="xs:integer" use="required"/>
+    <xs:attribute name="RankEqual" type="xs:string" use="optional"/>
+    <xs:attribute name="RankTotalEqual" type="xs:string" use="optional"/>
+    <xs:attribute name="Organisation" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="medalNumberDescriptionType">
+    <xs:attribute name="OrganisationName" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="ICMSDocumentType">
+    <xs:sequence>
+      <xs:element name="Related" type="newsRelatedType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Title" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Message" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Body" type="messageType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Parent" type="xs:string" use="required"/>
+    <xs:attribute name="Category" type="xs:string" use="optional"/>
+    <xs:attribute name="CategoryName" type="xs:string" use="optional"/>
+    <xs:attribute name="ReportType" type="xs:string" use="optional"/>
+    <xs:attribute name="ReportTypeName" type="xs:string" use="optional"/>
+    <xs:attribute name="FileName" type="xs:string" use="optional"/>
+    <xs:attribute name="ReportFormat" type="xs:string" use="optional"/>
+    <xs:attribute name="ExternalCode" type="xs:string" use="optional"/>
+    <xs:attribute name="Item" type="xs:string" use="optional"/>
+    <xs:attribute name="ItemName" type="xs:string" use="optional"/>
+    <xs:attribute name="ItemDate" type="odfDateType" use="optional"/>
+    <xs:attribute name="ItemTime" type="odfTimeType" use="optional"/>
+    <xs:attribute name="Unit" type="xs:string" use="optional"/>
+    <xs:attribute name="Code" type="xs:string" use="optional"/>
+    <xs:attribute name="SortOrder" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="newsRelatedType">
+    <xs:sequence>
+      <xs:element name="Athlete" type="athleteNewsType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Coach" type="coachType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Team" type="teamNewsType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="athleteNewsType">
+    <xs:sequence>
+      <xs:element name="Description" type="athleteNewsDescriptionType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Order" type="xs:integer" use="required"/>
+    <xs:attribute name="Bib" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="athleteNewsDescriptionType">
+    <xs:attribute name="GivenName" type="xs:string" use="optional"/>
+    <xs:attribute name="FamilyName" type="xs:string" use="required"/>
+    <xs:attribute name="Gender" type="genderCodeType" use="required"/>
+    <xs:attribute name="Organisation" type="xs:string" use="required"/>
+    <xs:attribute name="BirthDate" type="odfDateType" use="optional"/>
+    <xs:attribute name="IFId" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="teamNewsType">
+    <xs:sequence>
+      <xs:element name="Description" type="teamNewsDescriptionType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Order" type="xs:integer" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="teamNewsDescriptionType">
+    <xs:attribute name="TeamName" type="xs:string" use="required"/>
+    <xs:attribute name="IFId" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="participantBIOType">
+    <xs:sequence>
+      <xs:element name="Language" type="participantBIOLanguageType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="Discipline" type="BIODisciplineType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="OfficialFunction" type="participantBIOFunctionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="ExternalCode" type="xs:string" use="optional"/>
+    <xs:attribute name="ParticipantID" type="xs:string" use="optional"/>
+    <xs:attribute name="Gender" type="genderCodeType" use="required"/>
+    <xs:attribute name="Current" type="xs:string" use="required"/>
+    <xs:attribute name="GivenName" type="xs:string" use="optional"/>
+    <xs:attribute name="FamilyName" type="xs:string" use="required"/>
+    <xs:attribute name="BirthDate" type="odfDateType" use="optional"/>
+    <xs:attribute name="Height" type="xs:string" use="optional"/>
+    <xs:attribute name="Weight" type="xs:string" use="optional"/>
+    <xs:attribute name="PlaceofBirth" type="xs:string" use="optional"/>
+    <xs:attribute name="CountryofBirth" type="xs:string" use="optional"/>
+    <xs:attribute name="PlaceofResidence" type="xs:string" use="optional"/>
+    <xs:attribute name="CountryofResidence" type="xs:string" use="optional"/>
+    <xs:attribute name="Nationality" type="xs:string" use="optional"/>
+    <xs:attribute name="OlympicSolidarity" type="code1Type" use="optional"/>
+    <xs:attribute name="Code" type="xs:string" use="optional"/>
+    <xs:attribute name="Organisation" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="participantBIOLanguageType">
+    <xs:sequence>
+      <xs:element name="CHighlights" type="BIOcHighlightsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="GInterest" type="BIOgInterestType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Language" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="BIOcHighlightsType">
+    <xs:sequence>
+      <xs:element name="Highlights" type="participantBIOHighlightsType" minOccurs="0" maxOccurs="3"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="participantBIOHighlightsType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="Type" type="bioHighlightsTypeType" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="BIOgInterestType">
+    <xs:sequence>
+      <xs:element name="Nickname" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="PrevNames" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Hobbies" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Occupation" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Education" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="MarStatus" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Family" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="LangSpoken" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Club_Name" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Coach" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Position_Style" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Hand" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Sporting_Relatives" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="OtherSports" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Debut" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Injuries" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Music" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Choreographer" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Nat_Team" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Nat_League" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Start" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Reason" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Ambition" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Milestones" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Training" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Memorable" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Hero" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Influence" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Ritual" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Philosophy" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Award" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Appointment" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Int_Appointment" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="WinLoss" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Other_Role" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Prev_Role" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="AddInformation" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="MajorAchievements" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ExtendedBios" type="BIOExtendedBiosType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="BIOExtendedBiosType">
+    <xs:sequence>
+      <xs:element name="ExtendedBio" type="BIOExtendedBioType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="BIOExtendedBioType">
+    <xs:sequence>
+      <xs:element name="Extension" type="resultExtendedStatType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="BIODisciplineType">
+    <xs:sequence>
+      <xs:element name="RegisteredEvent" type="BIODisciplineEventType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="BIODisciplineEventType">
+    <xs:attribute name="Event" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="participantBIOFunctionType">
+    <xs:attribute name="FunctionId" type="xs:string" use="required"/>
+    <xs:attribute name="Main_Function_Flag" type="yesNoType" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="teamBIOType">
+    <xs:sequence>
+      <xs:element name="Language" type="teamBIOLanguageType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="Discipline" type="BIODisciplineType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Gender" type="disciplinegenderCodeType" use="required"/>
+    <xs:attribute name="Organisation" type="xs:string" use="required"/>
+    <xs:attribute name="Name" type="xs:string" use="optional"/>
+    <xs:attribute name="Current" type="xs:string" use="required"/>
+    <xs:attribute name="ExternalCode" type="xs:string" use="optional"/>
+    <xs:attribute name="Code" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="teamBIOLanguageType">
+    <xs:sequence>
+      <xs:element name="CHighlights" type="BIOcHighlightsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="GInterest" type="BIOgInterestType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Language" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="horseBIOType">
+    <xs:sequence>
+      <xs:element name="Language" type="horseBIOLanguageType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="Discipline" type="BIODisciplineType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="optional"/>
+    <xs:attribute name="Organisation" type="xs:string" use="required"/>
+    <xs:attribute name="Sex" type="xs:string" use="optional"/>
+    <xs:attribute name="Current" type="xs:string" use="required"/>
+    <xs:attribute name="Height" type="xs:string" use="optional"/>
+    <xs:attribute name="CountryofBirth" type="xs:string" use="optional"/>
+    <xs:attribute name="Dam" type="xs:string" use="optional"/>
+    <xs:attribute name="SireDam" type="xs:string" use="optional"/>
+    <xs:attribute name="StudBook" type="xs:string" use="optional"/>
+    <xs:attribute name="Breeder" type="xs:string" use="optional"/>
+    <xs:attribute name="FormerName" type="xs:string" use="optional"/>
+    <xs:attribute name="FormerRider" type="xs:string" use="optional"/>
+    <xs:attribute name="Name" type="xs:string" use="optional"/>
+    <xs:attribute name="YearBirth" type="xs:string" use="optional"/>
+    <xs:attribute name="Passport" type="xs:string" use="optional"/>
+    <xs:attribute name="ColourCode" type="xs:string" use="optional"/>
+    <xs:attribute name="BreedCode" type="xs:string" use="optional"/>
+    <xs:attribute name="Sire" type="xs:string" use="optional"/>
+    <xs:attribute name="Owner" type="xs:string" use="optional"/>
+    <xs:attribute name="SecondOwner" type="xs:string" use="optional"/>
+    <xs:attribute name="Groom" type="xs:string" use="optional"/>
+    <xs:attribute name="ExternalCode" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="horseBIOLanguageType">
+    <xs:sequence>
+      <xs:element name="GInterest" type="BIOgInterestType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Language" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="NOCBIOType">
+    <xs:sequence>
+      <xs:element name="Language" type="NOCBIOLanguageType" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Current" type="xs:string" use="required"/>
+    <xs:attribute name="ExternalCode" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="NOCBIOLanguageType">
+    <xs:sequence>
+      <xs:element name="GInterest" type="NOCBIOgInterestType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Anthem" type="NOCBIOanthemType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Membership" type="NOCBIOmembershipType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Officials" type="NOCBIOofficialsBioType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Participation" type="NOCBIOparticipationType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Language" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="NOCBIOgInterestType">
+    <xs:sequence>
+      <xs:element name="OCFlagBearer" type="OCFlagBearerType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Highlights" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="AddInformation" type="messageType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="OCFlagBearerType">
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="NOCBIOanthemType">
+    <xs:sequence>
+      <xs:element name="Title" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Composer" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Inducted" type="messageType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NOCBIOmembershipType">
+    <xs:sequence>
+      <xs:element name="OfficialNocName" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="CountriesIncluded" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="FoundingDate" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="DateIOCRecognition" type="messageType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NOCBIOofficialsBioType">
+    <xs:sequence>
+      <xs:element name="NOCPresident" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="NOCGenSecretary" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="IOCMembers" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="IOCExecBoard" type="messageType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NOCBIOparticipationType">
+    <xs:sequence>
+      <xs:element name="FirstOGAppearance" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="NumOGAppearance" type="messageType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Summary" type="messageType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="codeSetType">
+    <xs:sequence>
+      <xs:element name="ExtendedCodes" type="extendedCodesType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Language" type="CodeSetLanguageType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Sport" type="xs:string" use="optional"/>
+    <xs:attribute name="Discipline" type="xs:string" use="optional"/>
+    <xs:attribute name="Gender" type="xs:string" use="optional"/>
+    <xs:attribute name="Event" type="xs:string" use="optional"/>
+    <xs:attribute name="Phase" type="xs:string" use="optional"/>
+    <xs:attribute name="EventUnit" type="xs:string" use="optional"/>
+    <xs:attribute name="Schedule" type="xs:string" use="optional"/>
+    <xs:attribute name="Medal" type="xs:string" use="optional"/>
+    <xs:attribute name="Competition" type="xs:string" use="optional"/>
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Group" type="xs:string" use="optional"/>
+    <xs:attribute name="VenueCode" type="xs:string" use="optional"/>
+    <xs:attribute name="Region" type="xs:string" use="optional"/>
+    <xs:attribute name="Country" type="xs:string" use="optional"/>
+    <xs:attribute name="Continent" type="xs:string" use="optional"/>
+    <xs:attribute name="Function" type="xs:string" use="optional"/>
+    <xs:attribute name="Order" type="xs:string" use="optional"/>
+    <xs:attribute name="Note" type="xs:string" use="optional"/>
+    <xs:attribute name="News" type="yesNoType" use="optional"/>
+    <xs:attribute name="Background" type="yesNoType" use="optional"/>
+    <xs:attribute name="CompetitionFormatType" type="xs:string" use="optional"/>
+    <xs:attribute name="ProgressionType" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="extendedCodesType">
+    <xs:sequence>
+      <xs:element name="ExtendedCode" type="ExtendedCodeType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ExtendedCodeType">
+    <xs:sequence>
+      <xs:element name="Extension" type="resultExtendedStatType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Type" type="xs:string" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Pos" type="xs:string" use="optional"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="CodeSetLanguageType">
+    <xs:attribute name="Language" type="xs:string" use="required"/>
+    <xs:attribute name="Description" type="xs:string" use="optional"/>
+    <xs:attribute name="DOrder" type="xs:int" use="optional"/>
+    <xs:attribute name="LongDescription" type="xs:string" use="optional"/>
+    <xs:attribute name="LDOrder" type="xs:int" use="optional"/>
+    <xs:attribute name="ShortDescription" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="WeatherPlaceType">
+    <xs:sequence>
+      <xs:element name="Alert" type="weatherAlertType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="weatherAlertType">
+    <xs:sequence>
+      <xs:element name="ValidFrom" type="weatherAlertValidType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="ValidTo" type="weatherAlertValidType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="Description" type="weatherAlertDescriptionType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:int" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="weatherAlertValidType">
+    <xs:attribute name="Date" type="odfDateType" use="required"/>
+    <xs:attribute name="Time" type="string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="weatherAlertDescriptionType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="Language" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="WeatherConditionsVenueType">
+    <xs:sequence>
+      <xs:element name="DateTime" type="weatherConditionDateTimeType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="weatherConditionDateTimeType">
+    <xs:sequence>
+      <xs:element name="Conditions" type="weatherConditionType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Date" type="odfDateType" use="required"/>
+    <xs:attribute name="Time" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="weatherConditionType">
+    <xs:sequence>
+      <xs:element name="Condition" type="weatherDetailedConditionType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="Precipitation" type="weatherPrecipitationType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Pressure" type="weatherPressureType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Temperature" type="weatherTemperatureType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Wind" type="weatherConditionsWindType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Humidity" type="xs:int" use="required"/>
+    <xs:attribute name="Wind_Direction" type="xs:string" use="optional"/>
+    <xs:attribute name="Wind_Degree" type="xs:int" use="required"/>
+    <xs:attribute name="Prec_Type" type="xs:string" use="optional"/>
+    <xs:attribute name="Prec_Probability" type="xs:int" use="optional"/>
+    <xs:attribute name="Lightning" type="xs:string" use="optional"/>
+    <xs:attribute name="Sunrise" type="xs:string" use="optional"/>
+    <xs:attribute name="Sunset" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="weatherDetailedConditionType">
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="weatherPrecipitationType">
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+    <xs:attribute name="Unit" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="weatherPressureType">
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+    <xs:attribute name="Unit" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="weatherConditionsWindType">
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Value" type="xs:string" use="optional"/>
+    <xs:attribute name="Unit" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="presentationType">
+    <xs:sequence>
+      <xs:element name="Presenter" type="presenterType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Event" type="xs:string" use="required"/>
+    <xs:attribute name="EventName" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="presenterType">
+    <xs:sequence>
+      <xs:element name="Description" type="presenterDescriptionType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="Detail" type="presenterDetailType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="optional"/>
+    <xs:attribute name="MedalRank" type="xs:int" use="optional"/>
+    <xs:attribute name="Function" type="xs:string" use="optional"/>
+    <xs:attribute name="Order" type="xs:integer" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="presenterDescriptionType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="GivenName" type="xs:string" use="optional"/>
+        <xs:attribute name="FamilyName" type="xs:string" use="required"/>
+        <xs:attribute name="Gender" type="genderCodeType" use="required"/>
+        <xs:attribute name="Nationality" type="xs:string" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="presenterDetailType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="Language" type="xs:string" use="required"/>
+        <xs:attribute name="PresenterName" type="xs:string" use="required"/>
+        <xs:attribute name="LongPresenterName" type="xs:string" use="required"/>
+        <xs:attribute name="Role" type="xs:string" use="optional"/>
+        <xs:attribute name="LongRole" type="xs:string" use="optional"/>
+        <xs:attribute name="Highlight" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="flagBearerType">
+    <xs:sequence>
+      <xs:element name="Flagbearer" type="flagBearerItemType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Order" type="xs:integer" use="required"/>
+    <xs:attribute name="Organisation" type="xs:string" use="required"/>
+    <xs:attribute name="Volunteer" type="xs:string" use="optional"/>
+    <xs:attribute name="Embargo" type="xs:string" use="optional"/>
+    <xs:attribute name="Comment" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="flagBearerItemType">
+    <xs:sequence>
+      <xs:element name="Description" type="flagBearerDescriptionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Detail" type="flagbearerDetailType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Code" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="flagBearerDescriptionType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="GivenName" type="xs:string" use="optional"/>
+        <xs:attribute name="FamilyName" type="xs:string" use="required"/>
+        <xs:attribute name="Gender" type="genderCodeType" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="flagbearerDetailType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="Discipline" type="xs:string" use="optional"/>
+        <xs:attribute name="Cluster" type="code3Type" use="optional"/>
+        <xs:attribute name="ClusterName" type="xs:string" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="EntriesEntry">
+    <xs:sequence>
+      <xs:element name="Description" type="competitorDescriptionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Coaches" type="coachesType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ExtendedEntry" type="EntryExtendedEntry" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Composition" type="compositionResultsType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="Bib" type="xs:string" use="optional"/>
+    <xs:attribute name="EntryStatus" type="xs:string" use="optional"/>
+    <xs:attribute name="Substitute" type="xs:string" use="optional"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    <xs:attribute name="Type" type="competitorTypeType" use="required"/>
+    <xs:attribute name="Organisation" type="xs:string" use="required"/>
+    <xs:attribute name="SortOrder" type="xs:integer" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="audioType">
+    <xs:sequence>
+      <xs:element name="Related" type="newsRelatedType" minOccurs="0" maxOccurs="1"/>
+      <xs:choice>
+        <xs:element name="File" type="mediaType" minOccurs="1" maxOccurs="1"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

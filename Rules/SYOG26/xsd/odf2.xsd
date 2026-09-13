@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:include schemaLocation="odf2-structure.xsd"/>
+  <xs:element name="OdfBody" type="bodyType">
+    <xs:annotation>
+      <xs:documentation>ODF2 Message</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="bodyType">
+    <xs:annotation>
+      <xs:documentation>Message Header</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Competition" type="competitionType" minOccurs="0"/>
+      <xs:element name="Note" type="messageType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="CompetitionCode" type="xs:string" use="required"/>
+    <xs:attribute name="DocumentCode" type="xs:string" use="required"/>
+    <xs:attribute name="DocumentSubcode" type="xs:string" use="optional"/>
+    <xs:attribute name="DocumentType" type="documentTypeType" use="required"/>
+    <xs:attribute name="DocumentSubtype" type="xs:string" use="optional"/>
+    <xs:attribute name="Version" type="xs:int" use="required"/>
+    <xs:attribute name="ResultStatus" type="resultStatusType" use="optional"/>
+    <xs:attribute name="Language" type="code3Type" use="optional"/>
+    <xs:attribute name="FeedFlag" type="feedFlagType" use="required"/>
+    <xs:attribute name="Date" type="odfDateType" use="required"/>
+    <xs:attribute name="Time" type="odfTimeType" use="required"/>
+    <xs:attribute name="LogicalDate" type="odfDateType" use="required"/>
+    <xs:attribute name="Source" type="xs:string" use="required"/>
+  </xs:complexType>
+</xs:schema>

@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:simpleType name="documentTypeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="DT_PDF"/>
+      <xs:enumeration value="DT_RESULT"/>
+      <xs:enumeration value="DT_RESULT_ANALYSIS"/>
+      <xs:enumeration value="DT_CURRENT"/>
+      <xs:enumeration value="DT_PHASE_RESULT"/>
+      <xs:enumeration value="DT_CUMULATIVE_RESULT"/>
+      <xs:enumeration value="DT_POOL_STANDING"/>
+      <xs:enumeration value="DT_BRACKETS"/>
+      <xs:enumeration value="DT_PLAY_BY_PLAY"/>
+      <xs:enumeration value="DT_STATS"/>
+      <xs:enumeration value="DT_RANKING"/>
+      <xs:enumeration value="DT_MEDALLISTS"/>
+      <xs:enumeration value="DT_MEDALLISTS_DISCIPLINE"/>
+      <xs:enumeration value="DT_PRESENTER"/>
+      <xs:enumeration value="DT_COMMUNICATION"/>
+      <xs:enumeration value="DT_KA"/>
+      <xs:enumeration value="DT_PING"/>
+      <xs:enumeration value="DT_LOCAL_ON"/>
+      <xs:enumeration value="DT_LOCAL_OFF"/>
+      <xs:enumeration value="DT_CONFIG"/>
+      <xs:enumeration value="DT_IMAGE"/>
+      <xs:enumeration value="DT_PRESSPHOTOFINISH_LK"/>
+      <xs:enumeration value="DT_WEATHER"/>
+      <xs:enumeration value="DT_RECORD"/>
+      <xs:enumeration value="DT_SCHEDULE"/>
+      <xs:enumeration value="DT_SCHEDULE_UPDATE"/>
+      <xs:enumeration value="DT_PARTIC"/>
+      <xs:enumeration value="DT_PARTIC_UPDATE"/>
+      <xs:enumeration value="DT_PARTIC_TEAMS"/>
+      <xs:enumeration value="DT_PARTIC_TEAMS_UPDATE"/>
+      <xs:enumeration value="DT_PARTIC_HORSES"/>
+      <xs:enumeration value="DT_PARTIC_HORSES_UPDATE"/>
+      <xs:enumeration value="DT_PARTIC_NAME"/>
+      <xs:enumeration value="DT_GLOBAL_GM"/>
+      <xs:enumeration value="DT_GLOBAL_GN"/>
+      <xs:enumeration value="DT_NOTIFICATION"/>
+      <xs:enumeration value="DT_PIC"/>
+      <xs:enumeration value="DT_AUDIO"/>
+      <xs:enumeration value="DT_ESL"/>
+      <xs:enumeration value="DT_SCHED_RES_NOC"/>
+      <xs:enumeration value="DT_MEDALS"/>
+      <xs:enumeration value="DT_MEDALLISTS_DAY"/>
+      <xs:enumeration value="DT_BCK"/>
+      <xs:enumeration value="DT_BCK_IMP"/>
+      <xs:enumeration value="DT_TRS"/>
+      <xs:enumeration value="DT_TRS_IMP"/>
+      <xs:enumeration value="DT_ALERT"/>
+      <xs:enumeration value="DT_NEWS"/>
+      <xs:enumeration value="DT_NEWS_IMP"/>
+      <xs:enumeration value="DT_BIO_PAR"/>
+      <xs:enumeration value="DT_BIO_PAR_IMP"/>
+      <xs:enumeration value="DT_BIO_TEA"/>
+      <xs:enumeration value="DT_BIO_TEA_IMP"/>
+      <xs:enumeration value="DT_BIO_NOC"/>
+      <xs:enumeration value="DT_BIO_NOC_IMP"/>
+      <xs:enumeration value="DT_BIO_HOR"/>
+      <xs:enumeration value="DT_BIO_HOR_IMP"/>
+      <xs:enumeration value="DT_IDK_COMMAND"/>
+      <xs:enumeration value="DT_CODES"/>
+      <xs:enumeration value="DT_WEA_ALERT"/>
+      <xs:enumeration value="DT_VEN_COND"/>
+      <xs:enumeration value="DT_TV_TRACKING"/>
+      <xs:enumeration value="DT_FED_RANKING"/>
+      <xs:enumeration value="DT_FLAGBEARERS"/>
+      <xs:enumeration value="DT_CEREMONY_ACTIVITY_LIST"/>
+      <xs:enumeration value="DT_CEREMONY_NOC_LIST"/>
+      <xs:enumeration value="DT_ACHIEVEMENT"/>
+      <xs:enumeration value="DT_ENTRIES"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="resultStatusType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="START_LIST"/>
+      <xs:enumeration value="OFFICIAL"/>
+      <xs:enumeration value="UNOFFICIAL"/>
+      <xs:enumeration value="INTERMEDIATE"/>
+      <xs:enumeration value="PARTIAL"/>
+      <xs:enumeration value="LIVE"/>
+      <xs:enumeration value="UNCONFIRMED"/>
+      <xs:enumeration value="PROTESTED"/>
+      <xs:enumeration value="PROVISIONAL"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="code3Type">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[A-Z0-9]{3}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="feedFlagType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="P"/>
+      <xs:enumeration value="T"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="odfDateType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]{4}[\-]{1}[0-9]{2}[\-]{1}[0-9]{2}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="string">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:simpleType name="disciplinegenderCodeType">
+    <xs:annotation>
+      <xs:documentation>Discipline Gender Code (M = Men, W = Women, X = Mixed, G = Global)</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:length value="1"/>
+      <xs:pattern value="[MWXGO]{1}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="scheduleStatusType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CANCELLED"/>
+      <xs:enumeration value="DELAYED"/>
+      <xs:enumeration value="FINISHED"/>
+      <xs:enumeration value="GETTING_READY"/>
+      <xs:enumeration value="INTERRUPTED"/>
+      <xs:enumeration value="POSTPONED"/>
+      <xs:enumeration value="RESCHEDULED"/>
+      <xs:enumeration value="RUNNING"/>
+      <xs:enumeration value="SCHEDULED"/>
+      <xs:enumeration value="SCHEDULED_BREAK"/>
+      <xs:enumeration value="UNSCHEDULED"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="clockRunningType">
+    <xs:annotation>
+      <xs:documentation>Clock Running type</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Y"/>
+      <xs:enumeration value="N"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="rankEqualType">
+    <xs:annotation>
+      <xs:documentation>Y in case of the Rank has been equalled else do not send.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Y"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="genderCodeType">
+    <xs:annotation>
+      <xs:documentation>Gender Code (M = Male, F = Female, X = Unspecified)</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:length value="1"/>
+      <xs:pattern value="[MFX]{1}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="competitorTypeType">
+    <xs:annotation>
+      <xs:documentation>A for athlete, T for team</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:length value="1"/>
+      <xs:enumeration value="T"/>
+      <xs:enumeration value="A"/>
+      <xs:enumeration value="H"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="UncheckedType">
+    <xs:annotation>
+      <xs:documentation>Y in the case the result needs to be validated</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Y"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="evaluatedPendingType">
+    <xs:annotation>
+      <xs:documentation>In case the competitor result is decided by photo finish:
+E: Photofinish evaluated.
+P: Photofinish evaluation pending
+While pending, the competitors involved will be sorted according to the theorical rank before the evaluation. Attributes related to the not confirmed result are not expected</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="E"/>
+      <xs:enumeration value="P"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="rscType">
+    <xs:annotation>
+      <xs:documentation>RSC 34 characters fields</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:length value="34"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="unitMedalType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="0"/>
+      <xs:enumeration value="1"/>
+      <xs:enumeration value="2"/>
+      <xs:enumeration value="3"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="simpleMedalType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ME_GOLD"/>
+      <xs:enumeration value="ME_SILVER"/>
+      <xs:enumeration value="ME_BRONZE"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="yesNoType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Y"/>
+      <xs:enumeration value="N"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="code1Type">
+    <xs:annotation>
+      <xs:documentation>Y if the participant is a member of the Solidarity/Scholarship Program else it is not applicable</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:length value="1"/>
+      <xs:pattern value="[A-Z0-9]{1}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="weatherConditionsType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SKY"/>
+      <xs:enumeration value="SNOW"/>
+      <xs:enumeration value="ICE"/>
+      <xs:enumeration value="WATER"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="windType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SPEED"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="odfTimeType">
+    <xs:annotation>
+      <xs:documentation>hhmmssfff</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]{9}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="bioHighlightsTypeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ATH"/>
+      <xs:enumeration value="COA"/>
+      <xs:enumeration value="OFF"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="messageType">
+    <xs:annotation>
+      <xs:documentation>Type used for Note at the end of document</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+</xs:schema>

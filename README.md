@@ -17,14 +17,18 @@ pip install -r requirements.txt
 
 ## First launch
 
-This repository ships the validation rules but not the IOC source documents
-(Data Dictionaries, Common Codes, XSD schema). Those are published by the IOC
-and are downloaded by the application, so the repository stays small and the
-documents stay current.
+This repository ships the validation rules and the SYOG26 XSD schema, but not
+the other IOC source documents (Data Dictionaries, Common Codes). Those are
+published by the IOC and are downloaded by the application, so the repository
+stays small and the documents stay current.
+
+The schema is included rather than downloaded because the published copy does
+not compile — see **Note on the SYOG2026 XSD** below.
 
 1. `pip install -r requirements.txt`
-2. Start the application. The SYOG26 ruleset loads with its rules, but reports
-   `CORE_XSD_INACTIVE` on every message until the schema is imported.
+2. Start the application. The SYOG26 ruleset loads with its rules and its
+   schema; `code_membership` rules cannot fire until the Common Codes workbook
+   is imported, and the banner says so.
 3. Open **Rulesets**, then **Check and download updates**, then **Apply
    downloaded**.
 
@@ -88,16 +92,28 @@ testable.
 
 ## Note on the SYOG2026 XSD
 
-The published `odf2-structure.xsd` does not compile as downloaded: element
-`ImageData` (around line 915, in `officialCommunicationType`) references an
-undefined type `RecordBrokenType`. Until it is corrected, structural validation
-stays off and every message reports `CORE_XSD_INACTIVE`.
+**The schema under `Rules/SYOG26/xsd/` is not byte-identical to the IOC's
+published copy.** It carries two deliberate changes, both recorded here so that
+anyone comparing the two can see exactly what differs and why.
 
-The correction is one attribute — change that `ImageData` to
-`type="pictureType"`, the type used by the schema's other `ImageData` element
-(in `unitActionType`) and the appropriate string-content image payload type.
-Edit `Rules/SYOG26/xsd/odf2-structure.xsd` after the first import; the schema
-then compiles and structural validation becomes active.
+1. **`RecordBrokenType` → `pictureType`.** The published
+   `odf2-structure.xsd` does not compile as downloaded: element `ImageData`
+   (line 915, in `officialCommunicationType`) references a type the schema
+   never defines. Of the 219 types it does define, `pictureType` is the one
+   used by the schema's other `ImageData` element (in `unitActionType`) and is
+   the appropriate string-content image payload type.
+2. **Header `@Time` typed as `odfTimeType`** (`[0-9]{9}`) in `odf2.xsd`, where
+   the published schema leaves it unconstrained. This is stricter than the
+   official schema, not a correction to it.
+
+The IOC will publish no further schema for the Sport Youth Olympic Games 2026,
+so this copy is final. It is included in the repository rather than downloaded
+because what a clone would download is the copy that does not compile: with
+change 1 absent, structural validation stays off and every message reports
+`CORE_XSD_INACTIVE`.
+
+The other IOC documents — Data Dictionaries, Common Codes — are unmodified and
+are still fetched on first launch.
 
 The engine never skips structural validation quietly. A pack whose schema does
 not compile is recorded as a pack load error and hard-gated: every message in
