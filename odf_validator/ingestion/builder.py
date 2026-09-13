@@ -90,18 +90,33 @@ def build_ruleset_pack(ruleset_dir: Path, converter=None) -> RulePack:
     root_name = manifest.get("root_xsd")
     root_xsd = (next((p for p in xsd_paths if p.name == root_name), None)
                 if root_name else None)
-    if root_name and root_xsd is None:
-        report.errors.append(f"pack.yaml root_xsd '{root_name}' not found; "
-                             f"falling back to heuristic.")
+    if root_name and root_xsd is None and xsd_paths:
+        report.schema_unavailable.append(
+            f"pack.yaml names root_xsd '{root_name}', which is not one of the "
+            f"{len(xsd_paths)} XSD file(s) in this ruleset; falling back to "
+            f"the heuristic root.")
     if root_xsd is None:
         root_xsd = next((p for p in xsd_paths if p.name == "odf2.xsd"),
                         xsd_paths[0] if xsd_paths else None)
+    if root_xsd is None:
+        # Not "falling back to heuristic": there is nothing to fall back to.
+        # The heuristic above picks a root from the XSDs present and there
+        # are none, so no message may imply a schema is in use.
+        report.schema_unavailable.append(
+            "This ruleset holds no XSD, so messages are not checked against "
+            "the schema at all -- only the rules below run.")
     schema = None
     if root_xsd is not None:
         try:
             schema = compile_schema(root_xsd)
         except Exception as e:
-            report.errors.append(f"XSD did not compile ({root_xsd.name}): {e}")
+            # Same end state as holding no XSD at all: `schema` stays None
+            # and the rules run alone. Same channel, therefore -- and still
+            # not a rule that failed to load.
+            report.schema_unavailable.append(
+                f"The schema did not compile ({root_xsd.name}: {e}), so "
+                f"messages are not checked against it -- only the rules "
+                f"below run.")
 
     for p in scan.code_files:
         try:
@@ -219,21 +234,25 @@ def build_ruleset_pack(ruleset_dir: Path, converter=None) -> RulePack:
     #
     # A pack with no code tables at all is a different case: every codeset
     # name is unknown for a reason that has nothing to do with the rules, so
-    # nothing is DROPPED. Each rule is still reported, because a rule that
-    # cannot fire is exactly what this list is for and a bare summary line
-    # would leave an operator hunting for which rules are affected; the
-    # summary goes first to say why they are all listed at once.
-    if not registry.names() and any(r.params.get("codeset") for r in rules):
-        report.errors.append(
-            "This ruleset has no code tables loaded, so no code_membership "
-            "rule can fire. Add the Common Codes workbook (or import it from "
-            "the publication page) and reload.")
-        for r in rules:
-            cs = r.params.get("codeset")
-            if cs:
-                report.errors.append(
-                    f"Rule {r.id}: codeset '{cs}' is not provided by this "
-                    f"pack's code tables; the rule will never fire.")
+    # nothing is DROPPED and nothing failed to load. It is the normal state
+    # of a fresh clone of the public repository, which ships the authored
+    # rules and none of the IOC documents.
+    #
+    # One note, not one per rule. This used to list every affected rule, on
+    # `errors`, on the reasoning that a summary would leave an operator
+    # hunting for which rules were involved. On a real first launch that
+    # produced 52 lines differing only by rule id, under a banner reading
+    # "54 rule(s) failed to load" while 89 rules were active -- and with no
+    # tables at all the answer to "which rules" is "every one of them",
+    # which the count states outright. `deduped` and `specialised` already
+    # report derivable bulk facts this way.
+    codeset_rules = [r for r in rules if r.params.get("codeset")]
+    if not registry.names() and codeset_rules:
+        report.codes_unavailable.append(
+            f"No code tables are loaded, so {len(codeset_rules)} "
+            f"code_membership rule(s) cannot fire. Import the Common Codes "
+            f"workbook from the publication page (Rulesets -> check and "
+            f"download updates -> apply), then reload.")
     for r in rules:
         cs = r.params.get("codeset")
         # Same failure mode, one level down: `column` names which of a

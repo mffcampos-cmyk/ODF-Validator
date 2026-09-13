@@ -161,8 +161,15 @@ def test_a_pack_with_no_code_tables_keeps_its_rules(tmp_path):
                                           "ATH_SESSIONSTATUS_CODE",
                                           "ATH_MAINFUNCTIONID_CODE",
                                           "ATH_CLASS_CODE"}
-    assert any("no code tables" in e.lower() for e in pack.report.errors), (
-        f"silence here would look like a healthy pack: {pack.report.errors}")
+    assert any("no code tables" in n.lower()
+               for n in pack.report.codes_unavailable), (
+        f"silence here would look like a healthy pack: "
+        f"{pack.report.codes_unavailable}")
+    # The other half, and the reason this moved off `errors`: app.js renders
+    # that list as "N rule(s) failed to load". Every rule above loaded. A
+    # freshly downloaded copy of the public tree is in exactly this state and
+    # opened with "54 rule(s) failed to load" beside "89 rules active".
+    assert pack.report.errors == [], pack.report.errors
 
 
 # The dedup key freezes the whole params dict (see rules/loader._semantic_key),

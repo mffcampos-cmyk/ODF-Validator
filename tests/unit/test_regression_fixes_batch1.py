@@ -53,8 +53,26 @@ def _venue_registry():
 # ---- unknown codesets are loud -------------------------------------------
 
 def test_unknown_codeset_is_a_pack_load_error(tmp_path):
+    """A rule naming a codeset the pack's tables do not provide: one rule
+    wrong among many right, so it is named and dropped.
+
+    The pack needs a code table for this to be the case under test. Without
+    one, "unknown codeset" and "no tables to judge any codeset against" are
+    the same state, and the second is the ordinary condition of a ruleset
+    before its first import -- every code_membership rule inert, one cause,
+    one remedy, reported as a single counted note rather than one line per
+    rule (see test_codes_unavailable_channel.py). This fixture had no
+    `codes/` at all and was pinning that case by accident; both messages
+    read the same, so nothing showed it.
+    """
     root = tmp_path / "PACKX"
     (root / "rules").mkdir(parents=True)
+    (root / "codes").mkdir()
+    (root / "codes" / "codes.xml").write_text(
+        '<?xml version="1.0"?>\n'
+        '<CommonCodes><Codeset name="VENUE">'
+        '<Code id="PDP" ENG_Description="Parc des Princes"/>'
+        '</Codeset></CommonCodes>', encoding="utf-8")
     (root / "rules" / "r.yaml").write_text(
         "- id: GEN_BAD\n"
         "  applies_to: {}\n"

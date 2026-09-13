@@ -19,9 +19,11 @@ def has_directory_component(name: str) -> bool:
     POSIX's path syntax, regardless of which OS this code happens to be
     running on.
 
-    Shared with odf_validator.sources.sync (originally written there for zip
-    member names -- see its _stage_archive) and reused here for the exact
-    same reason: a bare `pathlib.Path(name).name != name` check only sees the
+    Originally written for zip member names in odf_validator.sources.sync;
+    that caller now uses `archive_member_name` below, which separates
+    "escapes" from "merely nested". This is still what classifies a
+    "general" entry's target, for the same reason it was written: a bare
+    `pathlib.Path(name).name != name` check only sees the
     HOST os's separator rules, so on POSIX a name like
     '..\\..\\..\\..\\Startup\\evil.pdf' round-trips as its own `.name`
     (backslash is an ordinary filename character there) and slips past that
@@ -33,6 +35,47 @@ def has_directory_component(name: str) -> bool:
     """
     return (PurePosixPath(name).name != name
             or PureWindowsPath(name).name != name)
+
+
+def archive_member_name(name: str) -> str | None:
+    """The bare filename a zip member may be staged under, or None to refuse
+    it outright.
+
+    Nesting is not escaping, and conflating the two is what broke the schema
+    import: `_stage_archive` refused every member carrying a directory
+    component, on the premise that "the published archives are flat". The
+    published odf-schema.zip is not -- all seven of its members sit under
+    `odf2-schema-30112025-DRAFT/` (three of them again under `__MACOSX/`) --
+    so nothing was ever extracted and the ruleset never got an XSD.
+
+    So this separates the two questions the old check ran together:
+
+    - Does the member escape? A '..' component anywhere, or an anchor (a
+      POSIX '/', a Windows drive, a UNC share) means yes: refused, never
+      sanitised and unpacked anyway. A name like '../../evil.xlsx' is
+      evidence of intent, not a path to tidy up.
+    - Is it merely nested? Then its basename is what it is staged under.
+      That is also the layout the live tree wants: xsd/ and codes/ are flat
+      and pack.yaml names its root by filename.
+
+    Both questions are asked under PurePosixPath AND PureWindowsPath, never
+    the host-dependent bare Path, for the same reason has_directory_component
+    above does: backslash is an ordinary filename character on POSIX, so
+    '..\\..\\evil.xlsx' is one harmless-looking name on this project's CI and
+    a real four-level escape on the Windows machine it ships to.
+    """
+    if "\x00" in name:
+        return None
+    for cls in (PurePosixPath, PureWindowsPath):
+        parsed = cls(name)
+        if parsed.anchor or parsed.is_absolute():
+            return None
+        if any(part == ".." for part in parsed.parts):
+            return None
+    # Strip both separator styles, innermost last, so a name that only one
+    # of the two parsers sees as nested is still reduced to its basename.
+    base = PureWindowsPath(PurePosixPath(name).name).name
+    return base if base not in ("", ".", "..") else None
 
 
 @dataclass(frozen=True)

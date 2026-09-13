@@ -269,6 +269,8 @@ def list_packs():
              "converted_by_fallback": p.report.converted_by_fallback,
              "cache_warnings": p.report.cache_warnings,
              "unmatched_codesets": p.report.unmatched_codesets,
+             "schema_unavailable": p.report.schema_unavailable,
+             "codes_unavailable": p.report.codes_unavailable,
              "rule_count": len(p.rules),
              "usable": bool(p.schema) or bool(p.rules)}
             for p in PACKS.values()]

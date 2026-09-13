@@ -73,3 +73,33 @@ def test_healthy_syog26_pack_is_quiet_about_the_cache_on_both_surfaces(monkeypat
     r = client.get("/rulesets")
     assert r.status_code == 200
     assert "cache warning" not in r.text.lower(), r.text
+
+
+def test_packs_json_carries_the_schema_channel(tmp_path, monkeypatch):
+    """app.js reads `schema_unavailable` off /packs to draw its note, so the
+    key has to reach the wire, not just the dataclass -- the same wiring gap
+    `converted_by_fallback` is pinned against above.
+
+    TESTSET has no XSD at all, which is exactly a fresh clone of the public
+    repository: the tree ships the authored rules and the IOC documents are
+    fetched on first launch.
+    """
+    _setup_ruleset_with_discipline(tmp_path, monkeypatch)
+
+    testset = next(p for p in client.get("/packs").json()
+                   if p["name"] == "TESTSET")
+
+    assert testset["schema_unavailable"], sorted(testset)
+    assert testset["errors"] == [], (
+        "a ruleset awaiting its first import has no failed rule loads")
+
+
+def test_packs_json_carries_the_codes_channel(tmp_path, monkeypatch):
+    """Companion to the schema channel above: app.js reads
+    `codes_unavailable` off /packs, so the key has to reach the wire."""
+    _setup_ruleset_with_discipline(tmp_path, monkeypatch)
+
+    testset = next(p for p in client.get("/packs").json()
+                   if p["name"] == "TESTSET")
+
+    assert "codes_unavailable" in testset, sorted(testset)

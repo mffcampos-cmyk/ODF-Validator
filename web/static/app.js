@@ -85,6 +85,24 @@ function showPackReport() {
     bits.push(`${cur.cache_warnings.length} obligation cache warning(s) — ` +
               `first: ${cur.cache_warnings[0]}`);
   }
+  if (cur && cur.schema_unavailable && cur.schema_unavailable.length) {
+    // The rules all loaded; there is just no schema underneath them. Off the
+    // "failed to load" wording for the same reason as every channel below
+    // it -- a fresh clone of the public tree has no XSD yet, and greeting
+    // its operator with "1 rule(s) failed to load" was untrue twice over.
+    // Still said out loud: messages silently not being schema-checked is
+    // the worse failure of the two.
+    bits.push(`no schema in use — messages are not checked against an XSD; ` +
+              `${cur.schema_unavailable[0]}`);
+  }
+  if (cur && cur.codes_unavailable && cur.codes_unavailable.length) {
+    // Companion to schema_unavailable above, and off "failed to load" for
+    // the same reason: the rules all loaded, they just have no code tables
+    // to check against. This is the state a freshly downloaded copy starts
+    // in, and reporting it as 53 failures was what sent an operator looking
+    // for 53 broken rules that did not exist.
+    bits.push(cur.codes_unavailable[0]);
+  }
   if (cur && cur.unmatched_codesets && cur.unmatched_codesets.length) {
     // Deliberately not "failed to load": no rule exists to have failed. A
     // Data Dictionary asked for a codeset the Common Codes do not have, so

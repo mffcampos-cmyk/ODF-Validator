@@ -161,13 +161,20 @@ def test_archive_member_paths_with_windows_separators_are_refused(tmp_path, evil
 
 @pytest.mark.parametrize("evil_name", [
     "../../evil.xlsx",
-    "nested/x.xlsx",
     "/etc/passwd.xlsx",
 ])
 def test_archive_member_paths_with_posix_separators_are_refused(tmp_path, evil_name):
     """Companion cases to the Windows-separator test above -- POSIX-style
-    traversal, a nested member, and an absolute path must all still be
-    refused after the guard is rewritten to be host-OS-independent."""
+    traversal and an absolute path must both still be refused by a guard
+    that is host-OS-independent.
+
+    'nested/x.xlsx' used to be a third case here, refused on the premise
+    that "the published archives are flat". They are not: see
+    test_a_nested_archive_is_extracted_flat below. A member that merely
+    sits in a directory does not escape anywhere, and lumping it in with
+    traversal made the guard reject every member of the published schema
+    archive.
+    """
     root = tmp_path / "SYOG26"
     root.mkdir()
     body = zip_bytes([evil_name])
@@ -177,6 +184,105 @@ def test_archive_member_paths_with_posix_separators_are_refused(tmp_path, evil_n
     assert staged == []
     files = {p for p in tmp_path.rglob("*") if p.is_file()}
     assert not any(("evil" in p.name or "passwd" in p.name) for p in files)
+
+
+SCHEMA = CatalogueEntry(reference="YOG-2026-SCHEMA", title="ODF Schema",
+                        published=None, kind="schema",
+                        url="https://odf.olympictech.org/2026-MiCo/schema/"
+                            "odf-schema.zip",
+                        target="xsd/", discipline=None)
+
+
+def zip_bytes_named(names, body=b"<xs:schema/>"):
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        for name in names:
+            if name.endswith("/"):
+                z.writestr(zipfile.ZipInfo(name), b"")
+            else:
+                z.writestr(name, body)
+    return buf.getvalue()
+
+
+# The real central directory of the published odf-schema.zip, read off
+# https://odf.olympictech.org/2026-MiCo/schema/odf-schema.zip on 2026-09-13.
+# Every member is nested; three of them are macOS AppleDouble resource forks
+# that happen to end in .xsd.
+PUBLISHED_SCHEMA_MEMBERS = [
+    "odf2-schema-30112025-DRAFT/",
+    "odf2-schema-30112025-DRAFT/odf2-values.xsd",
+    "__MACOSX/odf2-schema-30112025-DRAFT/._odf2-values.xsd",
+    "odf2-schema-30112025-DRAFT/odf2-structure.xsd",
+    "__MACOSX/odf2-schema-30112025-DRAFT/._odf2-structure.xsd",
+    "odf2-schema-30112025-DRAFT/odf2.xsd",
+    "__MACOSX/odf2-schema-30112025-DRAFT/._odf2.xsd",
+]
+
+
+def test_a_nested_archive_is_extracted_flat(tmp_path):
+    """The bug this fixture is taken from life to pin.
+
+    _stage_archive refused any member carrying a directory component, on the
+    stated premise that "the published archives are flat". The schema archive
+    is not: every member sits under odf2-schema-30112025-DRAFT/. So every
+    member was refused, nothing was extracted, and the fetch reported success
+    having delivered nothing -- which is why a fresh clone of the public tree
+    starts up saying root_xsd 'odf2.xsd' is not found.
+
+    Nesting is not escaping. A member in a directory is staged under its own
+    bare filename, which is also the layout the live tree wants: xsd/ is flat
+    and pack.yaml names its root by filename.
+    """
+    root = tmp_path / "SYOG26"
+    root.mkdir()
+    body = zip_bytes_named(PUBLISHED_SCHEMA_MEMBERS)
+    with client_serving({".zip": (body, "application/zip")}) as c:
+        staged = fetch_targets(root, [SCHEMA], client=c)
+
+    assert sorted(staged) == [
+        ".incoming/xsd/odf2-structure.xsd",
+        ".incoming/xsd/odf2-values.xsd",
+        ".incoming/xsd/odf2.xsd",
+    ], staged
+    assert (root / ".incoming/xsd/odf2.xsd").read_bytes() == b"<xs:schema/>"
+    # Flat: the archive's own folder name must not survive into the tree.
+    assert not (root / ".incoming/xsd/odf2-schema-30112025-DRAFT").exists()
+
+
+def test_applestuff_resource_forks_are_not_mistaken_for_schema_files(tmp_path):
+    """__MACOSX/..../._odf2.xsd is an AppleDouble resource fork: binary
+    metadata that the suffix filter waves straight through, because it does
+    end in .xsd. Staged and promoted, it lands in xsd/ where the scanner
+    picks it up and hands lxml a blob that is not a schema at all.
+
+    Skipped by the leading dot, the same rule the scanner and the
+    publication filter already use to mean "not a document" -- rather than
+    by naming __MACOSX, which is one vendor's spelling of a problem that has
+    others.
+    """
+    root = tmp_path / "SYOG26"
+    root.mkdir()
+    body = zip_bytes_named(PUBLISHED_SCHEMA_MEMBERS)
+    with client_serving({".zip": (body, "application/zip")}) as c:
+        fetch_targets(root, [SCHEMA], client=c)
+
+    landed = sorted(p.name for p in (root / ".incoming/xsd").iterdir())
+    assert not any(n.startswith(".") for n in landed), landed
+
+
+def test_a_nested_traversal_is_still_refused(tmp_path):
+    """Allowing a directory component must not become allowing a path that
+    climbs out of it. 'a/../../evil.xlsx' has a legitimate-looking first
+    component and still escapes."""
+    root = tmp_path / "SYOG26"
+    root.mkdir()
+    body = zip_bytes(["a/../../evil.xlsx"])
+    with client_serving({".zip": (body, "application/zip")}) as c:
+        staged = fetch_targets(root, [CODES], client=c)
+
+    assert staged == []
+    files = {p for p in tmp_path.rglob("*") if p.is_file()}
+    assert not any("evil" in p.name for p in files)
 
 
 def test_archive_member_disguised_as_a_symlink_is_still_refused(tmp_path):
@@ -489,7 +595,7 @@ def _skip_unless_windows_paths_are_ordinary_filenames():
 
 def test_retire_refuses_a_windows_style_absolute_target_even_on_posix(tmp_path):
     """The confinement guard must be host-independent, the same reasoning
-    as `_has_directory_component`'s docstring for archive members.
+    as `archive_member_name`'s docstring for archive members.
     'C:\\Windows\\victim.txt' has no leading '/', so on a POSIX host a
     bare pathlib.Path(target).is_absolute() check would say False, and
     `ruleset_dir / target` would treat it as one oddly-named file living

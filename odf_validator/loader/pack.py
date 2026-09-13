@@ -48,6 +48,31 @@ class LoadReport:
     # then dropped at load on every start, with every import putting them
     # back (17 of them after the 2026-09-11 import).
     unmatched_codesets: list[str] = field(default_factory=list)
+    # Why this ruleset has no compiled schema underneath its rules: no XSD in
+    # the tree at all (the normal state of a fresh clone of the public
+    # repository, which ships the authored rules but not the IOC documents),
+    # a pack.yaml root_xsd naming a file that is not there, or an XSD that
+    # would not compile. Every rule still loads and runs; they just run
+    # without a schema beneath them.
+    #
+    # Off `errors` for the fourth time now, and for the same reason as
+    # dd_unconvertible, cache_warnings and unmatched_codesets: the UI renders
+    # that list as "N rule(s) failed to load", and here no rule failed, none
+    # had even been read yet. The counterpart mistake is silence -- a pack
+    # that validates nothing while saying nothing is how "@Class is validated
+    # by nothing" survived for months -- so this is reported, just truthfully.
+    schema_unavailable: list[str] = field(default_factory=list)
+    # The Common Codes workbook is not in this ruleset, so every
+    # code_membership rule is inert. Same first-launch state as
+    # schema_unavailable and the same reason it is not on `errors`: the
+    # rules loaded, all of them, and the rule count says so in the same
+    # breath. ONE note, not one per rule: with no tables at all every
+    # code_membership rule is affected without exception, so the set is
+    # derivable and the count is the useful part -- the 52 lines this
+    # replaced differed only by rule id and shared one cause and one
+    # remedy. Per-rule naming stays on `errors` for the case that earns
+    # it: tables present, one rule naming a codeset they do not provide.
+    codes_unavailable: list[str] = field(default_factory=list)
 
 
 @dataclass

@@ -9,8 +9,8 @@ from pathlib import Path, PurePosixPath, PureWindowsPath
 import httpx
 import yaml
 
-from .catalogue import (CatalogueEntry, has_directory_component,
-                        parse_catalogue)
+from .catalogue import (CatalogueEntry, archive_member_name,
+                        has_directory_component, parse_catalogue)
 from .fetch import SourceFetchError, get
 from .provenance import (SOURCES_FILE_NAME, Provenance, SourceRecord,
                          hash_bytes, utc_now)
@@ -474,6 +474,18 @@ def _status_for(ruleset_dir: Path, entry: CatalogueEntry,
     record, _ = _record_for(ruleset_dir, entry, prov)
     if record is None:
         return EntryStatus(entry, "new")
+    if entry.target.endswith("/") and record.stale and record.reference is None:
+        # Residue of a fixed bug, not a finding. Nothing sets `stale` on an
+        # ARCHIVE entry any more -- see verify_targets, which no longer
+        # hashes one extracted member against the whole archive -- so on an
+        # archive this combination can only have been written by that
+        # comparison. Left reading "update" it is worse than cosmetic now
+        # that nested members extract properly: the next check would
+        # download the published schema and overwrite two deliberate local
+        # corrections with an IOC copy that does not compile. Reported as
+        # what it actually is -- never settled, no reference ever recorded
+        # -- so it goes back through verification and comes out current.
+        return EntryStatus(entry, "unverified")
     if record.stale:
         return EntryStatus(entry, "update", record.reference, record.published)
     if record.adopted or record.reference is None:
@@ -611,6 +623,47 @@ def verify_targets(ruleset_dir: Path, entries: list[CatalogueEntry], *,
         if record is None or target is None:
             continue
         if not (record.adopted or record.reference is None):
+            continue
+
+        if entry.target.endswith("/"):
+            # An ARCHIVE entry, and there is nothing a byte comparison can
+            # settle here. What sits on disk are the archive's extracted
+            # MEMBERS -- `_adopt_existing` records one of them, via
+            # `_local_file_for`, and hashes its bytes -- while the url
+            # serves the ARCHIVE. Hashing one against the other is
+            # guaranteed to differ, so the comparison below condemned every
+            # adopted archive on its first verification and left it stale
+            # for good. That is exactly where Rules/SYOG26's schema entry
+            # has been sitting: stale, no reference, reading "update" on
+            # every startup and urging a download that delivered nothing.
+            #
+            # An archive's version identity lives on the index card, not in
+            # its bytes, so settle it from the card: we hold the version the
+            # card names. A card naming a different version then reads as an
+            # update through _status_for's ordinary comparison, and is
+            # downloaded and applied as-is.
+            #
+            # No request is made, because none would prove anything -- and
+            # this is what lets the two deliberate local corrections to the
+            # schema stand. The IOC's published odf2-structure.xsd
+            # references RecordBrokenType and never defines it, so their
+            # copy does not compile and byte-equality with ours can never
+            # hold; calling that "your copy is out of date" on every startup
+            # was a permanent false alarm, not a finding.
+            new_record = SourceRecord(
+                url=entry.url, reference=entry.reference,
+                published=entry.published, sha256=record.sha256,
+                etag=record.etag, last_modified=record.last_modified,
+                fetched_at=record.fetched_at, adopted=False, stale=False)
+            prov.put(target, new_record)
+            try:
+                prov.save()
+            except OSError:
+                # Same contract as the persist guard below: the resolution
+                # was computed but did not survive to disk, so it is not
+                # reported as resolved and the next call re-derives it.
+                continue
+            resolved[entry.target] = "current"
             continue
 
         try:
@@ -769,21 +822,25 @@ def fetch_targets(ruleset_dir: Path, entries: list[CatalogueEntry], *,
 ARCHIVE_MEMBER_SUFFIXES = {"codes": {".xlsx"}, "schema": {".xsd"}}
 
 
-# `has_directory_component` moved to catalogue.py -- CRITICAL 2 of the final
-# whole-branch review needed the exact same host-independent check there
-# too (for a "general" entry's target, derived from an untrusted index-page
-# href), and this module already imports from catalogue, so catalogue is the
-# one home rather than two copies of the same logic drifting apart.
-_has_directory_component = has_directory_component
+# `has_directory_component` and `archive_member_name` both live in
+# catalogue.py -- CRITICAL 2 of the final whole-branch review needed the same
+# host-independent check there too (for a "general" entry's target, derived
+# from an untrusted index-page href), and this module already imports from
+# catalogue, so catalogue is the one home rather than two copies of the same
+# logic drifting apart. The module-level alias this comment used to
+# introduce is gone with the check it named: `_stage_archive` now asks
+# `archive_member_name` for a staging name instead of asking whether the
+# member is nested at all.
 
 
 def _stage_archive(incoming: Path, ruleset_dir: Path, entry: CatalogueEntry,
                    body: bytes) -> list[str]:
     """Extract the wanted members of one archive into the staging layout.
 
-    Members are filtered before anything is written: only files whose
-    extension matches the entry's kind are kept, a member with any
-    directory component is refused outright (the traversal guard below),
+    Members are filtered before anything is written: a member that escapes
+    the staging folder is refused outright (see `archive_member_name`), a
+    nested one is flattened to its bare filename, only files whose
+    extension matches the entry's kind are kept, dotfiles are dropped,
     and a corrupt archive or a corrupt individual member is skipped rather
     than aborting the whole entry -- the same "one failure does not abort
     the rest" reasoning as fetch_targets applies within a single archive
@@ -805,16 +862,35 @@ def _stage_archive(incoming: Path, ruleset_dir: Path, entry: CatalogueEntry,
         for member in archive.infolist():
             if member.is_dir():
                 continue
-            if _has_directory_component(member.filename):
-                # A member with any directory component -- '../../evil.xlsx',
-                # 'nested/x.xlsx', '..\\..\\evil.xlsx', 'C:\\evil.xlsx', an
-                # absolute path. The published archives are flat, so this is
-                # either a malformed archive or an attempt to write outside
-                # the staging folder. Refuse it; do not flatten it to a bare
-                # filename and unpack it anyway.
+            name = archive_member_name(member.filename)
+            if name is None:
+                # The member escapes the staging folder -- '../../evil.xlsx',
+                # 'a/../../evil.xlsx', '..\\..\\evil.xlsx', 'C:\\evil.xlsx',
+                # '/etc/passwd.xlsx'. Refused, never sanitised and unpacked
+                # anyway: a name like that is evidence of intent, not a path
+                # to tidy up. A merely NESTED member is a different thing and
+                # comes back flattened -- the published schema archive nests
+                # every one of its members, and refusing them all is what
+                # left the ruleset with no XSD.
                 continue
-            name = member.filename
+            if name.startswith("."):
+                # macOS writes AppleDouble resource forks into a zip as
+                # __MACOSX/<dir>/._<name>, and ._odf2.xsd sails straight
+                # through the suffix filter below -- it really does end in
+                # .xsd. Promoted, it lands in xsd/ where the scanner hands
+                # lxml a binary blob that is not a schema. The leading dot
+                # is the same "not a document" rule the scanner and the
+                # publication filter already use, and unlike naming
+                # __MACOSX it does not enumerate one vendor's spelling of
+                # the problem.
+                continue
             if Path(name).suffix.lower() not in wanted:
+                continue
+            if _confined(directory, name) is None:
+                # Defence in depth behind archive_member_name, which has
+                # already reduced this to a bare filename: the same
+                # belt-and-braces pairing fetch_targets applies to a
+                # catalogue-derived target it has no reason to distrust.
                 continue
             destination = directory / name
             try:
