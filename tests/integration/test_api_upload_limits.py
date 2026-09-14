@@ -200,6 +200,84 @@ def test_an_oversized_member_still_returns_413_not_400(monkeypatch):
     assert r.status_code != 400
 
 
+def test_a_zip_of_zips_is_refused_rather_than_passing_vacuously():
+    # A real IOC delivery (SYOG26_WST_PT1.zip, 2026-09-13) is a zip of three
+    # zips. The member filter keeps only names ending .xml, so it matched
+    # nothing, `members` stayed empty, and the response was
+    # {"totals": {0,0,0}, "files": {}} -- byte-identical to a genuinely clean
+    # batch. The operator read "all 0 file(s) conform to SYOG26" and believed
+    # 82 messages had been validated. Nothing had been read at all.
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+        for name in ("WST XML.zip", "WST PDF.zip", "WST PSCB.zip"):
+            inner = io.BytesIO()
+            with zipfile.ZipFile(inner, "w", zipfile.ZIP_DEFLATED) as iz:
+                iz.writestr("m.xml", XML)
+            z.writestr(name, inner.getvalue())
+    payload = buf.getvalue()
+
+    r = client.post("/validate/batch",
+                    data={"pack": _pack_name()},
+                    files=[("files", ("delivery.zip", payload, "application/zip"))])
+
+    assert r.status_code == 400
+    # Name what was found, so the operator knows to unpack rather than
+    # wondering why a zip they can plainly see messages inside was rejected.
+    assert "3 zip archive" in r.text
+    assert "delivery.zip" in r.text
+
+
+def test_a_zip_holding_only_other_formats_says_so():
+    # Same silent pass, different shape: a PDF/PSCB bundle with no XML in it.
+    # The message must not say "zip archives" when there are none, or the
+    # operator unpacks a zip that has nothing to unpack.
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("report.pdf", b"%PDF-1.4 ...")
+        z.writestr("scoreboard.pscb", b"...")
+    payload = buf.getvalue()
+
+    r = client.post("/validate/batch",
+                    data={"pack": _pack_name()},
+                    files=[("files", ("bundle.zip", payload, "application/zip"))])
+
+    assert r.status_code == 400
+    assert "2 files, none of them .xml messages" in r.text
+    assert "zip archive" not in r.text
+
+
+def test_an_empty_zip_says_it_is_empty():
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED):
+        pass
+    payload = buf.getvalue()
+
+    r = client.post("/validate/batch",
+                    data={"pack": _pack_name()},
+                    files=[("files", ("empty.zip", payload, "application/zip"))])
+
+    assert r.status_code == 400
+    assert "holds no files" in r.text
+
+
+def test_directory_entries_do_not_count_as_files():
+    # zipfile lists folder entries with a trailing slash. Counting them made
+    # an archive of empty folders report "holds 2 files", sending the operator
+    # looking for messages that were never there.
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("WST XML 202608/", b"")
+        z.writestr("WST PDF 202608/", b"")
+    payload = buf.getvalue()
+
+    r = client.post("/validate/batch",
+                    data={"pack": _pack_name()},
+                    files=[("files", ("folders.zip", payload, "application/zip"))])
+
+    assert r.status_code == 400
+    assert "holds no files" in r.text
+
+
 def test_loose_files_are_charged_to_the_cumulative_budget(monkeypatch):
     monkeypatch.setattr(app_module, "MAX_UPLOAD_BYTES", 100)
     a = b"<a/>" + b" " * 60

@@ -57,6 +57,32 @@ def _unique_key(results: dict, name: str) -> str:
     return f"{name} ({n})"
 
 
+def _nothing_to_validate(display_name: str, entries: list[str]) -> str:
+    """Why an uploaded archive yielded no messages, in the operator's terms.
+
+    A zip whose members are all zips used to be a silent pass: the member
+    filter kept only names ending .xml, matched nothing, and the empty batch
+    rendered as {"totals": {0,0,0}, "files": {}} -- indistinguishable from a
+    genuinely clean run. A real IOC delivery is shaped exactly like that, and
+    on 2026-09-13 one was read as "all 0 file(s) conform to SYOG26" when not a
+    byte of it had been parsed. Counting what IS in the archive is the whole
+    point: "holds 3 zip archives" tells the operator to unpack it, where a
+    bare "no messages found" would read as a bug in the validator.
+    """
+    files = [n for n in entries if not n.endswith("/")]
+    zips = [n for n in files if n.lower().endswith(".zip")]
+    if zips:
+        found = (f"{len(zips)} zip archive{'s' if len(zips) != 1 else ''} and "
+                 f"no .xml messages -- unpack it and upload the messages, or "
+                 f"the inner archive")
+    elif files:
+        found = (f"{len(files)} file{'s' if len(files) != 1 else ''}, none of "
+                 f"them .xml messages")
+    else:
+        found = "no files"
+    return f"{display_name} holds {found}. Nothing was validated."
+
+
 def discover_packs(root: Path = None) -> None:
     root = root or RULES_ROOT
     PACKS.clear()
@@ -557,6 +583,9 @@ def validate_batch(pack: str = Form(...),
             try:
                 with zipfile.ZipFile(io.BytesIO(data)) as z:
                     names = [n for n in z.namelist() if n.lower().endswith(".xml")]
+                    if not names:
+                        raise HTTPException(
+                            400, _nothing_to_validate(display_name, z.namelist()))
                     if len(names) > MAX_ZIP_MEMBERS:
                         raise HTTPException(
                             413, f"{display_name} holds {len(names)} messages; the "
