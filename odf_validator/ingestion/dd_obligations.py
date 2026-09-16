@@ -22,6 +22,7 @@ used: a PDF converted by the markitdown fallback has a different Markdown
 shape, and obligations parsed out of it may be incomplete rather than absent.
 """
 from __future__ import annotations
+from dataclasses import dataclass, field
 import re
 
 # `|DocumentType|DT_RESULT|...`, but also BS5's `||DocumentType||DT_ENTRIES|`
@@ -80,8 +81,17 @@ def _doc_types(line: str) -> list[str] | None:
 # converter: `**Element: Competition /Result /Composition (0,N)**`.
 _ELEMENT = re.compile(r'Element:\s*\**\s*([A-Za-z0-9 /]+?)\s*(?:\(|\||\*|$)')
 
-# `|SortOrder|M|Positive Integer|Used to sort...|`
-_ATTR = re.compile(r'^\|?\s*([A-Za-z][A-Za-z0-9_]{1,30})\s*\|\s*([MO])\s*\|')
+# `|SortOrder|M|Positive Integer|Used to sort...|`. The third group is the
+# Value cell that follows the obligation: `S(21)`, `Positive Integer`,
+# `CC@VENUE`, `Numeric #0.00`. Only an S(n) in it states a width.
+_ATTR = re.compile(r'^\|?\s*([A-Za-z][A-Za-z0-9_]{1,30})\s*\|\s*([MO])\s*\|([^|]*)')
+
+# `S(21)`, and the `S( 40 )` that PDF conversion also produces.
+_WIDTH = re.compile(r'\bS\s*\(\s*(\d+)\s*\)')
+
+# The bound after an element path: `(1,N)`, `(0,1)`, and the `(01,N)` and
+# `( 0 , 3 )` spellings that survive conversion. N means unbounded.
+_CARD = re.compile(r'\(\s*(\d+)\s*,\s*(\d+|N)\s*\)')
 
 # Extension-style elements do not have one attribute table; they have one per
 # @Code. The DD introduces them with a `Type|Code|...` header and then a row
@@ -122,8 +132,26 @@ def split_condition(value: str) -> tuple[str, frozenset[str]]:
     return mo, frozenset(codes.split()) if sep else frozenset()
 
 
+@dataclass
+class DDFacts:
+    """What one Data Dictionary states, keyed the way obligations are.
+
+    obligations   (doc_type, element, attribute) -> "M" / "O" / "M@CODE"
+    widths        (doc_type, element, attribute) -> n, from an S(n) Value cell
+    cardinalities (doc_type, parent, child)      -> (min, max), max None for N
+    """
+    obligations: dict[tuple[str, str, str], str] = field(default_factory=dict)
+    widths: dict[tuple[str, str, str], int] = field(default_factory=dict)
+    cardinalities: dict[tuple[str, str, str], tuple[int, int | None]] = field(default_factory=dict)
+
+
 def parse_obligations(markdown: str) -> dict[tuple[str, str, str], str]:
-    """Map (doc_type, element, attribute) -> "M" or "O".
+    """Map (doc_type, element, attribute) -> "M" or "O". See parse_dd()."""
+    return parse_dd(markdown).obligations
+
+
+def parse_dd(markdown: str) -> DDFacts:
+    """Obligations, widths and cardinalities of one Data Dictionary.
 
     Rows appearing before any message header, or before any `Element:` line,
     are skipped: without both we cannot say which message or element an
@@ -133,7 +161,8 @@ def parse_obligations(markdown: str) -> dict[tuple[str, str, str], str]:
     message-structure summaries repeat attribute names later in looser tables
     and re-reading them would overwrite the real value.
     """
-    out: dict[tuple[str, str, str], str] = {}
+    facts = DDFacts()
+    out = facts.obligations
     doc_types: list[str] = []
     element: str | None = None
     # The @Code values governing the attribute table currently being read, or
@@ -151,9 +180,19 @@ def parse_obligations(markdown: str) -> dict[tuple[str, str, str], str]:
         if m:
             # "Competition /Result /Composition" -> "Composition": the leaf is
             # the element the attribute actually hangs off.
-            element = m.group(1).split('/')[-1].strip()
+            parts = [x.strip() for x in m.group(1).split('/') if x.strip()]
+            element = parts[-1] if parts else None
             codes = None
             seen_typecode_header = False
+            # `Competition /Entry (1,N)`: the bound belongs to the pair
+            # (parent, child). A single-segment path is the document root's
+            # child, which has no parent to key on and is fixed by the schema.
+            bound = _CARD.search(line[m.end() - 1:])
+            if bound and len(parts) >= 2 and doc_types:
+                lo = int(bound.group(1))
+                hi = None if bound.group(2) == "N" else int(bound.group(2))
+                for dt in doc_types:
+                    facts.cardinalities.setdefault((dt, parts[-2], element), (lo, hi))
             continue
         if _TYPECODE_HEADER.match(line):
             seen_typecode_header = True
@@ -172,6 +211,9 @@ def parse_obligations(markdown: str) -> dict[tuple[str, str, str], str]:
             if attr in ("Attribute", "Element"):     # table header, not data
                 continue
             value = mo if not codes else f"{mo}{COND}{' '.join(codes)}"
+            width = _WIDTH.search(m.group(3) or "")
             for dt in doc_types:
                 out.setdefault((dt, element, attr), value)
-    return out
+                if width:
+                    facts.widths.setdefault((dt, element, attr), int(width.group(1)))
+    return facts

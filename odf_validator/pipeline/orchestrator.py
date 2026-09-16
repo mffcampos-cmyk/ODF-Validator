@@ -6,6 +6,8 @@ from ..rules.runner import run_rules
 from .structural import validate_structural
 from .obligation_filter import drop_dd_optional_attrs
 from .obligation_check import missing_mandatory_attrs
+from .width_check import over_width_attrs
+from .cardinality_check import child_count_violations
 
 
 class Pipeline:
@@ -37,6 +39,12 @@ class Pipeline:
                                           getattr(pack, "obligations", None))
         findings += missing_mandatory_attrs(root, info,
                                             getattr(pack, "obligations", None))
+        # Field widths and child cardinalities: DD-stated, schema-blind, same
+        # authority chain and the same restricted-set discipline.
+        findings += over_width_attrs(root, info, getattr(pack, "obligations", None),
+                                     exempt=getattr(pack, "length_exempt", frozenset()))
+        findings += child_count_violations(root, info,
+                                           getattr(pack, "obligations", None))
         findings += run_rules(self._core_rules, root, pack.codes, info, ctx,
                               pack_name="core")
         findings += run_rules(pack.rules, root, pack.codes, info, ctx,

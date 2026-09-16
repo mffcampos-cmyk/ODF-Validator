@@ -25,6 +25,7 @@ from __future__ import annotations
 
 Key = tuple[str, str, str]        # (doc_type, element, attribute)
 Pair = tuple[str, str]            # (element, attribute)
+Bounds = tuple[int, int | None]   # (min, max); max None means unbounded
 
 
 def _disc(value: str | None) -> str:
@@ -43,7 +44,12 @@ class ObligationRegistry:
 
     def __init__(self, xsd_required: set[Pair] | None = None,
                  xsd_declared: set[Pair] | None = None,
-                 xsd_unambiguous: set[Pair] | None = None):
+                 xsd_unambiguous: set[Pair] | None = None,
+                 xsd_child_declared: set[Pair] | None = None,
+                 xsd_child_required: set[Pair] | None = None,
+                 xsd_child_single: set[Pair] | None = None,
+                 xsd_unambiguous_elements: set[str] | None = None,
+                 xsd_single_owner: set[Pair] | None = None):
         # (element, attribute) pairs the schema marks use="required". Doc-type
         # blind by construction -- see the module docstring.
         self._xsd: set[Pair] = set(xsd_required or ())
@@ -56,6 +62,30 @@ class ObligationRegistry:
         self._unambiguous: set[Pair] = set(xsd_unambiguous or ())
         self._disciplines: dict[str, dict[Key, str]] = {}
         self._general: dict[Key, str] = {}
+        # Field widths (S(n)) and child cardinalities ((min,max)) from the same
+        # DD tables, keyed like obligations. The schema states neither -- the
+        # SYOG26 XSDs carry no xs:maxLength at all, and the shared
+        # competitionType makes Entry emptiable in every message -- so the DD
+        # is the only source. The schema still decides what is safe to
+        # enforce, exactly as for mandatory attributes.
+        self._widths: dict[str, dict[Key, int]] = {}
+        self._general_widths: dict[Key, int] = {}
+        self._cards: dict[str, dict[Key, Bounds]] = {}
+        self._general_cards: dict[Key, Bounds] = {}
+        # (parent, child) pairs the schema declares at all; those it already
+        # requires (minOccurs >= 1) and those it already caps at one.
+        self._child_declared: set[Pair] = set(xsd_child_declared or ())
+        self._child_required: set[Pair] = set(xsd_child_required or ())
+        self._child_single: set[Pair] = set(xsd_child_single or ())
+        # Element names that resolve to exactly one complexType.
+        self._unambiguous_elements: set[str] = set(xsd_unambiguous_elements or ())
+        # (element, attribute) pairs whose attribute is declared under exactly
+        # one element name in the whole schema. Weaker than _unambiguous, and
+        # enough for a check on a VALUE: a node carrying @TVTeamName is a
+        # teamType or it is schema-invalid, whatever else <Team> can be. A
+        # presence check cannot use this -- it fires on nodes WITHOUT the
+        # attribute, where the element's type is exactly what is unknown.
+        self._single_owner: set[Pair] = set(xsd_single_owner or ())
 
     def _keep(self, obligations: dict[Key, str]) -> dict[Key, str]:
         """Drop rows the schema says are impossible.
@@ -79,11 +109,78 @@ class ObligationRegistry:
         return {(dt, el, at): mo for (dt, el, at), mo in obligations.items()
                 if (el, at) in self._declared}
 
-    def add_discipline(self, discipline: str, obligations: dict[Key, str]) -> None:
-        self._disciplines.setdefault(_disc(discipline), {}).update(self._keep(obligations))
+    def _keep_cards(self, cards: dict[Key, Bounds]) -> dict[Key, Bounds]:
+        """Same floor as _keep(): a (parent, child) pair the schema never
+        declares is a mis-attributed heading, not a rule."""
+        if not self._child_declared:
+            return dict(cards)
+        return {(dt, pa, ch): b for (dt, pa, ch), b in cards.items()
+                if (pa, ch) in self._child_declared}
 
-    def set_general(self, obligations: dict[Key, str]) -> None:
+    def add_discipline(self, discipline: str, obligations: dict[Key, str],
+                       widths: dict[Key, int] | None = None,
+                       cardinalities: dict[Key, Bounds] | None = None) -> None:
+        d = _disc(discipline)
+        self._disciplines.setdefault(d, {}).update(self._keep(obligations))
+        self._widths.setdefault(d, {}).update(self._keep(widths or {}))
+        self._cards.setdefault(d, {}).update(self._keep_cards(cardinalities or {}))
+
+    def set_general(self, obligations: dict[Key, str],
+                    widths: dict[Key, int] | None = None,
+                    cardinalities: dict[Key, Bounds] | None = None) -> None:
         self._general = self._keep(obligations)
+        self._general_widths = self._keep(widths or {})
+        self._general_cards = self._keep_cards(cardinalities or {})
+
+    def _merged(self, disc_map: dict, general: dict, discipline, doc_type) -> dict:
+        """Discipline rows for this message, then GEN rows on keys the
+        discipline DD did not rule on."""
+        disc = disc_map.get(_disc(discipline), {})
+        out = {(e, a): v for (dt, e, a), v in disc.items() if dt == doc_type}
+        for (dt, e, a), v in general.items():
+            if dt == doc_type and (dt, e, a) not in disc:
+                out.setdefault((e, a), v)
+        return out
+
+    def max_widths(self, discipline: str | None, doc_type: str | None,
+                   enforceable_only: bool = False) -> dict[Pair, int]:
+        """(element, attribute) -> S(n) width for this message.
+
+        enforceable_only keeps the pairs whose attribute has a single owner
+        in the schema (see __init__): a row attributed to the wrong element
+        then lands on an undeclared pair and _keep() has already dropped it,
+        so the width cannot be demanded of valid data. No schema information
+        means nothing qualifies.
+        """
+        out = self._merged(self._widths, self._general_widths, discipline, doc_type)
+        if enforceable_only:
+            out = {p: n for p, n in out.items() if p in self._single_owner}
+        return out
+
+    def child_bounds(self, discipline: str | None, doc_type: str | None,
+                     enforceable_only: bool = False) -> dict[Pair, Bounds]:
+        """(parent, child) -> (min, max) for this message.
+
+        enforceable_only narrows to what the DD adds beyond the schema: the
+        parent name must resolve to one complexType, a minimum the schema
+        already requires (minOccurs >= 1) is the schema's to report, and a
+        maximum the schema already caps at one adds nothing. A pair left
+        with (0, unbounded) after that is dropped.
+        """
+        out = self._merged(self._cards, self._general_cards, discipline, doc_type)
+        if not enforceable_only:
+            return out
+        kept: dict[Pair, Bounds] = {}
+        for (pa, ch), (lo, hi) in out.items():
+            if pa not in self._unambiguous_elements:
+                continue
+            if (pa, ch) in self._child_required:
+                lo = 0
+            if hi is not None and (pa, ch) in self._child_single:
+                hi = None
+            if lo >= 1 or hi is not None:
+                kept[(pa, ch)] = (lo, hi)
+        return kept
 
     def disciplines(self) -> list[str]:
         return sorted(self._disciplines)

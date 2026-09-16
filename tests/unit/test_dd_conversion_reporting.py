@@ -104,7 +104,11 @@ def test_rules_still_load_when_a_dd_cannot_be_converted():
     # absorbed them, so the check runs under the GEN rule id. SWM is the
     # exception -- it keeps ENG_Description by owner decision (2026-09-01),
     # so its rule still differs and survives as a genuine specialisation.
+    # 92 after 2026-09-16: GEN_PARTIC_TEAMS_SORT (sort_order, GEN 2.1.3.6),
+    # GEN_SESSION_DATES_ORDERED and GEN_UNIT_DATES_ORDERED (datetime_order)
+    # in gen_common.yaml -- the first rules on the two primitives added for
+    # the generator handover ("Four missing primitives").
     #
     # A DROP here is expected only when rules become identical to a generic
     # one. If this number falls for any other reason, coverage has been lost.
-    assert len(pack.rules) == 89
+    assert len(pack.rules) == 92

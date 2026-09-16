@@ -39,7 +39,10 @@ STORE_FILE_NAME = ".dd_obligations.json"
 # matched. A mismatch here is treated as a cache miss, so the DD is reparsed.
 #   1 - flat (doc_type, element, attribute) -> "M"/"O"
 #   2 - values may carry an @Code condition, e.g. "M@B_JUDGE"
-PARSER_VERSION = 2
+#   3 - entries also carry "widths" (S(n) per attribute) and "cardinalities"
+#       ((min,max) per parent/child); a parser-2 entry has neither, so it is
+#       a miss even though its obligations would still be right
+PARSER_VERSION = 3
 
 
 def _key(rel: str) -> str:
@@ -61,6 +64,14 @@ def _encode(ob: dict) -> list:
 
 def _decode(rows) -> dict:
     return {(dt, el, at): mo for dt, el, at, mo in rows}
+
+
+def _encode_widths(w: dict) -> list:
+    return [[dt, el, at, n] for (dt, el, at), n in sorted(w.items())]
+
+
+def _encode_cards(c: dict) -> list:
+    return [[dt, pa, ch, lo, hi] for (dt, pa, ch), (lo, hi) in sorted(c.items())]
 
 
 class ObligationStore:
@@ -89,10 +100,31 @@ class ObligationStore:
             return None
         return _decode(entry.get("obligations", []))
 
+    def get_facts(self, rel: str, file_hash: str):
+        """The DDFacts cached for this DD, or None on any miss (see get())."""
+        from .dd_obligations import DDFacts
+        entry = self._data.get(_key(rel))
+        if not entry or entry.get("hash") != file_hash:
+            return None
+        if entry.get("parser", 1) != PARSER_VERSION:
+            return None
+        return DDFacts(
+            obligations=_decode(entry.get("obligations", [])),
+            widths={(dt, el, at): n for dt, el, at, n in entry.get("widths", [])},
+            cardinalities={(dt, pa, ch): (lo, hi)
+                           for dt, pa, ch, lo, hi in entry.get("cardinalities", [])})
+
     def put(self, rel: str, file_hash: str, obligations: dict) -> None:
         self._data[_key(rel)] = {"hash": file_hash,
                                  "parser": PARSER_VERSION,
                                  "obligations": _encode(obligations)}
+
+    def put_facts(self, rel: str, file_hash: str, facts) -> None:
+        self._data[_key(rel)] = {"hash": file_hash,
+                                 "parser": PARSER_VERSION,
+                                 "obligations": _encode(facts.obligations),
+                                 "widths": _encode_widths(facts.widths),
+                                 "cardinalities": _encode_cards(facts.cardinalities)}
 
     # A scan is only trusted to prune if it still accounts for most of the
     # cache. At or below this fraction the likelier explanation is a bad scan,

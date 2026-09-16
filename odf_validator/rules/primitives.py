@@ -459,6 +459,114 @@ def rsc_components(root, rule: RuleDef, registry, ctx) -> list[Finding]:
     return out
 
 
+def _sort_key(node, by: list[str], numeric: bool):
+    """Key tuple for one sibling, or None if any key attribute is missing or
+    (under numeric comparison) not a number -- such siblings are skipped:
+    presence and value shape are other rules' jobs."""
+    key = []
+    for attr in by:
+        v = node.get(attr)
+        if v is None:
+            return None
+        if numeric:
+            try:
+                v = float(v)
+            except ValueError:
+                return None
+        key.append(v)
+    return tuple(key)
+
+
+def sort_order(root, rule: RuleDef, registry, ctx) -> list[Finding]:
+    """Report children of each target that are not in the order the DD's
+    Message Sort section demands.
+
+    Every SYOG26 discipline DD carries such a section ("The message is sorted
+    by Team @Code", GEN 2.1.3.6) and, until this primitive, nothing checked
+    it: CORE_SORTORDER_* check @SortOrder's value shape, not the order of
+    anything.
+
+    params.child is the sibling tag compared, params.by the key attributes in
+    precedence order, params.compare "lexical" (default) or "numeric" --
+    lexically 10 sorts before 2, so a rule on @SortOrder must say numeric --
+    and params.descending flips the direction. A sibling missing a key, or
+    with a non-numeric key under numeric comparison, is skipped. One finding
+    per offending sibling, at that sibling.
+    """
+    child = rule.params.get("child")
+    by = list(rule.params.get("by") or ([rule.attribute] if rule.attribute else []))
+    if not child or not by:
+        return []
+    numeric = rule.params.get("compare", "lexical") == "numeric"
+    descending = bool(rule.params.get("descending", False))
+    out: list[Finding] = []
+    for parent in root.findall(rule.target or "."):
+        prev_key, prev_node = None, None
+        for node in parent:
+            if node.tag != child:
+                continue
+            key = _sort_key(node, by, numeric)
+            if key is None:
+                continue
+            if prev_key is not None and (key > prev_key if descending else key < prev_key):
+                keys = ", ".join(f"@{a}={node.get(a)!r}" for a in by)
+                prev = ", ".join(f"@{a}={prev_node.get(a)!r}" for a in by)
+                out.append(_finding(
+                    rule, root, node,
+                    f"<{child}> {keys} follows <{child}> {prev}; the message "
+                    f"must be sorted by {' then '.join('@' + a for a in by)}"
+                    f"{' descending' if descending else ''}"
+                    f"{' (numeric)' if numeric else ''}."))
+            prev_key, prev_node = key, node
+    return out
+
+
+def _instant(value: str):
+    """A comparable datetime for an ODF date or datetime string, or None.
+
+    ODF writes dates as YYYY-MM-DD and datetimes as ISO 8601 with an offset;
+    a trailing Z is accepted too. Anything else is not this rule's business.
+    """
+    from datetime import datetime
+    if value is None:
+        return None
+    v = value.strip()
+    if v.endswith("Z"):
+        v = v[:-1] + "+00:00"
+    try:
+        return datetime.fromisoformat(v)
+    except ValueError:
+        return None
+
+
+def datetime_order(root, rule: RuleDef, registry, ctx) -> list[Finding]:
+    """Report a target whose params.later date/datetime precedes its
+    params.earlier one -- a Session with EndDate before StartDate.
+
+    No document states this, so it cannot be drafted from a Data Dictionary;
+    it is a hand-written pack rule. params.allow_equal (default true) accepts
+    equal instants. A value that does not parse, or a naive datetime paired
+    with an aware one (there is no honest way to order those), is skipped:
+    format is value_format's job.
+    """
+    earlier, later = rule.params.get("earlier"), rule.params.get("later")
+    if not earlier or not later:
+        return []
+    allow_equal = bool(rule.params.get("allow_equal", True))
+    out: list[Finding] = []
+    for node in root.findall(rule.target or "."):
+        a, b = _instant(node.get(earlier)), _instant(node.get(later))
+        if a is None or b is None or (a.tzinfo is None) != (b.tzinfo is None):
+            continue
+        if b < a or (not allow_equal and b == a):
+            out.append(_finding(
+                rule, root, node,
+                f"<{node.tag}> @{later}='{node.get(later)}' is "
+                f"{'not after' if not allow_equal and b == a else 'before'} "
+                f"@{earlier}='{node.get(earlier)}'."))
+    return out
+
+
 PRIMITIVES = {
     "value_format": value_format,
     "rsc_components": rsc_components,
@@ -473,4 +581,6 @@ PRIMITIVES = {
     "sibling_duplicates": sibling_duplicates,
     "no_empty_elements": no_empty_elements,
     "allowed_child_tags": allowed_child_tags,
+    "sort_order": sort_order,
+    "datetime_order": datetime_order,
 }

@@ -89,6 +89,11 @@ class RulePack:
     # Attribute obligations from the Data Dictionaries, with the DD-over-XSD
     # authority chain applied. See odf_validator/rules/obligations.py.
     obligations: object = None
+    # (element, attribute) pairs the pack exempts from DD width enforcement:
+    # rows whose DD entry states both an S(n) and a Common Codes description
+    # (pack.yaml `length_exempt`, e.g. "ItemName/@Value"). See
+    # pipeline/width_check.py.
+    length_exempt: frozenset = frozenset()
 
 
 def ruleset_summary(packs: dict) -> list[dict]:

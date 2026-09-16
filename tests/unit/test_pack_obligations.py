@@ -86,3 +86,29 @@ def test_the_obligation_cache_is_not_reported_as_a_stray_file():
     and the pack looks broken."""
     pack = build_ruleset_pack(PACK_DIR)
     assert not [e for e in pack.report.errors if "dd_obligations" in e]
+
+
+@needs_populated_ruleset
+def test_pack_carries_widths_with_discipline_precedence():
+    """GEN and thirteen discipline DDs say Team/@TVTeamName is S(21); the CRD
+    DD says S(40). A pack-wide 21 would flag valid curling team names."""
+    r = build_ruleset_pack(PACK_DIR).obligations
+    assert r.max_widths("CRD", "DT_PARTIC_TEAMS")[("Team", "TVTeamName")] == 40
+    assert r.max_widths("ATH", "DT_PARTIC_TEAMS")[("Team", "TVTeamName")] == 21
+
+
+@needs_populated_ruleset
+def test_tvteamname_width_is_enforceable():
+    r = build_ruleset_pack(PACK_DIR).obligations
+    assert r.max_widths("ATH", "DT_PARTIC_TEAMS", enforceable_only=True) \
+        [("Team", "TVTeamName")] == 21
+
+
+@needs_populated_ruleset
+def test_pack_carries_entry_cardinality_the_schema_cannot_express():
+    """competitionType is shared by every message, so Entry is emptiable in
+    the XSD; the DD's `Competition /Entry (1,N)` is what catches an empty
+    DT_ENTRIES. The parent is unambiguous, so it is enforceable."""
+    r = build_ruleset_pack(PACK_DIR).obligations
+    assert r.child_bounds("ARC", "DT_ENTRIES", enforceable_only=True) \
+        [("Competition", "Entry")] == (1, None)

@@ -3,3 +3,11 @@ root_xsd: odf2.xsd
 source:
   index_url: https://odf.olympictech.org/2026-Dakar/dakar_2026_YOG.html
   check_on_start: true
+# Attributes whose GEN DD row states both a field width and a Common Codes
+# description. Unit/ItemName/@Value is "M S(40) ... show the unit Description
+# from common codes; only the ENG description is expected", and 150 EVENT_UNIT
+# ENG descriptions in Common Codes v_2_2 are longer than 40 (truncating them
+# merges 86 units into 14 name collisions). The description governs, as it
+# already does for VenueName and LocationName; the width is not enforced.
+length_exempt:
+  - ItemName/@Value

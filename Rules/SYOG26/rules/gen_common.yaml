@@ -9,3 +9,38 @@
   scope: message
   source_ref: 'ODF GEN header tables: ResultStatus CC@RESULTSTATUS'
   status: active
+- id: GEN_PARTIC_TEAMS_SORT
+  applies_to:
+    doc_types: [DT_PARTIC_TEAMS]
+  primitive: sort_order
+  target: .//Competition
+  params:
+    child: Team
+    by: [Code]
+    compare: lexical
+  severity: warning
+  scope: message
+  source_ref: 'ODF_GEN_R-OWG2026-GEN.pdf 2.1.3.6 Message Sort: "The message is sorted by Team @Code"; every SYOG26 discipline DD repeats it for DT_PARTIC_TEAMS'
+  status: active
+- id: GEN_SESSION_DATES_ORDERED
+  applies_to: {}
+  primitive: datetime_order
+  target: .//Session
+  params:
+    earlier: StartDate
+    later: EndDate
+  severity: error
+  scope: message
+  source_ref: 'Observed generator defect 2026-07: Session @EndDate preceding @StartDate validated clean. Not stated in any DD; hand-written.'
+  status: active
+- id: GEN_UNIT_DATES_ORDERED
+  applies_to: {}
+  primitive: datetime_order
+  target: .//Unit
+  params:
+    earlier: StartDate
+    later: EndDate
+  severity: error
+  scope: message
+  source_ref: 'Same defect class as GEN_SESSION_DATES_ORDERED; Unit carries the same StartDate/EndDate pair (unitDateTimeType).'
+  status: active

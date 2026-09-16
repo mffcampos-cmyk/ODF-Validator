@@ -13,7 +13,7 @@ from .state import IngestionState, hash_file
 from .convert import dd_to_markdown
 from .dd_parser import extract_draft_rules
 from .draft_store import write_drafts
-from .dd_obligations import parse_obligations
+from .dd_obligations import parse_dd, DDFacts
 from .obligation_store import ObligationStore, STORE_FILE_NAME
 from ..rules.obligations import ObligationRegistry
 
@@ -136,10 +136,17 @@ def build_ruleset_pack(ruleset_dir: Path, converter=None) -> RulePack:
     # suggestions below they are collected for EVERY DD on every load -- an
     # unchanged DD still governs which attributes are mandatory.
     ob_store = ObligationStore.load(ruleset_dir / STORE_FILE_NAME)
-    _req_pairs, _decl_pairs, _unamb_pairs = _xsd_attribute_pairs(root_xsd)
+    _req_pairs, _decl_pairs, _unamb_pairs, _single_owner = _xsd_attribute_pairs(root_xsd)
+    _child_decl, _child_req, _child_single, _unamb_elements = _xsd_child_pairs(root_xsd)
     obligations = ObligationRegistry(xsd_required=_req_pairs,
                                      xsd_declared=_decl_pairs,
-                                     xsd_unambiguous=_unamb_pairs)
+                                     xsd_unambiguous=_unamb_pairs,
+                                     xsd_single_owner=_single_owner,
+                                     xsd_child_declared=_child_decl,
+                                     xsd_child_required=_child_req,
+                                     xsd_child_single=_child_single,
+                                     xsd_unambiguous_elements=_unamb_elements)
+    general = DDFacts()
     seen_dds: set[str] = set()
     disciplines: set[str] = set()
     for dd_path, discipline in scan.dd_files:
@@ -149,7 +156,7 @@ def build_ruleset_pack(ruleset_dir: Path, converter=None) -> RulePack:
         seen_dds.add(rel)
         current_hash = hash_file(dd_path)
 
-        cached = ob_store.get(rel, current_hash)
+        cached = ob_store.get_facts(rel, current_hash)
         drafts_needed = state.is_changed(rel, current_hash)
         markdown = None
         if cached is None or drafts_needed:
@@ -161,17 +168,22 @@ def build_ruleset_pack(ruleset_dir: Path, converter=None) -> RulePack:
                     f"{dd_path.name} could not be converted ({e}); its "
                     f"obligations and draft suggestions are unavailable.")
         if cached is None and markdown is not None:
-            cached = parse_obligations(markdown)
-            ob_store.put(rel, current_hash, cached)
-        if cached:
+            cached = parse_dd(markdown)
+            ob_store.put_facts(rel, current_hash, cached)
+        if cached and (cached.obligations or cached.widths or cached.cardinalities):
             # A DD with no discipline (the GEN DD, Foundation Principles) is the
             # general authority; a discipline DD binds only its own discipline.
             if discipline:
-                obligations.add_discipline(discipline, cached)
+                obligations.add_discipline(discipline, cached.obligations,
+                                           widths=cached.widths,
+                                           cardinalities=cached.cardinalities)
             else:
-                merged = dict(getattr(obligations, "_general", {}))
-                merged.update(cached)
-                obligations.set_general(merged)
+                general.obligations.update(cached.obligations)
+                general.widths.update(cached.widths)
+                general.cardinalities.update(cached.cardinalities)
+                obligations.set_general(general.obligations,
+                                        widths=general.widths,
+                                        cardinalities=general.cardinalities)
 
         if not drafts_needed:
             continue
@@ -276,11 +288,29 @@ def build_ruleset_pack(ruleset_dir: Path, converter=None) -> RulePack:
 
     return RulePack(obligations=obligations, name=name, version=str(manifest.get("version", "") or ""), xsd_paths=xsd_paths, root_xsd=root_xsd,
                      schema=schema, codes=registry, rules=rules,
-                     disciplines=sorted(disciplines), report=report)
+                     disciplines=sorted(disciplines), report=report,
+                     length_exempt=_length_exempt(manifest, report))
+
+
+def _length_exempt(manifest: dict, report) -> frozenset:
+    """pack.yaml `length_exempt: ["ItemName/@Value", ...]` -> {(element, attribute)}.
+
+    A malformed entry is reported and skipped rather than silently widening
+    or narrowing what is enforced."""
+    out = set()
+    for item in manifest.get("length_exempt") or []:
+        element, sep, attribute = str(item).partition("/@")
+        if not sep or not element.strip() or not attribute.strip():
+            report.errors.append(
+                f"pack.yaml length_exempt entry {item!r} is not of the form "
+                f"Element/@Attribute; ignored.")
+            continue
+        out.add((element.strip(), attribute.strip()))
+    return frozenset(out)
 
 
 def _xsd_attribute_pairs(root_xsd):
-    """(required pairs, declared pairs, unambiguous pairs).
+    """(required pairs, declared pairs, unambiguous pairs, single-owner pairs).
 
     `required` is the last link in the authority chain, consulted only where
     neither the sport DD nor the GEN DD says anything. `declared` is every
@@ -292,7 +322,7 @@ def _xsd_attribute_pairs(root_xsd):
     contributes a pair for each name.
     """
     if root_xsd is None:
-        return set(), set(), set()
+        return set(), set(), set(), set()
     try:
         from lxml import etree
         XS = "{http://www.w3.org/2001/XMLSchema}"
@@ -347,6 +377,73 @@ def _xsd_attribute_pairs(root_xsd):
             for a in decl.get(next(iter(types)), ())
             if len(owners.get(a, ())) == 1
         }
-        return req_pairs, decl_pairs, unambiguous
+        # Single owner = the attribute is declared under exactly one element
+        # name, whatever that name's types. Enough for a check on a value the
+        # node actually carries (a width), not for a presence check -- see
+        # ObligationRegistry.__init__.
+        single_owner = {(name, a) for (name, a) in decl_pairs
+                        if len(owners.get(a, ())) == 1}
+        return req_pairs, decl_pairs, unambiguous, single_owner
     except Exception:
-        return set(), set(), set()
+        return set(), set(), set(), set()
+
+
+def _xsd_child_pairs(root_xsd):
+    """(declared, required, single, unambiguous element names) for
+    (parent, child) element pairs.
+
+    `required` means the schema itself demands at least one such child: the
+    child has minOccurs >= 1 and NO xs:choice between it and its complexType
+    (a choice never requires one particular branch -- the shared
+    competitionType puts Result, Entry and Team in one, so an empty
+    <Competition/> is schema-valid in every message). `single` means the
+    schema caps it at one. Both are used to leave the schema what it already
+    reports and enforce only what the Data Dictionary adds.
+    """
+    if root_xsd is None:
+        return set(), set(), set(), set()
+    try:
+        from lxml import etree
+        XS = "{http://www.w3.org/2001/XMLSchema}"
+        trees = [etree.parse(str(p)) for p in sorted(root_xsd.parent.glob("*.xsd"))]
+        by_type: dict = {}      # complexType -> {child: (required, single)}
+        name_types: dict = {}
+        for tree in trees:
+            for el in tree.iter(XS + "element"):
+                name, type_ = el.get("name"), el.get("type")
+                if name and type_:
+                    name_types.setdefault(name, set()).add(type_)
+                if not name:
+                    continue
+                node, ct, in_choice, repeatable = el.getparent(), None, False, False
+                while node is not None:
+                    if node.tag == XS + "complexType" and node.get("name"):
+                        ct = node.get("name")
+                        break
+                    if node.tag == XS + "choice":
+                        in_choice = True
+                    if node.tag in (XS + "choice", XS + "sequence", XS + "all"):
+                        if node.get("maxOccurs", "1") != "1":
+                            repeatable = True
+                        if node.get("minOccurs", "1") == "0":
+                            in_choice = True    # an optional group requires nothing
+                    node = node.getparent()
+                if ct is None:
+                    continue
+                required = el.get("minOccurs", "1") != "0" and not in_choice
+                single = el.get("maxOccurs", "1") == "1" and not repeatable
+                by_type.setdefault(ct, {})[name] = (required, single)
+        name_types.setdefault("Competition", set()).add("competitionType")
+        declared, required, single = set(), set(), set()
+        for parent, types in name_types.items():
+            for ty in types:
+                for child, (req, sgl) in by_type.get(ty, {}).items():
+                    declared.add((parent, child))
+                    if req:
+                        required.add((parent, child))
+                    if sgl:
+                        single.add((parent, child))
+        unambiguous = {n for n, t in name_types.items() if len(t) == 1}
+        return declared, required, single, unambiguous
+    except Exception:
+        return set(), set(), set(), set()
