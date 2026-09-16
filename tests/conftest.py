@@ -7,19 +7,32 @@ import api.app as app_module
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 
-def ruleset_is_populated() -> bool:
+def ruleset_is_populated(root: pathlib.Path = PROJECT_ROOT) -> bool:
     """True when the IOC source documents have been imported.
 
-    The published repository ships the authored rules but not the IOC
-    documents, which are re-downloadable and are fetched on first launch.
-    Tests that load a compiled schema or the real code tables cannot run
-    until that import has happened.
+    The published repository ships the authored rules and the SYOG26 schema
+    (a clone could re-download it, but the published copy does not compile),
+    and never the IOC documents that are re-downloadable and fetched on first
+    launch: the Common Codes workbook and the Data Dictionaries. Tests that
+    load the real code tables or the DD obligations cannot run until that
+    import has happened.
+
+    Keyed on those documents, not on the schema. Keying on the XSDs was right
+    until the schema shipped; after that the guard stopped skipping anything,
+    and fifty pack-dependent tests ran red on a fresh public clone.
     """
-    xsd_dir = PROJECT_ROOT / "Rules" / "SYOG26" / "xsd"
+    pack = root / "Rules" / "SYOG26"
     try:
-        return any(p.suffix.lower() == ".xsd" for p in xsd_dir.iterdir())
+        has_codes = any(p.suffix.lower() == ".xlsx"
+                        for p in (pack / "codes").iterdir())
+        has_dd = any(
+            p.suffix.lower() in (".pdf", ".md", ".docx")
+            and "Data_Dictionary" in p.name
+            for disc in (pack / "Disciplines").iterdir() if disc.is_dir()
+            for p in disc.iterdir())
     except OSError:
         return False
+    return has_codes and has_dd
 
 
 needs_populated_ruleset = pytest.mark.skipif(

@@ -33,7 +33,11 @@ def gen_findings(doc_type, gen=True):
     return [f for f in res.findings if "'Gen'" in f.message]
 
 
+@needs_populated_ruleset
 def test_missing_gen_is_not_an_error_where_the_dd_says_optional():
+    """Needs the SWM DD: the suppression is the DD's ruling. Without a schema
+    this passed for the wrong reason (no XSD error to suppress); with the
+    schema shipped and no DD it fails for the right one. Skip, not pass."""
     assert gen_findings("DT_RESULT", gen=False) == []
 
 
