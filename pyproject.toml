@@ -7,6 +7,8 @@ name = "odf-validator"
 version = "0.1.0"
 description = "Olympic Data Feed (ODF) XML message validator"
 requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = [
     "lxml>=5.0",
     "openpyxl>=3.1",
@@ -15,6 +17,10 @@ dependencies = [
     "jinja2>=3.1",
     "python-multipart>=0.0.9",
     "pyyaml>=6.0",
+    # odf_validator.sources.sync imports this directly at module load time;
+    # it was only declared under the dev extra, so an installed copy without
+    # [dev] raised ModuleNotFoundError on that import.
+    "httpx>=0.27",
     # PDF Data Dictionaries -> Markdown. Pinned: pdf-inspector is pre-1.0 and
     # its Markdown shape is what dd_parser's line regexes match against.
     "pdf-inspector==0.2.6",
@@ -27,6 +33,21 @@ dev = [
     "pytest>=8.0",
     "httpx>=0.27",
 ]
+
+# Flat layout with several top-level directories, only one of which is a
+# distributable package. Without this, setuptools finds web/, api/, Rules/ and
+# odf_validator/ and refuses to guess -- so `pip install git+...` fails before
+# it starts. api/ is the web application, served from a checkout, not part of
+# the engine anyone installs.
+[tool.setuptools.packages.find]
+include = ["odf_validator*"]
+
+# The engine-bundled CORE_* rules. They are not optional: an installed copy
+# without core.yaml loads no core rules at all, and every check that file
+# defines -- envelope fields, Common Code membership, Foundation Principles
+# conventions -- silently stops running.
+[tool.setuptools.package-data]
+odf_validator = ["core_rules/*.yaml"]
 
 # Note: pytest configuration lives in pytest.ini (the canonical config).
 # No [tool.pytest.ini_options] here, to avoid the "ignoring config" warning.
