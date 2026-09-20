@@ -118,6 +118,28 @@ def _markitdown_text(path) -> str:
     return text
 
 
+def _is_the_file_itself(text: str, path: Path) -> bool:
+    """True when a "conversion" just handed the source file back as text.
+
+    markitdown 0.1.8b2 stopped raising on a file it does not recognise and
+    started returning its bytes decoded as text, so a malformed PDF converted
+    to a string beginning `%PDF-1.4`. The dependency is declared
+    `markitdown[docx]>=0.0.1a3`, so that change arrived without anything here
+    moving.
+
+    That is worse than the empty conversion this module already guards
+    against, because it looks like content: the obligations parser finds
+    nothing in it, and the discipline lands in the pack carrying zero rules
+    and no ingestion error -- a Data Dictionary that silently contributes
+    nothing, which is the failure the whole fallback path exists to prevent.
+
+    Detected by the PDF magic rather than by length or similarity: a real
+    conversion of a PDF never starts with `%PDF`, and a short but genuine
+    Markdown result (a one-page document) must still be accepted.
+    """
+    return path.suffix.lower() in _PDF_SUFFIXES and text.lstrip().startswith("%PDF")
+
+
 def dd_to_markdown(path: Path, converter=None) -> tuple[str, str]:
     """Convert a Data Dictionary source file to Markdown.
 
@@ -164,7 +186,12 @@ def dd_to_markdown(path: Path, converter=None) -> tuple[str, str]:
         # branch that runs on every PDF.
         except BaseException as primary:
             try:
-                return _markitdown_text(path), "markitdown"
+                text = _markitdown_text(path)
+                if _is_the_file_itself(text, path):
+                    raise ConversionError(
+                        f"{path.name}: markitdown returned the file's own "
+                        f"bytes rather than converting it")
+                return text, "markitdown"
             except ConversionError as fallback:
                 # Lead with pdf-inspector's reason. It is the specific one
                 # ("Not a PDF: invalid PDF file header"); markitdown's is a

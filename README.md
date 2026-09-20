@@ -48,7 +48,7 @@ derived from a fallback conversion deserve a second look.
 ### Running the tests before the import
 
 Tests that need a compiled schema or the real code tables are skipped until the
-import has happened, so a fresh clone reports roughly 596 passed and 89
+import has happened, so a fresh clone reports roughly 733 passed and 103
 skipped. After importing, the full suite runs.
 
 ## Run

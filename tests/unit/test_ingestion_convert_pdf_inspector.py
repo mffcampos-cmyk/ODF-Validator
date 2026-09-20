@@ -197,3 +197,36 @@ def test_tri_location_is_the_one_known_divergence():
     assert "TRI_LOCATION_CODE" in curated.read_text(encoding="utf-8"), (
         "TRI_LOCATION_CODE is no longer curated in the TRI pack and is no "
         "longer auto-extracted either -- the Location check would be lost")
+
+
+@pytest.mark.usefixtures("real_pdf_inspector")
+def test_fallback_refuses_a_conversion_that_returned_the_file_itself(tmp_path):
+    """markitdown handing back the PDF's own bytes is not a conversion.
+
+    markitdown 0.1.8b2 stopped raising on an unrecognised file and started
+    returning it as text, so `%PDF-1.4 stub` "converted" to the string
+    `%PDF-1.4 stub`. The dependency is declared `markitdown[docx]>=0.0.1a3`,
+    so that behaviour arrived on its own.
+
+    This is worse than the empty conversion the test above guards, because it
+    looks like content: the obligations parser finds nothing in it, and the
+    discipline lands in the pack with zero rules and no ingestion error. A
+    Data Dictionary that silently contributes no rules is the failure this
+    whole error path exists to prevent.
+    """
+    p = tmp_path / "dd.pdf"
+    p.write_bytes(b"%PDF-1.4 stub")
+    with pytest.raises(ConversionError, match="Not a PDF"):
+        dd_to_markdown(p)
+
+
+def test_fallback_keeps_real_markitdown_output(tmp_path, monkeypatch):
+    """The guard above must reject only the file-as-text case. A .docx goes
+    straight to markitdown and its output has no business being second-guessed.
+    """
+    import odf_validator.ingestion.convert as convert
+    monkeypatch.setattr(convert, "_markitdown_text",
+                        lambda path: "# Heading\n\n|Attribute|M/O|\n")
+    p = tmp_path / "dd.docx"
+    p.write_bytes(b"PK\x03\x04 stub")
+    assert convert.dd_to_markdown(p) == ("# Heading\n\n|Attribute|M/O|\n", "markitdown")
