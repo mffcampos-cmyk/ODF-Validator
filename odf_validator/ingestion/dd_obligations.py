@@ -77,6 +77,49 @@ def _doc_types(line: str) -> list[str] | None:
     return None
 
 
+# A numbered heading, and the number itself: `## 2.3.3 List of teams`,
+# `#### 2.1.37.2 Header Values`, `## <u>1.5</u> Related Documents`. The
+# markdown depth is NOT usable as the section level -- ARC writes its message
+# sections as h2 and GEN writes its as h3 -- so the numbering the documents
+# carry is what tells one level from another.
+# At least two components, deliberately: a single number is not a section
+# number in these documents, it is page furniture. GEN stamps every other page
+# with `##### 10 December 2025`, which as a bare `\d+` reads as heading "10"
+# and leaves whatever section is open -- discarding 2,531 of its facts.
+_HEADING_NUM = re.compile(r'^\s{0,3}#{1,6}\s+(?:<u>\s*)?(\d+(?:\.\d+)+)')
+
+
+def _leaves_section(number: str, prefix: str) -> bool:
+    """True when a heading numbered `number` is outside section `prefix`.
+
+    `2.3.2.4` is inside `2.3.2`; `2.3.3` and `2.4` are not. Used to end a
+    message at its section boundary: the parser keys rows on the last
+    DocumentType row it saw, and a section that never emits one would
+    otherwise inherit the previous message.
+
+    SYOG2026's ARC DD has exactly that. Section 2.3.3, "List of teams",
+    carries its structure table under a heading reading "Header Values" and is
+    missing the three subsections that normally follow, so it never states its
+    DocumentType. The team structure was recorded as "DT_PARTIC requires
+    Competition/Team (1,N)" -- a rule the other thirteen DDs state under
+    DT_PARTIC_TEAMS, and one the GEN document contradicts. GEN has the same
+    shape in its Team Biography section, which was inheriting DT_PDF.
+
+    A table nobody can attribute is dropped rather than attached to whatever
+    came before: a guessed key is worse than a missing one.
+    """
+    return number != prefix and not number.startswith(prefix + ".")
+
+
+# A message named in a section's own prose, used ONLY to fill the gap a missing
+# DocumentType row leaves. Scanning stops at the section's first table row, and
+# a real DocumentType row always replaces whatever was recovered -- prose names
+# other messages freely (the DT_PARTIC section's description mentions
+# DT_PARTIC_UPDATE in passing), so this must never compete with the document
+# stating its message itself.
+_PROSE_DT = re.compile(r'\bDT_[A-Z0-9_]+')
+
+
 # `|Element: Competition /Result (1,N)||||`, sometimes bold-wrapped by the
 # converter: `**Element: Competition /Result /Composition (0,N)**`.
 _ELEMENT = re.compile(r'Element:\s*\**\s*([A-Za-z0-9 /]+?)\s*(?:\(|\||\*|$)')
@@ -170,11 +213,44 @@ def parse_dd(markdown: str) -> DDFacts:
     # every element and message boundary: a code block never spans them.
     codes: list[str] | None = None
     seen_typecode_header = False
+    # The number of the most recent numbered heading, and the section the
+    # current message belongs to (that heading's parent, recorded when the
+    # DocumentType row was read). See _leaves_section.
+    heading: str | None = None
+    section: str | None = None
+    # True from a section boundary until that section's first table row: the
+    # window in which a message named in prose may stand in for a missing
+    # DocumentType row.
+    recovering = False
     for line in markdown.splitlines():
+        numbered = _HEADING_NUM.match(line)
+        if numbered:
+            heading = numbered.group(1)
+            if section is not None and _leaves_section(heading, section):
+                doc_types, element, codes = [], None, None
+                seen_typecode_header = False
+                section = None
+                recovering = True
+            continue
+        if recovering:
+            if line.lstrip().startswith("|"):
+                recovering = False
+            else:
+                # Accumulate across the whole window, not only the first line
+                # that names something: a section covering a bulk message and
+                # its update introduces them a paragraph apart.
+                for name in _PROSE_DT.findall(line):
+                    if name not in doc_types:
+                        doc_types.append(name)
         found = _doc_types(line)
         if found:
             doc_types, element, codes = found, None, None
             seen_typecode_header = False
+            recovering = False
+            # The DocumentType row sits in a subsection of the message's own
+            # section (`2.3.2.2 Header Values` under `2.3.2`), so the section
+            # is that heading's parent.
+            section = heading.rpartition(".")[0] if heading and "." in heading else None
             continue
         m = _ELEMENT.search(line)
         if m:

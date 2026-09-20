@@ -10,7 +10,7 @@ Obligations are keyed on (doc_type, element, attribute). Attribute name alone is
 never enough: `Code` is required on 83 complexTypes, and a DD marking
 Result/@Rank optional says nothing about MedalLine/@Rank.
 """
-from odf_validator.ingestion.dd_obligations import parse_obligations
+from odf_validator.ingestion.dd_obligations import parse_dd, parse_obligations
 
 SWM_LIKE = """
 |DocumentType|DT_ENTRIES|List of entries by event message|
@@ -125,3 +125,151 @@ def test_an_attribute_row_named_documenttype_is_not_a_section_header():
         "|D oc ume ntTy p e|M|S(30)|DocumentType of the original message|\n"
         "|Gen|M|S(20)|x|\n")
     assert ob[("DT_NOTIFICATION", "Competition", "Gen")] == "M"
+
+
+# ---------------------------------------------------------------------------
+# Message-section boundaries.
+#
+# The parser keys everything on the message named by the last `DocumentType`
+# row it saw. The ARC DD for SYOG2026 has a section -- 2.3.3, "List of teams"
+# -- that never emits one: its structure table sits under a heading reading
+# "Header Values", and the three subsections that normally follow are absent
+# from the document. So the parser was still holding DT_PARTIC when it read
+# the team structure, and recorded "DT_PARTIC requires Competition/Team (1,N)".
+#
+# Thirteen other DDs put that same pair under DT_PARTIC_TEAMS. ARC was the only
+# document that disagreed, and the only one with no DT_PARTIC_TEAMS section at
+# all -- which is what identifies this as mis-attribution rather than a
+# sport-specific rule.
+# ---------------------------------------------------------------------------
+
+# Trimmed from the real converted ARC DD, keeping the shapes that matter: the
+# h2 section heading, the description prose naming both messages, and the
+# `Element:` line arriving with no DocumentType row in between.
+ARC_LIKE_TEAMS_SECTION = """
+## 2.3.2 List of participants by discipline / update
+
+### 2.3.2.2 Header Values
+
+|DocumentType|DT_PARTIC / DT_PARTIC_UPDATE|List of participants by discipline message|
+|Element: Competition /Participant (1,N)||||
+|Code|M|S(20)|Participant code|
+
+## 2.3.3 List of teams / List of teams update
+
+### 2.3.3.1 Description
+
+DT_PARTIC_TEAMS contains the list of teams related to the current competition.
+
+List of teams update (DT_PARTIC_TEAMS_UPDATE) is an update message.
+
+### 2.3.3.2 Header Values
+
+|Element: Competition /Team (1,N)||||
+|Code|M|S(20) with no leading zeroes|Team code|
+"""
+
+
+def test_a_new_message_section_does_not_inherit_the_previous_message():
+    """The conservative half: a table nobody can attribute is dropped, not
+    attached to whatever came before."""
+    facts = parse_dd(ARC_LIKE_TEAMS_SECTION)
+    assert ("DT_PARTIC", "Competition", "Team") not in facts.cardinalities
+    assert ("DT_PARTIC_UPDATE", "Competition", "Team") not in facts.cardinalities
+    assert ("DT_PARTIC", "Team", "Code") not in facts.obligations
+
+
+def test_a_section_naming_its_message_in_prose_is_recovered():
+    """The recovery half: the document says which message it is describing in
+    words, so the rows are keyed to that message rather than lost."""
+    facts = parse_dd(ARC_LIKE_TEAMS_SECTION)
+    assert facts.cardinalities[("DT_PARTIC_TEAMS", "Competition", "Team")] == (1, None)
+    assert facts.cardinalities[("DT_PARTIC_TEAMS_UPDATE", "Competition", "Team")] == (1, None)
+    assert facts.obligations[("DT_PARTIC_TEAMS", "Team", "Code")] == "M"
+
+
+def test_the_message_before_the_boundary_is_untouched():
+    facts = parse_dd(ARC_LIKE_TEAMS_SECTION)
+    assert facts.cardinalities[("DT_PARTIC", "Competition", "Participant")] == (1, None)
+    assert facts.obligations[("DT_PARTIC", "Participant", "Code")] == "M"
+
+
+# GEN writes its message sections as h3 and their subsections as h4; ARC writes
+# the same two levels as h2 and h3. A boundary rule keyed on markdown depth
+# therefore works for one document and silently does nothing for the other --
+# which is why the rule is keyed on the section NUMBERING both carry.
+GEN_LIKE_DEEPER_HEADINGS = """
+### 2.1.35 Background Document
+
+#### 2.1.35.2 Header Values
+
+|DocumentType|DT_PDF|Background document message|
+|Element: Competition /Document (1,N)||||
+|Code|M|S(20)|Document code|
+
+### 2.1.39 Team Biography
+
+#### 2.1.39.5 Message Values
+
+|Element: Competition /Language /GInterest (0,1)||||
+|Nickname|O|S(25)|Nickname|
+"""
+
+
+def test_section_boundaries_are_found_whatever_the_heading_depth():
+    facts = parse_dd(GEN_LIKE_DEEPER_HEADINGS)
+    assert facts.cardinalities[("DT_PDF", "Competition", "Document")] == (1, None)
+    assert ("DT_PDF", "Language", "GInterest") not in facts.cardinalities
+    assert ("DT_PDF", "GInterest", "Nickname") not in facts.obligations
+
+
+SUBSECTION_HEADINGS = """
+### 2.3.5 Event Unit Start List and Results
+
+#### 2.3.5.2 Header Values
+
+|DocumentType|DT_RESULT|Event Unit Start List and Results message|
+
+#### 2.3.5.4 Message Structure
+
+### Message Values
+
+|Element: Competition /Result (1,N)||||
+|SortOrder|M|Positive Integer|Used to sort all the results|
+"""
+
+
+def test_subsection_headings_do_not_end_the_message():
+    """Only the section level ends a message. Every DD puts its structure and
+    values tables under headings deeper than the one naming the message, and an
+    unnumbered heading (`### Message Values`, which ARC emits) says nothing
+    about sections at all. Clearing on either would discard every cardinality
+    in every document."""
+    facts = parse_dd(SUBSECTION_HEADINGS)
+    assert facts.cardinalities[("DT_RESULT", "Competition", "Result")] == (1, None)
+    assert facts.obligations[("DT_RESULT", "Result", "SortOrder")] == "M"
+
+
+PROSE_THEN_REAL_HEADER = """
+## 2.3.2 List of participants by discipline
+
+### 2.3.2.1 Description
+
+The DT_PARTIC message is sent as a bulk message prior to the Games, after
+which only DT_PARTIC_UPDATE messages are sent.
+
+|DocumentType|DT_ENTRIES|List of entries by event message|
+|Element: Competition /Entry (1,N)||||
+|Code|M|S(20)|Entry code|
+"""
+
+
+def test_a_real_header_row_overrides_anything_recovered_from_prose():
+    """Recovery fills a gap; it never competes with the document saying so
+    itself. Prose names other messages freely -- the DT_PARTIC section's own
+    description mentions DT_PARTIC_UPDATE in passing -- so a recovered name
+    must lose to the next DocumentType row."""
+    facts = parse_dd(PROSE_THEN_REAL_HEADER)
+    assert facts.cardinalities[("DT_ENTRIES", "Competition", "Entry")] == (1, None)
+    assert ("DT_PARTIC", "Competition", "Entry") not in facts.cardinalities
+    assert ("DT_PARTIC_UPDATE", "Competition", "Entry") not in facts.cardinalities
